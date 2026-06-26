@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>SS CSS Framework Foundation Example</title>
+    <link rel="stylesheet" href="../dist/ss.css">
+    <style>
+      main {
+        max-width: var(--ss-width-md);
+        margin: 0 auto;
+        padding: var(--ss-space-12) var(--ss-page-gutter);
+      }
+
+      section {
+        margin-top: var(--ss-space-8);
+      }
+
+      .example-field {
+        margin-bottom: var(--ss-space-4);
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>SS CSS Framework</h1>
+      <p>
+        This page loads the Phase 01 distribution stylesheet and shows the base
+        element defaults without component classes.
+      </p>
+      <p>
+        <a href="#form">Jump to the form example</a>
+      </p>
+
+      <section>
+        <h2>Typography</h2>
+        <p>
+          The framework uses system fonts, readable line height, slate text, and
+          primary blue links.
+        </p>
+        <blockquote>
+          Foundation styles should be useful immediately, while still leaving
+          room for component classes in later phases.
+        </blockquote>
+        <pre><code>body {
+  font-family: var(--ss-font-sans);
+}</code></pre>
+      </section>
+
+      <section id="form">
+        <h2>Form Elements</h2>
+        <div class="example-field">
+          <label for="email">Email address</label>
+          <input id="email" type="email" placeholder="name@example.com">
+        </div>
+        <div class="example-field">
+          <label for="message">Message</label>
+          <textarea id="message" placeholder="Write a short note"></textarea>
+        </div>
+        <button type="button">Send example</button>
+      </section>
+
+      <section>
+        <h2>Table</h2>
+        <table>
+          <caption>Token examples</caption>
+          <thead>
+            <tr>
+              <th>Token</th>
+              <th>Value</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>--ss-color-primary</code></td>
+              <td>#3B82F6</td>
+            </tr>
+            <tr>
+              <td><code>--ss-radius-default</code></td>
+              <td>0.5rem</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+    </main>
+  </body>
+</html>

@@ -1,0 +1,468 @@
+/*!
+ * SS CSS Framework v0.1.0
+ * Phase 01: Foundation, tokens, reset, and base styles.
+ */
+
+:root {
+  color-scheme: light;
+
+  /* Color palette */
+  --ss-color-primary: #3b82f6;
+  --ss-color-primary-hover: #2563eb;
+  --ss-color-primary-active: #1d4ed8;
+  --ss-color-secondary: #64748b;
+  --ss-color-accent: #a855f7;
+  --ss-color-success: #22c55e;
+  --ss-color-warning: #f59e0b;
+  --ss-color-danger: #ef4444;
+  --ss-color-info: #06b6d4;
+  --ss-color-bg: #f8fafc;
+  --ss-color-surface: #ffffff;
+  --ss-color-surface-soft: #f1f5f9;
+  --ss-color-border: #cbd5e1;
+  --ss-color-text: #0f172a;
+  --ss-color-text-muted: #475569;
+  --ss-color-text-soft: #94a3b8;
+  --ss-color-text-inverted: #ffffff;
+  --ss-color-dark-bg: #0b1120;
+  --ss-color-dark-surface: #111827;
+  --ss-color-dark-surface-soft: #1e293b;
+  --ss-color-dark-border: #334155;
+
+  /* Soft and overlay colors */
+  --ss-color-overlay-light: rgba(15, 23, 42, 0.08);
+  --ss-color-overlay-medium: rgba(15, 23, 42, 0.18);
+  --ss-color-overlay-dark: rgba(15, 23, 42, 0.65);
+  --ss-color-primary-soft: rgba(59, 130, 246, 0.12);
+  --ss-color-accent-soft: rgba(168, 85, 247, 0.12);
+  --ss-color-success-soft: rgba(34, 197, 94, 0.12);
+  --ss-color-warning-soft: rgba(245, 158, 11, 0.14);
+  --ss-color-danger-soft: rgba(239, 68, 68, 0.12);
+  --ss-color-info-soft: rgba(6, 182, 212, 0.12);
+
+  /* Semantic aliases */
+  --ss-bg: var(--ss-color-bg);
+  --ss-surface: var(--ss-color-surface);
+  --ss-surface-soft: var(--ss-color-surface-soft);
+  --ss-border: var(--ss-color-border);
+  --ss-text: var(--ss-color-text);
+  --ss-text-muted: var(--ss-color-text-muted);
+  --ss-text-soft: var(--ss-color-text-soft);
+  --ss-link: var(--ss-color-primary);
+  --ss-link-hover: var(--ss-color-primary-hover);
+  --ss-focus: var(--ss-color-primary);
+  --ss-disabled-bg: #e2e8f0;
+  --ss-disabled-text: #94a3b8;
+
+  /* Typography */
+  --ss-font-sans: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --ss-font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+  --ss-font-size-xs: 0.75rem;
+  --ss-font-size-sm: 0.875rem;
+  --ss-font-size-base: 1rem;
+  --ss-font-size-lg: 1.125rem;
+  --ss-font-size-xl: 1.25rem;
+  --ss-font-size-2xl: 1.5rem;
+  --ss-font-size-3xl: 1.875rem;
+  --ss-line-height-tight: 1.2;
+  --ss-line-height-base: 1.6;
+  --ss-line-height-loose: 1.75;
+  --ss-font-weight-normal: 400;
+  --ss-font-weight-medium: 500;
+  --ss-font-weight-semibold: 600;
+  --ss-font-weight-bold: 700;
+
+  /* Spacing */
+  --ss-space-0: 0;
+  --ss-space-1: 0.25rem;
+  --ss-space-2: 0.5rem;
+  --ss-space-3: 0.75rem;
+  --ss-space-4: 1rem;
+  --ss-space-5: 1.25rem;
+  --ss-space-6: 1.5rem;
+  --ss-space-8: 2rem;
+  --ss-space-10: 2.5rem;
+  --ss-space-12: 3rem;
+  --ss-space-16: 4rem;
+  --ss-space-20: 5rem;
+  --ss-space-24: 6rem;
+
+  /* Radius */
+  --ss-radius-none: 0;
+  --ss-radius-sm: 0.25rem;
+  --ss-radius-md: 0.5rem;
+  --ss-radius-lg: 0.75rem;
+  --ss-radius-xl: 1rem;
+  --ss-radius-pill: 999rem;
+  --ss-radius-full: 50%;
+  --ss-radius-default: var(--ss-radius-md);
+
+  /* Borders and shadows */
+  --ss-border-width: 1px;
+  --ss-shadow-sm: 0 1px 2px rgba(15, 23, 42, 0.08);
+  --ss-shadow-md: 0 8px 24px rgba(15, 23, 42, 0.1);
+  --ss-shadow-lg: 0 18px 45px rgba(15, 23, 42, 0.12);
+  --ss-shadow-overlay: 0 24px 70px rgba(15, 23, 42, 0.22);
+
+  /* Motion */
+  --ss-ease: cubic-bezier(0.2, 0, 0, 1);
+  --ss-duration-fast: 120ms;
+  --ss-duration-normal: 180ms;
+  --ss-duration-slow: 280ms;
+  --ss-transition-fast: var(--ss-duration-fast) var(--ss-ease);
+  --ss-transition-normal: var(--ss-duration-normal) var(--ss-ease);
+  --ss-transition-slow: var(--ss-duration-slow) var(--ss-ease);
+
+  /* Layout and layers */
+  --ss-width-sm: 640px;
+  --ss-width-md: 768px;
+  --ss-width-lg: 1024px;
+  --ss-width-xl: 1280px;
+  --ss-width-2xl: 1440px;
+  --ss-page-gutter: clamp(1rem, 3vw, 2rem);
+  --ss-z-base: 0;
+  --ss-z-dropdown: 1000;
+  --ss-z-sticky: 1020;
+  --ss-z-overlay: 1040;
+  --ss-z-modal: 1060;
+  --ss-z-toast: 1080;
+}
+
+[data-ss-theme="dark"],
+.ss-theme-dark {
+  color-scheme: dark;
+  --ss-bg: var(--ss-color-dark-bg);
+  --ss-surface: var(--ss-color-dark-surface);
+  --ss-surface-soft: var(--ss-color-dark-surface-soft);
+  --ss-border: var(--ss-color-dark-border);
+  --ss-text: #f8fafc;
+  --ss-text-muted: #cbd5e1;
+  --ss-text-soft: #94a3b8;
+  --ss-link: #60a5fa;
+  --ss-link-hover: #93c5fd;
+  --ss-focus: #60a5fa;
+  --ss-disabled-bg: #1e293b;
+  --ss-disabled-text: #64748b;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  min-height: 100%;
+  font-size: 100%;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+body {
+  min-height: 100%;
+  margin: 0;
+  background: var(--ss-bg);
+  color: var(--ss-text);
+  font-family: var(--ss-font-sans);
+  font-size: var(--ss-font-size-base);
+  font-weight: var(--ss-font-weight-normal);
+  line-height: var(--ss-line-height-base);
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+}
+
+img,
+picture,
+video,
+canvas,
+svg {
+  display: block;
+  max-width: 100%;
+}
+
+img,
+video {
+  height: auto;
+}
+
+svg {
+  fill: currentColor;
+}
+
+button,
+input,
+optgroup,
+select,
+textarea {
+  margin: 0;
+  font: inherit;
+  color: inherit;
+}
+
+button,
+select {
+  text-transform: none;
+}
+
+button,
+[type="button"],
+[type="reset"],
+[type="submit"] {
+  cursor: pointer;
+}
+
+button:disabled,
+input:disabled,
+select:disabled,
+textarea:disabled {
+  cursor: not-allowed;
+  opacity: 0.65;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  border-color: inherit;
+}
+
+hr {
+  height: 0;
+  margin: var(--ss-space-8) 0;
+  border: 0;
+  border-top: var(--ss-border-width) solid var(--ss-border);
+  color: inherit;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  margin: 0 0 var(--ss-space-4);
+  color: var(--ss-text);
+  font-weight: var(--ss-font-weight-bold);
+  line-height: var(--ss-line-height-tight);
+}
+
+h1 {
+  font-size: var(--ss-font-size-3xl);
+}
+
+h2 {
+  font-size: var(--ss-font-size-2xl);
+}
+
+h3 {
+  font-size: var(--ss-font-size-xl);
+}
+
+h4 {
+  font-size: var(--ss-font-size-lg);
+}
+
+h5,
+h6 {
+  font-size: var(--ss-font-size-base);
+}
+
+p {
+  margin: 0 0 var(--ss-space-4);
+}
+
+a {
+  color: var(--ss-link);
+  text-decoration: underline;
+  text-decoration-thickness: 0.08em;
+  text-underline-offset: 0.18em;
+  transition: color var(--ss-transition-fast);
+}
+
+a:hover {
+  color: var(--ss-link-hover);
+}
+
+strong,
+b {
+  font-weight: var(--ss-font-weight-bold);
+}
+
+small {
+  font-size: var(--ss-font-size-sm);
+}
+
+mark {
+  border-radius: var(--ss-radius-sm);
+  background: var(--ss-color-warning-soft);
+  color: var(--ss-text);
+  padding: 0.08em 0.2em;
+}
+
+ul,
+ol {
+  margin: 0 0 var(--ss-space-4);
+  padding-left: var(--ss-space-6);
+}
+
+li + li {
+  margin-top: var(--ss-space-1);
+}
+
+blockquote {
+  margin: 0 0 var(--ss-space-5);
+  padding: var(--ss-space-3) var(--ss-space-5);
+  border-left: 0.25rem solid var(--ss-color-primary);
+  background: var(--ss-surface-soft);
+  color: var(--ss-text-muted);
+}
+
+code,
+kbd,
+samp,
+pre {
+  font-family: var(--ss-font-mono);
+  font-size: 0.95em;
+}
+
+code,
+kbd {
+  border-radius: var(--ss-radius-sm);
+  background: var(--ss-surface-soft);
+  color: var(--ss-text);
+  padding: 0.14em 0.34em;
+}
+
+pre {
+  overflow: auto;
+  margin: 0 0 var(--ss-space-5);
+  border: var(--ss-border-width) solid var(--ss-border);
+  border-radius: var(--ss-radius-lg);
+  background: var(--ss-surface-soft);
+  color: var(--ss-text);
+  padding: var(--ss-space-4);
+}
+
+pre code {
+  border-radius: 0;
+  background: transparent;
+  padding: 0;
+}
+
+figure {
+  margin: 0 0 var(--ss-space-5);
+}
+
+figcaption {
+  margin-top: var(--ss-space-2);
+  color: var(--ss-text-muted);
+  font-size: var(--ss-font-size-sm);
+}
+
+label {
+  display: inline-block;
+  margin-bottom: var(--ss-space-2);
+  color: var(--ss-text);
+  font-weight: var(--ss-font-weight-medium);
+}
+
+input,
+select,
+textarea {
+  width: 100%;
+  border: var(--ss-border-width) solid var(--ss-border);
+  border-radius: var(--ss-radius-default);
+  background: var(--ss-surface);
+  color: var(--ss-text);
+  padding: 0.625rem 0.75rem;
+  transition:
+    border-color var(--ss-transition-fast),
+    box-shadow var(--ss-transition-fast),
+    background-color var(--ss-transition-fast);
+}
+
+textarea {
+  min-height: 8rem;
+  resize: vertical;
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: var(--ss-text-soft);
+}
+
+input:disabled,
+select:disabled,
+textarea:disabled {
+  background: var(--ss-disabled-bg);
+  color: var(--ss-disabled-text);
+}
+
+button {
+  border: var(--ss-border-width) solid transparent;
+  border-radius: var(--ss-radius-default);
+  background: var(--ss-color-primary);
+  color: var(--ss-color-text-inverted);
+  font-weight: var(--ss-font-weight-medium);
+  line-height: var(--ss-line-height-tight);
+  padding: 0.625rem 0.9rem;
+  transition:
+    background-color var(--ss-transition-fast),
+    border-color var(--ss-transition-fast),
+    color var(--ss-transition-fast),
+    box-shadow var(--ss-transition-fast);
+}
+
+button:hover {
+  background: var(--ss-color-primary-hover);
+}
+
+button:active {
+  background: var(--ss-color-primary-active);
+}
+
+button:disabled {
+  background: var(--ss-disabled-bg);
+  color: var(--ss-disabled-text);
+}
+
+th,
+td {
+  border-bottom: var(--ss-border-width) solid var(--ss-border);
+  padding: var(--ss-space-3);
+  text-align: left;
+  vertical-align: top;
+}
+
+th {
+  color: var(--ss-text);
+  font-weight: var(--ss-font-weight-semibold);
+}
+
+caption {
+  margin-bottom: var(--ss-space-2);
+  color: var(--ss-text-muted);
+  font-size: var(--ss-font-size-sm);
+  text-align: left;
+}
+
+:focus-visible {
+  outline: 3px solid var(--ss-focus);
+  outline: 3px solid color-mix(in srgb, var(--ss-focus) 65%, transparent);
+  outline-offset: 2px;
+}
+
+::selection {
+  background: var(--ss-color-primary-soft);
+  color: var(--ss-text);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+  }
+}
