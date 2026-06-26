@@ -6,7 +6,7 @@ Phase 01 establishes the framework base:
 
 - Semantic CSS custom properties for color, typography, spacing, radius, shadows, motion, layout widths, and z-index.
 - A modern but conservative reset.
-- Base styling for typography, links, forms, buttons, tables, media, code, blockquotes, and horizontal rules.
+- Opt-in foundation classes for typography, links, forms, buttons, tables, media, code, blockquotes, and horizontal rules.
 - Light theme defaults with dark theme tokens prepared for later phases.
 
 ## Quick Start
@@ -15,6 +15,16 @@ Use the distribution file in a normal HTML page:
 
 ```html
 <link rel="stylesheet" href="dist/ss.css">
+```
+
+Attach SS classes to the elements you want to style:
+
+```html
+<body class="ss-page">
+  <h1 class="ss-h1">Page title</h1>
+  <p class="ss-text">Readable body copy with a <a class="ss-link" href="#">link</a>.</p>
+  <button class="ss-btn" type="button">Action</button>
+</body>
 ```
 
 The source file is available at `src/ss.css`. During Phase 01, `dist/ss.css` mirrors the source file so the framework can already be dropped into a project.

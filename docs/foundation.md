@@ -20,9 +20,18 @@ The light theme is the default. Dark theme semantic tokens are available through
 
 The primary action color is blue `#3B82F6`, with `#2563EB` used for hover states. Slate neutrals control text, borders, surfaces, and secondary UI. Purple is reserved as an accent for future highlighted patterns. Success, warning, danger, and info colors are available as semantic tokens with soft background variants.
 
-## Reset and Base Elements
+## Reset and Foundation Classes
 
-The reset uses `border-box`, removes the default body margin, keeps media responsive, and normalizes common form and table behavior without aggressively stripping browser defaults. Base styling covers body text, headings, paragraphs, links, lists, blockquotes, code, preformatted text, figures, labels, form fields, buttons, tables, and horizontal rules.
+The reset uses `border-box` and lightweight page normalization without visually styling raw HTML elements. Visual foundation styles are exposed as classes that can be attached to the matching elements.
+
+Core Phase 01 classes include:
+
+- `.ss-page` for page background, text color, font family, and base line height.
+- `.ss-h1` through `.ss-h6`, `.ss-heading`, `.ss-text`, `.ss-link`, `.ss-list`, and `.ss-list-spaced` for typography.
+- `.ss-quote`, `.ss-code`, `.ss-kbd`, `.ss-samp`, `.ss-pre`, `.ss-figure`, `.ss-caption`, and `.ss-hr` for content treatments.
+- `.ss-label`, `.ss-field`, `.ss-textarea`, and `.ss-btn` for form and action elements.
+- `.ss-table`, `.ss-table-caption`, `.ss-th`, and `.ss-td` for table presentation.
+- `.ss-img`, `.ss-media`, and `.ss-svg` for responsive media behavior.
 
 ## Accessibility
 

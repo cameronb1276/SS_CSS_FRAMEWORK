@@ -6,13 +6,13 @@
     <title>SS CSS Framework Foundation Example</title>
     <link rel="stylesheet" href="../dist/ss.css">
     <style>
-      main {
+      .example-main {
         max-width: var(--ss-width-md);
         margin: 0 auto;
         padding: var(--ss-space-12) var(--ss-page-gutter);
       }
 
-      section {
+      .example-section {
         margin-top: var(--ss-space-8);
       }
 
@@ -21,63 +21,61 @@
       }
     </style>
   </head>
-  <body>
-    <main>
-      <h1>SS CSS Framework</h1>
-      <p>
+  <body class="ss-page">
+    <main class="example-main">
+      <h1 class="ss-h1">SS CSS Framework</h1>
+      <p class="ss-text">
         This page loads the Phase 01 distribution stylesheet and shows the base
-        element defaults without component classes.
+        foundation classes attached directly to HTML elements.
       </p>
-      <p>
-        <a href="#form">Jump to the form example</a>
+      <p class="ss-text">
+        <a class="ss-link" href="#form">Jump to the form example</a>
       </p>
 
-      <section>
-        <h2>Typography</h2>
-        <p>
+      <section class="example-section">
+        <h2 class="ss-h2">Typography</h2>
+        <p class="ss-text">
           The framework uses system fonts, readable line height, slate text, and
           primary blue links.
         </p>
-        <blockquote>
+        <blockquote class="ss-quote">
           Foundation styles should be useful immediately, while still leaving
           room for component classes in later phases.
         </blockquote>
-        <pre><code>body {
-  font-family: var(--ss-font-sans);
-}</code></pre>
+        <pre class="ss-pre"><code class="ss-code">&lt;body class="ss-page"&gt;</code></pre>
       </section>
 
-      <section id="form">
-        <h2>Form Elements</h2>
+      <section class="example-section" id="form">
+        <h2 class="ss-h2">Form Elements</h2>
         <div class="example-field">
-          <label for="email">Email address</label>
-          <input id="email" type="email" placeholder="name@example.com">
+          <label class="ss-label" for="email">Email address</label>
+          <input class="ss-field" id="email" type="email" placeholder="name@example.com">
         </div>
         <div class="example-field">
-          <label for="message">Message</label>
-          <textarea id="message" placeholder="Write a short note"></textarea>
+          <label class="ss-label" for="message">Message</label>
+          <textarea class="ss-field ss-textarea" id="message" placeholder="Write a short note"></textarea>
         </div>
-        <button type="button">Send example</button>
+        <button class="ss-btn" type="button">Send example</button>
       </section>
 
-      <section>
-        <h2>Table</h2>
-        <table>
-          <caption>Token examples</caption>
+      <section class="example-section">
+        <h2 class="ss-h2">Table</h2>
+        <table class="ss-table">
+          <caption class="ss-table-caption">Token examples</caption>
           <thead>
             <tr>
-              <th>Token</th>
-              <th>Value</th>
+              <th class="ss-th">Token</th>
+              <th class="ss-th">Value</th>
             </tr>
           </thead>
           <tbody>
             <tr>
-              <td><code>--ss-color-primary</code></td>
-              <td>#3B82F6</td>
+              <td class="ss-td"><code class="ss-code">--ss-color-primary</code></td>
+              <td class="ss-td">#3B82F6</td>
             </tr>
             <tr>
-              <td><code>--ss-radius-default</code></td>
-              <td>0.5rem</td>
+              <td class="ss-td"><code class="ss-code">--ss-radius-default</code></td>
+              <td class="ss-td">0.5rem</td>
             </tr>
           </tbody>
         </table>
