@@ -39,6 +39,7 @@ Attach SS classes to the elements you want to style:
 - Explicit dark mode with `.ss-theme-dark` or `[data-ss-theme="dark"]`.
 - Optional system preference support with `.ss-theme-system`.
 - Builder-specific primitives for canvas editing, responsive previews, editable states, drop zones, handles, and published-output cleanup.
+- Business website section primitives and local-business patterns for reusable builder-generated pages.
 
 ## Color Palette
 
@@ -111,6 +112,14 @@ Components are class-based and compose with utilities:
 ```
 
 See [docs/components-and-patterns.md](docs/components-and-patterns.md) for supported variants and behavior notes.
+
+## Website Sections
+
+SS CSS includes business website section primitives for builder-generated and published sites. Use `.ss-section` with modifiers such as `.ss-section-hero`, `.ss-section-services`, `.ss-section-about`, `.ss-section-cta`, `.ss-section-pricing`, `.ss-section-testimonials`, `.ss-section-faq`, `.ss-section-gallery`, `.ss-section-contact`, and `.ss-section-footer`.
+
+Section content classes such as `.ss-section-header`, `.ss-section-title`, `.ss-section-subtitle`, `.ss-section-actions`, and `.ss-section-media` compose with utilities and components. Local business patterns include service cards, pricing cards, testimonials, business hours, location cards, map wrappers, coupons, announcement bars, emergency banners, phone strips, and service-area lists.
+
+See [docs/website-sections-and-local-business-patterns.md](docs/website-sections-and-local-business-patterns.md) and [examples/sections.html](examples/sections.html).
 
 ## Dark Mode
 
