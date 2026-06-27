@@ -61,6 +61,8 @@ Patterns include:
 - `.ss-mt-4`, `.ss-mr-4`, `.ss-mb-4`, `.ss-ml-4` and matching padding classes for sides.
 - `.ss-m-auto`, `.ss-mx-auto`, `.ss-ml-auto`, and `.ss-mr-auto` for centering and layout pushing.
 
+Selected responsive spacing helpers are available for common page layout adjustments, including `.ss-sm-p-4`, `.ss-md-p-6`, `.ss-md-px-6`, `.ss-md-py-6`, `.ss-lg-p-8`, `.ss-lg-px-8`, `.ss-lg-py-8`, `.ss-sm-mt-0`, `.ss-md-mt-0`, and `.ss-lg-mt-0`.
+
 Sizing helpers include `.ss-w-full`, `.ss-w-auto`, `.ss-w-fit`, `.ss-w-min`, `.ss-w-25`, `.ss-w-33`, `.ss-w-50`, `.ss-w-75`, `.ss-h-full`, `.ss-h-auto`, `.ss-min-h-screen`, and `.ss-min-h-half`.
 
 ## Text and Color
@@ -73,8 +75,14 @@ Use `.ss-truncate` only on an element with a constrained width or a flex/grid tr
 
 Background utilities include surface, soft, semantic soft colors, primary, and dark surfaces. Strong backgrounds such as `.ss-bg-primary`, `.ss-bg-dark`, and `.ss-bg-dark-surface` include inverted text by default.
 
-Borders include `.ss-border`, `.ss-border-0`, directional borders, and semantic border colors. Radius and shadow utilities map directly to Phase 01 tokens, such as `.ss-radius-md`, `.ss-radius-pill`, `.ss-shadow-sm`, and `.ss-shadow-overlay`.
+Borders include `.ss-border`, `.ss-border-0`, directional borders, and semantic border colors, including `.ss-border-accent`. Radius and shadow utilities map directly to Phase 01 tokens, such as `.ss-radius-md`, `.ss-radius-pill`, `.ss-shadow-sm`, and `.ss-shadow-overlay`.
 
 ## Position and Layers
 
 Basic position helpers include `.ss-static`, `.ss-relative`, `.ss-absolute`, `.ss-fixed`, `.ss-sticky`, `.ss-inset-0`, and side-zero helpers. Z-index helpers match the token scale: `.ss-z-dropdown`, `.ss-z-sticky`, `.ss-z-overlay`, `.ss-z-modal`, and `.ss-z-toast`.
+
+## Dark Mode Notes
+
+Utilities use semantic tokens, so classes such as `.ss-bg-surface`, `.ss-bg-soft`, `.ss-text-muted`, `.ss-border`, and `.ss-shadow-md` adapt automatically inside `.ss-theme-dark`, `[data-ss-theme="dark"]`, or `.ss-theme-system`.
+
+Strong background helpers such as `.ss-bg-primary`, `.ss-bg-dark`, and `.ss-bg-dark-surface` set readable inverted text. Soft status backgrounds use dark-adjusted token values in dark mode.

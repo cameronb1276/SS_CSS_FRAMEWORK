@@ -1,0 +1,339 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>SS CSS Framework Demo</title>
+    <link rel="stylesheet" href="../dist/ss.css">
+    <style>
+      .demo-shell {
+        padding-block: var(--ss-space-8);
+      }
+
+      .demo-section {
+        margin-top: var(--ss-space-8);
+      }
+
+      .demo-modal-stage {
+        display: grid;
+        min-height: 22rem;
+        place-items: center;
+      }
+
+      .demo-modal-backdrop {
+        position: absolute;
+        border-radius: inherit;
+      }
+    </style>
+  </head>
+  <body class="ss-page">
+    <nav class="ss-navbar">
+      <a class="ss-navbar-brand" href="#">SS CSS Framework</a>
+      <div class="ss-nav">
+        <a class="ss-navbar-link ss-navbar-link-active" href="#components">Components</a>
+        <a class="ss-navbar-link" href="#forms">Forms</a>
+        <a class="ss-navbar-link" href="#dark">Dark Mode</a>
+      </div>
+    </nav>
+
+    <main class="ss-container-wide demo-shell">
+      <header class="ss-grid ss-cols-1 ss-lg-cols-2 ss-gap-8 ss-items-center">
+        <div>
+          <span class="ss-badge ss-badge-soft ss-badge-primary ss-badge-pill">v0.1.0</span>
+          <h1 class="ss-h1 ss-mt-4 ss-mb-2">A class-based CSS framework for practical interfaces.</h1>
+          <p class="ss-text ss-text-muted">
+            This demo checks typography, utilities, components, responsive grids, tables, loading states, and dark mode without requiring JavaScript.
+          </p>
+          <div class="ss-cluster">
+            <a class="ss-btn" href="../README.md">Read docs</a>
+            <a class="ss-btn ss-btn-outline" href="./components.html">Component example</a>
+          </div>
+        </div>
+        <article class="ss-card ss-card-elevated">
+          <div class="ss-card-body ss-stack">
+            <div class="ss-split">
+              <div>
+                <p class="ss-small ss-text-muted ss-uppercase ss-fw-semibold ss-mb-2">Dashboard</p>
+                <h2 class="ss-card-title">Release health</h2>
+              </div>
+              <span class="ss-avatar ss-avatar-accent">SS</span>
+            </div>
+            <div class="ss-progress ss-progress-success">
+              <div class="ss-progress-bar" style="--ss-progress-value: 88%;"></div>
+            </div>
+            <div class="ss-grid ss-cols-3 ss-gap-3">
+              <div class="ss-bg-soft ss-radius-md ss-p-3">
+                <p class="ss-small ss-text-muted ss-mb-2">CSS</p>
+                <p class="ss-text ss-fw-bold ss-mb-0">Ready</p>
+              </div>
+              <div class="ss-bg-soft ss-radius-md ss-p-3">
+                <p class="ss-small ss-text-muted ss-mb-2">Docs</p>
+                <p class="ss-text ss-fw-bold ss-mb-0">Ready</p>
+              </div>
+              <div class="ss-bg-soft ss-radius-md ss-p-3">
+                <p class="ss-small ss-text-muted ss-mb-2">Demo</p>
+                <p class="ss-text ss-fw-bold ss-mb-0">Ready</p>
+              </div>
+            </div>
+          </div>
+        </article>
+      </header>
+
+      <section class="demo-section" id="components">
+        <div class="ss-split ss-mb-4">
+          <h2 class="ss-h2 ss-mb-0">Components</h2>
+          <div class="ss-cluster">
+            <span class="ss-badge">Neutral</span>
+            <span class="ss-badge ss-badge-soft ss-badge-success">Success</span>
+            <span class="ss-badge ss-badge-soft ss-badge-warning">Warning</span>
+            <span class="ss-badge ss-badge-soft ss-badge-danger">Danger</span>
+          </div>
+        </div>
+
+        <div class="ss-grid ss-cols-1 ss-lg-cols-3 ss-gap-6">
+          <article class="ss-card">
+            <div class="ss-card-header">
+              <h3 class="ss-card-title">Buttons</h3>
+              <p class="ss-card-subtitle">Variants, sizes, and loading state</p>
+            </div>
+            <div class="ss-card-body ss-cluster">
+              <button class="ss-btn" type="button">Primary</button>
+              <button class="ss-btn ss-btn-secondary" type="button">Secondary</button>
+              <button class="ss-btn ss-btn-accent" type="button">Accent</button>
+              <button class="ss-btn ss-btn-success" type="button">Success</button>
+              <button class="ss-btn ss-btn-warning" type="button">Warning</button>
+              <button class="ss-btn ss-btn-danger" type="button">Danger</button>
+              <button class="ss-btn ss-btn-info" type="button">Info</button>
+              <button class="ss-btn ss-btn-outline" type="button">Outline</button>
+              <button class="ss-btn ss-btn-ghost" type="button">Ghost</button>
+              <button class="ss-btn ss-btn-soft" type="button">Soft</button>
+              <button class="ss-btn ss-btn-link" type="button">Link</button>
+              <button class="ss-btn ss-btn-icon" type="button" aria-label="More">...</button>
+              <button class="ss-btn ss-btn-loading" type="button">Loading</button>
+              <button class="ss-btn" type="button" disabled>Disabled</button>
+            </div>
+          </article>
+
+          <article class="ss-card ss-card-interactive">
+            <div class="ss-card-body ss-stack">
+              <h3 class="ss-card-title">Alerts and Toasts</h3>
+              <div class="ss-alert ss-alert-info">
+                <p class="ss-alert-title">Info alert</p>
+                <p class="ss-alert-desc">Soft surfaces and strong borders adapt across themes.</p>
+              </div>
+              <div class="ss-alert ss-alert-danger">
+                <p class="ss-alert-title">Action needed</p>
+                <p class="ss-alert-desc">Danger states remain readable and visible.</p>
+              </div>
+              <div class="ss-toast ss-toast-success">
+                <div>
+                  <p class="ss-alert-title">Saved</p>
+                  <p class="ss-alert-desc">Toast appearance only; dismissal is not included.</p>
+                </div>
+              </div>
+            </div>
+          </article>
+
+          <article class="ss-card">
+            <div class="ss-card-body ss-stack">
+              <h3 class="ss-card-title">Navigation</h3>
+              <div class="ss-tabs">
+                <a class="ss-tab ss-tab-active" href="#">Overview</a>
+                <a class="ss-tab" href="#">Reports</a>
+                <a class="ss-tab ss-tab-disabled" href="#">Disabled</a>
+              </div>
+              <div class="ss-pills">
+                <a class="ss-pill ss-pill-active" href="#">Today</a>
+                <a class="ss-pill" href="#">Week</a>
+                <a class="ss-pill" href="#">Month</a>
+              </div>
+              <div class="ss-dropdown">
+                <div class="ss-dropdown-header">Menu</div>
+                <a class="ss-dropdown-item ss-dropdown-item-active" href="#">Active item</a>
+                <a class="ss-dropdown-item" href="#">Settings</a>
+                <div class="ss-dropdown-divider"></div>
+                <span class="ss-dropdown-item ss-dropdown-item-disabled">Disabled item</span>
+              </div>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section class="demo-section" id="forms">
+        <h2 class="ss-h2">Forms and Tables</h2>
+        <div class="ss-grid ss-cols-1 ss-lg-cols-2 ss-gap-6">
+          <form class="ss-card">
+            <div class="ss-card-body ss-stack">
+              <div class="ss-field-group">
+                <label class="ss-label" for="demo-email">Email</label>
+                <input class="ss-field ss-field-valid" id="demo-email" type="email" value="team@example.com">
+                <p class="ss-valid-text">Valid email format.</p>
+              </div>
+              <div class="ss-field-group">
+                <label class="ss-label" for="demo-plan">Plan</label>
+                <select class="ss-select" id="demo-plan">
+                  <option>Starter</option>
+                  <option>Growth</option>
+                  <option>Enterprise</option>
+                </select>
+              </div>
+              <div class="ss-field-group">
+                <label class="ss-label" for="demo-message">Message</label>
+                <textarea class="ss-textarea ss-field-warning" id="demo-message">Keep this concise.</textarea>
+                <p class="ss-warning-text">This field has guidance.</p>
+              </div>
+              <div class="ss-input-group">
+                <span class="ss-input-addon">@</span>
+                <input class="ss-field" type="text" placeholder="handle">
+                <button class="ss-btn ss-btn-secondary" type="button">Check</button>
+              </div>
+              <label class="ss-check"><input class="ss-check-input" type="checkbox" checked> Send weekly report</label>
+              <label class="ss-radio"><input class="ss-radio-input" type="radio" name="demo-radio" checked> Standard cadence</label>
+              <label class="ss-switch"><input class="ss-switch-input" type="checkbox"> Enable alerts</label>
+              <input class="ss-range" type="range" value="65" aria-label="Progress">
+              <input class="ss-file" type="file">
+            </div>
+          </form>
+
+          <div class="ss-card">
+            <div class="ss-card-body">
+              <div class="ss-table-responsive">
+                <table class="ss-table ss-table-striped ss-table-hover ss-table-bordered ss-table-compact">
+                  <caption class="ss-table-caption">Responsive table</caption>
+                  <thead>
+                    <tr class="ss-tr">
+                      <th class="ss-th">Account</th>
+                      <th class="ss-th">Status</th>
+                      <th class="ss-th">Owner</th>
+                      <th class="ss-th">Value</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr class="ss-tr">
+                      <td class="ss-td">Northwind</td>
+                      <td class="ss-td"><span class="ss-badge ss-badge-soft ss-badge-success">Healthy</span></td>
+                      <td class="ss-td">Avery</td>
+                      <td class="ss-td">$24k</td>
+                    </tr>
+                    <tr class="ss-tr">
+                      <td class="ss-td">Contoso</td>
+                      <td class="ss-td"><span class="ss-badge ss-badge-soft ss-badge-warning">Watch</span></td>
+                      <td class="ss-td">Morgan</td>
+                      <td class="ss-td">$18k</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="demo-section ss-grid ss-cols-1 ss-lg-cols-3 ss-gap-6">
+        <article class="ss-card">
+          <div class="ss-card-body ss-stack">
+            <h2 class="ss-card-title">Loading</h2>
+            <div class="ss-cluster">
+              <span class="ss-spinner" aria-label="Loading"></span>
+              <span class="ss-text ss-text-muted">Spinner respects reduced motion.</span>
+            </div>
+            <span class="ss-skeleton ss-skeleton-title"></span>
+            <span class="ss-skeleton ss-skeleton-text"></span>
+            <span class="ss-skeleton ss-skeleton-row"></span>
+          </div>
+        </article>
+
+        <article class="ss-card">
+          <div class="ss-card-body ss-stack">
+            <h2 class="ss-card-title">Accordion</h2>
+            <div class="ss-accordion">
+              <div class="ss-accordion-item ss-accordion-open">
+                <button class="ss-accordion-trigger" type="button" aria-expanded="true">Open item</button>
+                <div class="ss-accordion-content">CSS styles the open appearance. Behavior belongs to app code.</div>
+              </div>
+              <div class="ss-accordion-item">
+                <button class="ss-accordion-trigger" type="button">Closed item</button>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <article class="ss-card">
+          <div class="ss-card-body ss-stack">
+            <h2 class="ss-card-title">List Group and Avatars</h2>
+            <div class="ss-list-group">
+              <a class="ss-list-item ss-list-item-hover ss-list-item-active" href="#">Inbox <span class="ss-badge ss-badge-pill">8</span></a>
+              <a class="ss-list-item ss-list-item-hover" href="#">Archive <span class="ss-text-muted">24</span></a>
+              <span class="ss-list-item ss-list-item-disabled">Disabled item</span>
+            </div>
+            <div class="ss-cluster">
+              <span class="ss-avatar ss-avatar-sm">SM</span>
+              <span class="ss-avatar">AV</span>
+              <span class="ss-avatar ss-avatar-lg ss-avatar-accent">LG</span>
+              <span class="ss-avatar ss-avatar-xl ss-avatar-rounded">XL</span>
+            </div>
+          </div>
+        </article>
+      </section>
+
+      <section class="demo-section demo-modal-stage ss-relative ss-bg-soft ss-radius-xl ss-border">
+        <div class="ss-modal-backdrop demo-modal-backdrop"></div>
+        <article class="ss-modal ss-relative ss-z-modal">
+          <div class="ss-modal-header">
+            <h2 class="ss-modal-title">Modal appearance</h2>
+            <button class="ss-close" type="button" aria-label="Close">x</button>
+          </div>
+          <div class="ss-modal-body">
+            <p class="ss-text ss-mb-0">The CSS styles modal surfaces, spacing, borders, and shadows. It does not provide focus trapping or open/close behavior.</p>
+          </div>
+          <div class="ss-modal-footer">
+            <button class="ss-btn ss-btn-ghost" type="button">Cancel</button>
+            <button class="ss-btn" type="button">Confirm</button>
+          </div>
+        </article>
+      </section>
+
+      <section class="demo-section ss-theme-dark ss-bg-page ss-radius-xl ss-border ss-p-6" id="dark">
+        <div class="ss-split ss-mb-8">
+          <div>
+            <span class="ss-badge ss-badge-soft ss-badge-info">Dark mode</span>
+            <h2 class="ss-h2 ss-mt-4 ss-mb-2">Dark theme sample</h2>
+            <p class="ss-text ss-text-muted ss-mb-0">The same components adapt through semantic tokens.</p>
+          </div>
+          <button class="ss-btn ss-btn-soft" type="button">Dark action</button>
+        </div>
+        <div class="ss-grid ss-cols-1 ss-md-cols-2 ss-lg-cols-3 ss-gap-4">
+          <article class="ss-card ss-card-elevated">
+            <div class="ss-card-body">
+              <h3 class="ss-card-title">Dark card</h3>
+              <p class="ss-text ss-text-muted">Surface, border, shadow, and text tokens are dark-aware.</p>
+              <div class="ss-alert ss-alert-success">
+                <p class="ss-alert-title">Accessible status</p>
+                <p class="ss-alert-desc">Soft status colors stay readable.</p>
+              </div>
+            </div>
+          </article>
+          <article class="ss-card">
+            <div class="ss-card-body ss-stack">
+              <input class="ss-field" type="text" value="Dark input">
+              <button class="ss-btn ss-btn-outline" type="button">Outline</button>
+              <button class="ss-btn ss-btn-danger" type="button">Danger</button>
+            </div>
+          </article>
+          <article class="ss-card">
+            <div class="ss-card-body ss-stack">
+              <div class="ss-progress ss-progress-warning">
+                <div class="ss-progress-bar" style="--ss-progress-value: 48%;"></div>
+              </div>
+              <div class="ss-cluster">
+                <span class="ss-badge ss-badge-soft ss-badge-accent">Accent</span>
+                <span class="ss-badge ss-badge-soft ss-badge-danger">Danger</span>
+              </div>
+              <span class="ss-skeleton ss-skeleton-text"></span>
+            </div>
+          </article>
+        </div>
+      </section>
+    </main>
+  </body>
+</html>

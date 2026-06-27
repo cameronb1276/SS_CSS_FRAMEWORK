@@ -1,28 +1,20 @@
 # Changelog
 
-## Unreleased
+## 0.1.0 - First Release
 
-- Revised Phase 01 foundation styles to use attachable `ss-*` classes instead of styling raw HTML elements directly.
-- Tightened Phase 01 class-first form and code styles so `.ss-select` and `.ss-textarea` work as standalone foundation classes.
+- Added foundation tokens for color, typography, spacing, radius, shadows, motion, layout widths, and z-index.
+- Added class-based base styles for pages, typography, media, forms, tables, code, blockquotes, and content elements.
+- Added responsive containers, grid helpers, flex helpers, display helpers, spacing, sizing, text, background, border, radius, shadow, position, and z-index utilities.
+- Added components for buttons, badges, alerts, cards, form controls, input groups, tables, navigation, dropdown appearance, modal appearance, toasts, progress, loading states, skeletons, accordions, list groups, and avatars.
+- Added explicit dark mode through `.ss-theme-dark` and `[data-ss-theme="dark"]`.
+- Added optional system-preference dark mode through `.ss-theme-system`.
+- Added accessibility polish for focus states, disabled states, validation states, links, visually hidden content, and reduced motion.
+- Added `dist/ss.css` and `dist/ss.min.css` as release-ready CSS files.
+- Added README, foundation docs, utility docs, component docs, release notes, focused examples, and a full demo page.
+- Completed Phase 04 release prep with dark mode, documentation, testing notes, demo coverage, and first-release polish.
 
-## 0.3.0 - Phase 03
+## Known Limitations
 
-- Added component styles for buttons, badges, alerts, cards, forms, input groups, tables, navigation, dropdowns, modals, toasts, progress, skeletons, accordions, list groups, and avatars.
-- Added consistent variants, sizes, disabled states, focus states, loading states, and soft status treatments.
-- Added Phase 03 component documentation and a component demo page.
-
-## 0.2.0 - Phase 02
-
-- Added responsive containers for standard, narrow, wide, and full-width layouts.
-- Added grid, auto-fit grid, flex, display, and accessible visually hidden utilities.
-- Added spacing, sizing, text, background, border, radius, shadow, position, and z-index utilities.
-- Added mobile-first responsive modifiers for display, grid columns, flex direction, text alignment, and selected spacing.
-- Added Phase 02 layout documentation and a layout utility example page.
-
-## 0.1.0 - Phase 01
-
-- Added the initial SS CSS Framework foundation stylesheet.
-- Added semantic color, typography, spacing, radius, shadow, motion, layout, and z-index tokens.
-- Added light theme defaults and opt-in dark theme semantic tokens.
-- Added a conservative reset and opt-in foundation classes for common HTML elements.
-- Added documentation for foundation decisions and a minimal example page.
+- JavaScript behavior is not included for dropdowns, modals, tabs, toasts, or accordions.
+- Browser support targets current Chromium-based browsers, Firefox, and Safari.
+- No legacy Internet Explorer support is planned.

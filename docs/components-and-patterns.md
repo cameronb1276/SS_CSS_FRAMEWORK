@@ -2,6 +2,8 @@
 
 Phase 03 adds reusable CSS components for websites, dashboards, SaaS products, and app interfaces. Components are class-based, require no JavaScript, and compose with the Phase 01 tokens and Phase 02 utilities.
 
+All components use semantic surface, border, text, focus, shadow, and status tokens so they adapt inside `.ss-theme-dark`, `[data-ss-theme="dark"]`, and `.ss-theme-system`.
+
 ## Buttons
 
 Use `.ss-btn` as the base button class. It works on semantic buttons, links, and compatible form controls.
@@ -32,6 +34,8 @@ Form controls extend the foundation classes with sizes and states:
 
 Input groups use `.ss-input-group` or `.ss-search`, with `.ss-input-addon` for prefixes and suffixes.
 
+Validation states use color plus a thicker left border so state is not communicated only by color.
+
 ## Tables
 
 Start with `.ss-table`, `.ss-tr`, `.ss-th`, and `.ss-td`. Add `.ss-table-striped`, `.ss-table-hover`, `.ss-table-bordered`, `.ss-table-compact`, or wrap wide tables in `.ss-table-responsive`.
@@ -61,6 +65,12 @@ Progress bars use `.ss-progress` and `.ss-progress-bar`, with the width set by `
 Loading helpers include `.ss-spinner` and `.ss-btn-loading`. Skeletons use `.ss-skeleton`, `.ss-skeleton-text`, `.ss-skeleton-title`, `.ss-skeleton-avatar`, `.ss-skeleton-card`, and `.ss-skeleton-row`.
 
 Animations respect `prefers-reduced-motion`.
+
+## Accessibility and Behavior Notes
+
+Use semantic elements where possible: `button` for actions, `a` for navigation, `table` for tabular data, and native form controls for inputs. CSS does not add ARIA behavior or keyboard state management.
+
+Interactive-looking classes use visible focus states through the global `:focus-visible` rule or component focus rules. Disabled states remain readable in both light and dark modes.
 
 ## Accordions, List Groups, and Avatars
 
