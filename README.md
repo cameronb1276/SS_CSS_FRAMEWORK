@@ -42,6 +42,7 @@ Attach SS classes to the elements you want to style:
 - Business website section primitives and local-business patterns for reusable builder-generated pages.
 - Client theme wrappers, brand variables, and preset theme helpers for generated client websites.
 - Builder application UI classes for the SloanSites editor shell, panels, inspector controls, layer tree, assets, and statuses.
+- Published-output hardening utilities for long content, media, embeds, tables, navigation, forms, actions, print basics, and builder-artifact cleanup.
 
 ## Color Palette
 
@@ -172,6 +173,14 @@ SS CSS also includes editor-application classes for the SloanSites builder inter
 These classes are separate from published website classes. Published sites should not depend on inspector, sidebar, toolbar, layer tree, asset browser, or status UI classes.
 
 See [docs/builder-ui-shell-inspector-and-layer-panel.md](docs/builder-ui-shell-inspector-and-layer-panel.md) and [examples/builder-ui.html](examples/builder-ui.html).
+
+## Published Safety
+
+Generated client sites can use `.ss-site`, `.ss-site-page`, `.ss-published`, or `[data-ss-published="true"]` to harden published output. These wrappers help prevent horizontal overflow and defensively hide editor-only artifacts if handles, drop zones, inspector panels, layer trees, asset browsers, or theme preview controls accidentally remain in markup.
+
+Content safety helpers cover long names, emails, URLs, buttons, responsive media, iframe embeds, scrollable tables, wrapping navigation, safer form layouts, action groups, skip links, and print basics.
+
+See [docs/published-output-hardening-and-content-safety.md](docs/published-output-hardening-and-content-safety.md) and [examples/published-safety.html](examples/published-safety.html).
 
 ## Accessibility
 

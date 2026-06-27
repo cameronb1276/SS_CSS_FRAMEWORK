@@ -16,6 +16,7 @@
 - Added Phase 06 website section primitives and local-business patterns for heroes, services, about sections, CTAs, pricing, reviews, FAQs, galleries, contact sections, footers, business hours, maps, offers, and service banners.
 - Added Phase 07 client theme wrappers, brand variables, preset themes, radius/shadow/density/button presets, section style helpers, and theme preview cards.
 - Added Phase 08 builder app UI shell styles for topbars, sidebars, inspector controls, layer trees, page lists, device switchers, status states, swatches, spacing/typography controls, assets, and mini previews.
+- Added Phase 09 published-output hardening for builder artifact cleanup, long text, responsive media, embeds, tables, navigation, forms, action groups, skip links, and print basics.
 
 ## Known Limitations
 

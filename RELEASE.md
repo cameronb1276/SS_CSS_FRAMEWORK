@@ -19,6 +19,7 @@ SS CSS Framework `0.1.0` is the first usable release of the framework.
 - Website section and local-business pattern primitives for generated client pages.
 - Client theme wrappers, brand variables, and preset theme helpers.
 - Builder app UI shell, inspector, layer panel, asset browser, and status styles.
+- Published-site hardening utilities for messy content, media, embeds, tables, forms, navigation, and print.
 - Documentation and examples.
 
 ## Not Included

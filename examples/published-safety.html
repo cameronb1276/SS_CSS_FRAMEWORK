@@ -1,0 +1,187 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>SS CSS Framework Published Safety Stress Test</title>
+    <link rel="stylesheet" href="../dist/ss.css">
+  </head>
+  <body class="ss-page ss-site ss-published" data-ss-published="true">
+    <a class="ss-skip-link" href="#content">Skip to content</a>
+
+    <header class="ss-navbar ss-nav-safe">
+      <a class="ss-navbar-brand ss-business-name" href="#">Extremely Long Local Business Name That A Client Might Paste Without Thinking Incorporated</a>
+      <nav class="ss-nav ss-nav-wrap ss-nav-mobile-stack">
+        <a class="ss-navbar-link" href="#services">Residential and Commercial Emergency Maintenance Services</a>
+        <a class="ss-navbar-link" href="#media">Oversized Media And Embeds</a>
+        <a class="ss-navbar-link" href="#tables">Pricing Comparison With Long Labels</a>
+        <a class="ss-navbar-link" href="#contact">Contact</a>
+      </nav>
+    </header>
+
+    <main id="content">
+      <section class="ss-section ss-section-hero ss-section-soft">
+        <div class="ss-section-wide ss-section-split">
+          <div>
+            <p class="ss-section-eyebrow">Published safety stress test</p>
+            <h1 class="ss-section-title ss-safe-title">Long titles, URLs, emails, buttons, and client-written paragraphs should wrap instead of forcing horizontal overflow.</h1>
+            <p class="ss-section-subtitle ss-safe-text">This paragraph includes a very long URL: <a class="ss-safe-url" href="#">https://example.com/client-uploaded-page-with-a-very-long-slug-that-keeps-going-and-going-and-going</a></p>
+            <div class="ss-actions ss-actions-full-mobile">
+              <a class="ss-btn ss-safe-button" href="#">Schedule a very detailed appointment request with a long button label</a>
+              <a class="ss-btn ss-btn-outline ss-safe-email" href="mailto:very.long.department.name.for.customer.service@example-local-business-domain-name.com">very.long.department.name.for.customer.service@example-local-business-domain-name.com</a>
+            </div>
+          </div>
+          <div class="ss-card ss-card-elevated">
+            <div class="ss-card-body">
+              <h2 class="ss-card-title">Builder artifacts hidden</h2>
+              <p class="ss-text ss-text-muted">The controls below exist in markup but should not appear in published mode.</p>
+              <div class="ss-builder-toolbar">Hidden toolbar</div>
+              <div class="ss-builder-handle">Hidden handle</div>
+              <div class="ss-builder-dropzone">Hidden drop zone</div>
+              <div class="ss-builder-inspector">Hidden inspector</div>
+              <div class="ss-builder-block ss-is-selected ss-is-hovered">Published content keeps no editor outline.</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="ss-section" id="media">
+        <div class="ss-section-wide">
+          <div class="ss-section-header">
+            <p class="ss-section-eyebrow">Media safety</p>
+            <h2 class="ss-section-title">Oversized images and iframes stay inside containers.</h2>
+          </div>
+          <div class="ss-grid ss-cols-1 ss-lg-cols-3 ss-gap-6">
+            <figure class="ss-card">
+              <div class="ss-media-frame ss-media-cover ss-aspect-video">
+                <img class="ss-object-center" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='2400' height='900'%3E%3Crect width='2400' height='900' fill='%23dbeafe'/%3E%3Ctext x='80' y='470' font-size='92' font-family='Arial' fill='%231e3a8a'%3EOversized generated image%3C/text%3E%3C/svg%3E" alt="Oversized placeholder">
+              </div>
+              <figcaption class="ss-gallery-caption">Large image with cover fit.</figcaption>
+            </figure>
+            <div class="ss-missing-media">Missing client image placeholder</div>
+            <div class="ss-logo-frame">VeryLongUnbrokenLogoTextThatShouldNotOverflow</div>
+          </div>
+
+          <div class="ss-grid ss-cols-1 ss-md-cols-2 ss-gap-6 ss-mt-8">
+            <div class="ss-embed-video">
+              <iframe title="Example video"></iframe>
+            </div>
+            <div class="ss-embed-map">
+              <iframe title="Example map"></iframe>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="ss-section ss-section-soft" id="tables">
+        <div class="ss-section-wide">
+          <div class="ss-section-header">
+            <p class="ss-section-eyebrow">Tables</p>
+            <h2 class="ss-section-title">Wide tables scroll inside their wrapper.</h2>
+          </div>
+          <div class="ss-table-responsive">
+            <table class="ss-table ss-table-pricing ss-table-compact">
+              <thead>
+                <tr>
+                  <th>Service package with unusually long generated label</th>
+                  <th>Residential customers in primary service area</th>
+                  <th>Commercial customers with recurring maintenance needs</th>
+                  <th>Emergency after-hours option with long description</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="ss-safe-cell">Inspection and written recommendations</td>
+                  <td>Included</td>
+                  <td>Included with scheduled site walk-through</td>
+                  <td>Available depending on technician coverage</td>
+                </tr>
+                <tr>
+                  <td class="ss-safe-cell">Follow-up notes at https://example.com/really-long-follow-up-link-for-generated-customer-records</td>
+                  <td>$89</td>
+                  <td>$149</td>
+                  <td>$249</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <section class="ss-section" id="services">
+        <div class="ss-section-wide ss-grid ss-cols-1 ss-lg-cols-2 ss-gap-6">
+          <article class="ss-testimonial-card">
+            <div class="ss-review-stars">★★★★★</div>
+            <p class="ss-review-quote ss-safe-text">“This is a very long testimonial where the customer writes a full paragraph with extra details, punctuation, an email like customer-with-a-very-long-name@example-long-domain-name.com, and enough text to prove the card grows without breaking the layout.”</p>
+            <strong class="ss-reviewer-name ss-staff-name">Customer With A Surprisingly Long Display Name</strong>
+          </article>
+
+          <div class="ss-faq-list">
+            <article class="ss-faq-item">
+              <h2 class="ss-faq-question ss-safe-title">What happens if a client pastes a huge FAQ answer?</h2>
+              <p class="ss-faq-answer ss-safe-text">The answer wraps safely inside the item. Links such as https://example.com/a/very/long/path/with/no/spaces/that/should/not/break/the/page can use `.ss-safe-url` when generated as anchors.</p>
+            </article>
+            <article class="ss-faq-item">
+              <h2 class="ss-faq-question">Can buttons stack on mobile?</h2>
+              <p class="ss-faq-answer">Use `.ss-actions-full-mobile` with `.ss-actions`.</p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="ss-section ss-section-contact ss-section-soft" id="contact">
+        <div class="ss-section-wide ss-contact-grid">
+          <form class="ss-contact-form-card ss-form-safe">
+            <h2 class="ss-h3">Safe form layout</h2>
+            <div class="ss-field-inline">
+              <div class="ss-field-stack">
+                <label class="ss-label" for="full-name">Full legal name with optional business suffix <span class="ss-required-mark">*</span></label>
+                <input id="full-name" placeholder="Customer name">
+                <p class="ss-help-text">Long labels wrap without damaging the grid.</p>
+              </div>
+              <div class="ss-field-stack">
+                <label class="ss-label" for="service-type">Service type</label>
+                <select class="ss-select" id="service-type">
+                  <option>Inspection with a very long select option label for testing</option>
+                </select>
+              </div>
+            </div>
+            <div class="ss-check-group">
+              <label><input type="checkbox"> I understand this is a static example.</label>
+              <label><input type="radio" name="contact"> Call me</label>
+              <label><input type="radio" name="contact"> Email me</label>
+            </div>
+            <input class="ss-file-input" type="file">
+            <p class="ss-error-text">Example error text can wrap to a second line without overlap.</p>
+            <button class="ss-btn ss-safe-button" type="button">Submit a long generated request button label</button>
+          </form>
+
+          <aside class="ss-contact-details-card">
+            <h2 class="ss-h3">Business details</h2>
+            <p class="ss-safe-email">very.long.department.name.for.customer.service@example-local-business-domain-name.com</p>
+            <nav class="ss-nav-scroll ss-mt-4">
+              <a class="ss-btn ss-btn-soft" href="#">Primary service area with long name</a>
+              <a class="ss-btn ss-btn-soft" href="#">Secondary neighboring region</a>
+              <a class="ss-btn ss-btn-soft" href="#">Industrial district coverage</a>
+            </nav>
+          </aside>
+        </div>
+      </section>
+    </main>
+
+    <footer class="ss-section ss-footer">
+      <div class="ss-section-wide ss-footer-grid">
+        <div>
+          <strong class="ss-footer-brand ss-business-name">Extremely Long Local Business Name Incorporated</strong>
+          <p class="ss-text ss-safe-text">Print styles remove heavy backgrounds and builder UI while keeping content readable.</p>
+        </div>
+        <nav class="ss-footer-nav-group">
+          <a href="#content">Top</a>
+          <a href="#media">Media</a>
+          <a href="#tables">Tables</a>
+          <a href="#contact">Contact</a>
+        </nav>
+      </div>
+    </footer>
+  </body>
+</html>
