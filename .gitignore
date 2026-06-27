@@ -1,1 +1,10 @@
 instructions/
+server/theme-settings/data/sites/*
+server/theme-settings/data/themes/*
+server/theme-settings/data/backups/*
+server/theme-settings/tmp/
+server/theme-settings/dist/
+server/theme-settings/node_modules/
+!server/theme-settings/data/sites/.gitkeep
+!server/theme-settings/data/themes/.gitkeep
+!server/theme-settings/data/backups/.gitkeep

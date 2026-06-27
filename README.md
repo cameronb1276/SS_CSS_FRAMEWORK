@@ -43,6 +43,7 @@ Attach SS classes to the elements you want to style:
 - Client theme wrappers, brand variables, and preset theme helpers for generated client websites.
 - Builder application UI classes for the SloanSites editor shell, panels, inspector controls, layer tree, assets, and statuses.
 - Published-output hardening utilities for long content, media, embeds, tables, navigation, forms, actions, print basics, and builder-artifact cleanup.
+- Optional TypeScript/Express theme settings backend for local builder workflows, per-site JSON storage, and generated site theme CSS.
 
 ## Color Palette
 
@@ -182,6 +183,14 @@ Content safety helpers cover long names, emails, URLs, buttons, responsive media
 
 See [docs/published-output-hardening-and-content-safety.md](docs/published-output-hardening-and-content-safety.md) and [examples/published-safety.html](examples/published-safety.html).
 
+## Optional Theme Settings Backend
+
+Phase 11 adds an optional Node.js, TypeScript, and Express backend in `server/theme-settings/`. It defaults to port `3004` and lets a future builder create per-site `settings.json` files, validate theme updates, preserve backups, generate scoped `theme.css`, and store custom CSS/JS separately from the framework.
+
+The CSS framework does not depend on this backend. Published sites should still load base SS CSS first, then the generated site theme CSS.
+
+See [server/theme-settings/README.md](server/theme-settings/README.md).
+
 ## Accessibility
 
 SS CSS Framework keeps native semantics intact. Focus states are visible, links remain underlined, disabled states remain readable, validation states use a thicker left border in addition to color, `.ss-sr-only` is available for accessible hidden text, and motion-heavy helpers respect `prefers-reduced-motion`.
@@ -226,6 +235,7 @@ src/       Source CSS
 dist/      Drop-in CSS release files
 docs/      Framework documentation and guides
 examples/  Demo and focused examples
+server/    Optional backend services for builder workflows
 ```
 
 `instructions/` is used locally for controlled phase work and is intentionally ignored from GitHub.

@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+
+- Added Phase 11 optional TypeScript/Express theme settings backend under `server/theme-settings`.
+- Added per-site JSON settings storage, safe site ID validation, color/preset validation, backup-before-replace writes, scoped `theme.css` generation, custom CSS storage, custom JS storage, and verification script.
+- Backend defaults to port `3004` and is documented as local/builder infrastructure, not production-ready without authentication and deployment hardening.
+
 ## 0.2.0 - Builder and Published Site Toolkit
 
 - Added builder canvas primitives for edit, preview, and published modes, including responsive device previews, editable states, drop zones, handles, placeholders, and builder documentation.
