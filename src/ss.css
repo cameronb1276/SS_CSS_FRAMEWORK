@@ -2731,6 +2731,432 @@ body {
 }
 
 /*
+ * Phase 07: client theme system and brand overrides.
+ */
+
+.ss-client-theme,
+[data-ss-client-theme] {
+  --ss-brand-primary: #3b82f6;
+  --ss-brand-primary-hover: #2563eb;
+  --ss-brand-secondary: #64748b;
+  --ss-brand-accent: #a855f7;
+  --ss-brand-bg: #f8fafc;
+  --ss-brand-surface: #ffffff;
+  --ss-brand-surface-soft: #f1f5f9;
+  --ss-brand-border: #cbd5e1;
+  --ss-brand-heading: #0f172a;
+  --ss-brand-body: #0f172a;
+  --ss-brand-muted: #475569;
+  --ss-brand-inverted: var(--ss-color-text-inverted);
+  --ss-brand-link: var(--ss-brand-primary);
+  --ss-brand-focus: var(--ss-brand-primary);
+  --ss-brand-success: var(--ss-color-success);
+  --ss-brand-warning: var(--ss-color-warning);
+  --ss-brand-danger: var(--ss-color-danger);
+  --ss-brand-info: var(--ss-color-info);
+  --ss-theme-heading-font: var(--ss-font-sans);
+  --ss-theme-body-font: var(--ss-font-sans);
+  --ss-theme-mono-font: var(--ss-font-mono);
+  --ss-theme-heading-weight: var(--ss-font-weight-bold);
+  --ss-theme-body-weight: var(--ss-font-weight-normal);
+  --ss-theme-heading-line-height: var(--ss-line-height-tight);
+  --ss-theme-body-line-height: var(--ss-line-height-base);
+  --ss-theme-font-scale: 1;
+  --ss-theme-radius: var(--ss-radius-default);
+  --ss-theme-button-radius: var(--ss-theme-radius);
+  --ss-theme-card-radius: var(--ss-radius-lg);
+  --ss-theme-section-radius: var(--ss-radius-xl);
+  --ss-theme-shadow-card: var(--ss-shadow-sm);
+  --ss-theme-shadow-elevated: var(--ss-shadow-md);
+  --ss-theme-section-padding-y: var(--ss-space-16);
+  --ss-theme-card-padding: var(--ss-space-4);
+  --ss-theme-control-gap: var(--ss-space-3);
+  --ss-theme-button-py: var(--ss-space-2);
+  --ss-theme-button-px: var(--ss-space-4);
+  --ss-theme-grid-gap: var(--ss-space-6);
+  --ss-color-primary: var(--ss-brand-primary);
+  --ss-color-primary-hover: var(--ss-brand-primary-hover);
+  --ss-color-secondary: var(--ss-brand-secondary);
+  --ss-color-accent: var(--ss-brand-accent);
+  --ss-bg: var(--ss-brand-bg);
+  --ss-surface: var(--ss-brand-surface);
+  --ss-surface-soft: var(--ss-brand-surface-soft);
+  --ss-border: var(--ss-brand-border);
+  --ss-text: var(--ss-brand-body);
+  --ss-text-muted: var(--ss-brand-muted);
+  --ss-link: var(--ss-brand-link);
+  --ss-link-hover: var(--ss-brand-primary-hover);
+  --ss-focus: var(--ss-brand-focus);
+  --ss-focus-ring: color-mix(in srgb, var(--ss-brand-focus) 20%, transparent);
+  background: var(--ss-bg);
+  color: var(--ss-text);
+  font-family: var(--ss-theme-body-font);
+  font-weight: var(--ss-theme-body-weight);
+  line-height: var(--ss-theme-body-line-height);
+}
+
+.ss-client-theme h1,
+.ss-client-theme h2,
+.ss-client-theme h3,
+.ss-client-theme h4,
+.ss-client-theme h5,
+.ss-client-theme h6,
+.ss-client-theme .ss-h1,
+.ss-client-theme .ss-h2,
+.ss-client-theme .ss-h3,
+.ss-client-theme .ss-h4,
+.ss-client-theme .ss-h5,
+.ss-client-theme .ss-h6,
+[data-ss-client-theme] h1,
+[data-ss-client-theme] h2,
+[data-ss-client-theme] h3,
+[data-ss-client-theme] h4,
+[data-ss-client-theme] h5,
+[data-ss-client-theme] h6,
+[data-ss-client-theme] .ss-h1,
+[data-ss-client-theme] .ss-h2,
+[data-ss-client-theme] .ss-h3,
+[data-ss-client-theme] .ss-h4,
+[data-ss-client-theme] .ss-h5,
+[data-ss-client-theme] .ss-h6 {
+  color: var(--ss-brand-heading);
+  font-family: var(--ss-theme-heading-font);
+  font-weight: var(--ss-theme-heading-weight);
+  line-height: var(--ss-theme-heading-line-height);
+}
+
+.ss-client-theme .ss-btn,
+[data-ss-client-theme] .ss-btn {
+  border-radius: var(--ss-theme-button-radius);
+  padding: var(--ss-theme-button-py) var(--ss-theme-button-px);
+}
+
+.ss-client-theme .ss-card,
+[data-ss-client-theme] .ss-card,
+.ss-client-theme .ss-feature-card,
+.ss-client-theme .ss-service-card,
+.ss-client-theme .ss-pricing-card,
+.ss-client-theme .ss-testimonial-card,
+[data-ss-client-theme] .ss-feature-card,
+[data-ss-client-theme] .ss-service-card,
+[data-ss-client-theme] .ss-pricing-card,
+[data-ss-client-theme] .ss-testimonial-card {
+  border-radius: var(--ss-theme-card-radius);
+  box-shadow: var(--ss-theme-shadow-card);
+}
+
+.ss-client-theme .ss-card-header,
+.ss-client-theme .ss-card-body,
+.ss-client-theme .ss-card-footer,
+[data-ss-client-theme] .ss-card-header,
+[data-ss-client-theme] .ss-card-body,
+[data-ss-client-theme] .ss-card-footer {
+  padding: var(--ss-theme-card-padding);
+}
+
+.ss-client-theme .ss-section,
+[data-ss-client-theme] .ss-section {
+  --ss-section-padding-y: var(--ss-theme-section-padding-y);
+}
+
+.ss-builder-theme-preview,
+.ss-builder-page.ss-client-theme,
+.ss-builder-page[data-ss-client-theme] {
+  background: var(--ss-bg);
+  color: var(--ss-text);
+}
+
+.ss-theme-blueprint {
+  --ss-brand-primary: #2563eb;
+  --ss-brand-primary-hover: #1d4ed8;
+  --ss-brand-secondary: #475569;
+  --ss-brand-accent: #0ea5e9;
+  --ss-brand-bg: #f8fafc;
+  --ss-brand-surface: #ffffff;
+  --ss-brand-surface-soft: #eff6ff;
+  --ss-brand-border: #bfdbfe;
+  --ss-brand-heading: #0f172a;
+  --ss-brand-body: #1e293b;
+  --ss-brand-muted: #475569;
+}
+
+.ss-theme-emerald {
+  --ss-brand-primary: #059669;
+  --ss-brand-primary-hover: #047857;
+  --ss-brand-secondary: #4b5563;
+  --ss-brand-accent: #14b8a6;
+  --ss-brand-bg: #f7fdf9;
+  --ss-brand-surface: #ffffff;
+  --ss-brand-surface-soft: #ecfdf5;
+  --ss-brand-border: #bbf7d0;
+  --ss-brand-heading: #052e2b;
+  --ss-brand-body: #12312f;
+  --ss-brand-muted: #42645f;
+}
+
+.ss-theme-violet {
+  --ss-brand-primary: #7c3aed;
+  --ss-brand-primary-hover: #6d28d9;
+  --ss-brand-secondary: #64748b;
+  --ss-brand-accent: #db2777;
+  --ss-brand-bg: #fbfaff;
+  --ss-brand-surface: #ffffff;
+  --ss-brand-surface-soft: #f5f3ff;
+  --ss-brand-border: #ddd6fe;
+  --ss-brand-heading: #241236;
+  --ss-brand-body: #33243f;
+  --ss-brand-muted: #6b5b7d;
+}
+
+.ss-theme-slate {
+  --ss-brand-primary: #334155;
+  --ss-brand-primary-hover: #1f2937;
+  --ss-brand-secondary: #64748b;
+  --ss-brand-accent: #0f766e;
+  --ss-brand-bg: #f8fafc;
+  --ss-brand-surface: #ffffff;
+  --ss-brand-surface-soft: #f1f5f9;
+  --ss-brand-border: #cbd5e1;
+  --ss-brand-heading: #0f172a;
+  --ss-brand-body: #1e293b;
+  --ss-brand-muted: #64748b;
+}
+
+.ss-theme-amber {
+  --ss-brand-primary: #b45309;
+  --ss-brand-primary-hover: #92400e;
+  --ss-brand-secondary: #78716c;
+  --ss-brand-accent: #dc2626;
+  --ss-brand-bg: #fffaf0;
+  --ss-brand-surface: #ffffff;
+  --ss-brand-surface-soft: #fef3c7;
+  --ss-brand-border: #fde68a;
+  --ss-brand-heading: #2f1f12;
+  --ss-brand-body: #3f3428;
+  --ss-brand-muted: #766657;
+}
+
+.ss-theme-font-compact {
+  --ss-theme-font-scale: 0.95;
+  --ss-theme-heading-line-height: 1.1;
+  --ss-theme-body-line-height: 1.45;
+}
+
+.ss-theme-font-spacious {
+  --ss-theme-font-scale: 1.05;
+  --ss-theme-heading-line-height: 1.16;
+  --ss-theme-body-line-height: 1.75;
+}
+
+.ss-radius-sharp {
+  --ss-theme-radius: var(--ss-radius-none);
+  --ss-theme-button-radius: var(--ss-radius-sm);
+  --ss-theme-card-radius: var(--ss-radius-sm);
+  --ss-theme-section-radius: var(--ss-radius-sm);
+}
+
+.ss-radius-soft {
+  --ss-theme-radius: var(--ss-radius-md);
+  --ss-theme-button-radius: var(--ss-radius-md);
+  --ss-theme-card-radius: var(--ss-radius-lg);
+  --ss-theme-section-radius: var(--ss-radius-xl);
+}
+
+.ss-radius-rounded {
+  --ss-theme-radius: var(--ss-radius-lg);
+  --ss-theme-button-radius: var(--ss-radius-lg);
+  --ss-theme-card-radius: var(--ss-radius-xl);
+  --ss-theme-section-radius: var(--ss-radius-xl);
+}
+
+.ss-radius-pill-heavy {
+  --ss-theme-radius: var(--ss-radius-xl);
+  --ss-theme-button-radius: var(--ss-radius-pill);
+  --ss-theme-card-radius: var(--ss-radius-xl);
+  --ss-theme-section-radius: var(--ss-radius-xl);
+}
+
+.ss-shadow-flat {
+  --ss-theme-shadow-card: none;
+  --ss-theme-shadow-elevated: none;
+}
+
+.ss-shadow-soft {
+  --ss-theme-shadow-card: var(--ss-shadow-sm);
+  --ss-theme-shadow-elevated: var(--ss-shadow-md);
+}
+
+.ss-shadow-elevated {
+  --ss-theme-shadow-card: var(--ss-shadow-md);
+  --ss-theme-shadow-elevated: var(--ss-shadow-lg);
+}
+
+.ss-shadow-strong {
+  --ss-theme-shadow-card: var(--ss-shadow-lg);
+  --ss-theme-shadow-elevated: var(--ss-shadow-overlay);
+}
+
+.ss-density-compact {
+  --ss-theme-section-padding-y: var(--ss-space-10);
+  --ss-theme-card-padding: var(--ss-space-3);
+  --ss-theme-control-gap: var(--ss-space-2);
+  --ss-theme-button-py: var(--ss-space-2);
+  --ss-theme-button-px: var(--ss-space-3);
+  --ss-theme-grid-gap: var(--ss-space-4);
+}
+
+.ss-density-comfortable {
+  --ss-theme-section-padding-y: var(--ss-space-16);
+  --ss-theme-card-padding: var(--ss-space-4);
+  --ss-theme-control-gap: var(--ss-space-3);
+  --ss-theme-button-py: var(--ss-space-2);
+  --ss-theme-button-px: var(--ss-space-4);
+  --ss-theme-grid-gap: var(--ss-space-6);
+}
+
+.ss-density-spacious {
+  --ss-theme-section-padding-y: var(--ss-space-20);
+  --ss-theme-card-padding: var(--ss-space-6);
+  --ss-theme-control-gap: var(--ss-space-4);
+  --ss-theme-button-py: var(--ss-space-3);
+  --ss-theme-button-px: var(--ss-space-5);
+  --ss-theme-grid-gap: var(--ss-space-8);
+}
+
+.ss-buttons-filled .ss-btn {
+  background: var(--ss-brand-primary);
+  border-color: var(--ss-brand-primary);
+  color: var(--ss-brand-inverted);
+}
+
+.ss-buttons-soft .ss-btn {
+  background: color-mix(in srgb, var(--ss-brand-primary) 14%, transparent);
+  border-color: transparent;
+  color: var(--ss-brand-primary-hover);
+}
+
+.ss-buttons-outline .ss-btn {
+  background: transparent;
+  border-color: var(--ss-brand-primary);
+  color: var(--ss-brand-primary);
+}
+
+.ss-buttons-rounded {
+  --ss-theme-button-radius: var(--ss-radius-pill);
+}
+
+.ss-buttons-minimal .ss-btn {
+  background: transparent;
+  border-color: transparent;
+  color: var(--ss-brand-primary);
+  box-shadow: none;
+}
+
+.ss-section-style-plain {
+  --ss-section-bg: transparent;
+}
+
+.ss-section-style-soft {
+  --ss-section-bg: var(--ss-brand-surface-soft);
+}
+
+.ss-section-style-bordered {
+  border-block: var(--ss-border-width) solid var(--ss-brand-border);
+}
+
+.ss-section-style-tinted {
+  --ss-section-bg: color-mix(in srgb, var(--ss-brand-primary) 10%, var(--ss-brand-bg));
+}
+
+.ss-section-style-dark {
+  --ss-section-bg: var(--ss-color-dark-bg);
+  --ss-text: #f8fafc;
+  --ss-text-muted: #cbd5e1;
+}
+
+.ss-section-style-gradient {
+  --ss-section-bg: linear-gradient(135deg, color-mix(in srgb, var(--ss-brand-primary) 14%, var(--ss-brand-bg)), var(--ss-brand-surface));
+}
+
+.ss-theme-swatch-card,
+.ss-theme-preview-card {
+  display: grid;
+  gap: var(--ss-space-4);
+  min-width: 0;
+  border: var(--ss-border-width) solid var(--ss-border);
+  border-radius: var(--ss-radius-lg);
+  background: var(--ss-surface);
+  padding: var(--ss-space-4);
+  box-shadow: var(--ss-shadow-sm);
+}
+
+.ss-theme-swatch-card-active,
+.ss-theme-preview-card-active {
+  border-color: var(--ss-color-primary);
+  box-shadow: 0 0 0 3px var(--ss-focus-ring);
+}
+
+.ss-theme-swatch-card-disabled,
+.ss-theme-preview-card-disabled {
+  opacity: 0.55;
+  pointer-events: none;
+}
+
+.ss-theme-color-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--ss-space-2);
+}
+
+.ss-theme-color-chip {
+  width: 2rem;
+  height: 2rem;
+  border: var(--ss-border-width) solid var(--ss-border);
+  border-radius: var(--ss-radius-full);
+  background: var(--ss-brand-primary);
+}
+
+.ss-theme-color-chip-secondary {
+  background: var(--ss-brand-secondary);
+}
+
+.ss-theme-color-chip-accent {
+  background: var(--ss-brand-accent);
+}
+
+.ss-theme-color-chip-surface {
+  background: var(--ss-brand-surface-soft);
+}
+
+.ss-theme-mini-preview {
+  display: grid;
+  gap: var(--ss-space-2);
+  border-radius: var(--ss-radius-md);
+  background: var(--ss-brand-surface-soft);
+  padding: var(--ss-space-3);
+}
+
+.ss-theme-mini-bar,
+.ss-theme-mini-line {
+  display: block;
+  height: 0.5rem;
+  border-radius: var(--ss-radius-pill);
+  background: var(--ss-brand-primary);
+}
+
+.ss-theme-mini-line {
+  width: 72%;
+  background: var(--ss-brand-border);
+}
+
+[data-ss-builder-mode="published"] .ss-theme-swatch-card,
+[data-ss-builder-mode="published"] .ss-theme-preview-card,
+[data-ss-published="true"] .ss-theme-swatch-card,
+[data-ss-published="true"] .ss-theme-preview-card {
+  display: none !important;
+}
+
+/*
  * Phase 06: website section library and local business patterns.
  */
 

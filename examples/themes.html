@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>SS CSS Framework Client Themes</title>
+    <link rel="stylesheet" href="../dist/ss.css">
+  </head>
+  <body class="ss-page">
+    <nav class="ss-navbar">
+      <a class="ss-navbar-brand" href="./demo.html">SS CSS Framework</a>
+      <div class="ss-nav">
+        <a class="ss-navbar-link" href="#presets">Presets</a>
+        <a class="ss-navbar-link" href="#controls">Controls</a>
+        <a class="ss-navbar-link" href="../docs/client-theme-system.md">Docs</a>
+      </div>
+    </nav>
+
+    <main class="ss-container-wide ss-py-8">
+      <header class="ss-section ss-section-sm ss-section-center">
+        <span class="ss-badge ss-badge-soft ss-badge-primary ss-badge-pill">Phase 07</span>
+        <h1 class="ss-section-title ss-mt-4">Client Theme System</h1>
+        <p class="ss-section-subtitle">The same section markup can look distinct for different local-business brands.</p>
+      </header>
+
+      <section class="ss-grid ss-cols-1 ss-lg-cols-2 ss-gap-6" id="presets">
+        <article class="ss-client-theme ss-theme-blueprint ss-radius-soft ss-shadow-soft ss-buttons-filled ss-section ss-section-style-soft ss-section-hero">
+          <div class="ss-section-header">
+            <p class="ss-section-eyebrow">Blueprint theme</p>
+            <h2 class="ss-section-title">Professional service website.</h2>
+            <p class="ss-section-subtitle">Cool blue surfaces and steady business-friendly contrast.</p>
+            <div class="ss-section-actions">
+              <a class="ss-btn" href="#">Primary action</a>
+              <a class="ss-btn ss-btn-outline" href="#">Secondary</a>
+            </div>
+          </div>
+          <div class="ss-feature-grid">
+            <div class="ss-feature-card"><span class="ss-feature-icon">A</span><h3 class="ss-feature-title">Fast</h3><p class="ss-feature-desc">Card radius and shadow follow the theme.</p></div>
+            <div class="ss-feature-card"><span class="ss-feature-icon">B</span><h3 class="ss-feature-title">Clear</h3><p class="ss-feature-desc">Buttons and links use brand tokens.</p></div>
+          </div>
+        </article>
+
+        <article class="ss-client-theme ss-theme-emerald ss-radius-rounded ss-shadow-elevated ss-buttons-soft ss-section ss-section-style-tinted ss-section-hero">
+          <div class="ss-section-header">
+            <p class="ss-section-eyebrow">Emerald theme</p>
+            <h2 class="ss-section-title">Clean local care brand.</h2>
+            <p class="ss-section-subtitle">Useful for health, home service, consulting, and clean local businesses.</p>
+            <div class="ss-section-actions">
+              <a class="ss-btn" href="#">Primary action</a>
+              <a class="ss-btn ss-btn-outline" href="#">Secondary</a>
+            </div>
+          </div>
+          <div class="ss-feature-grid">
+            <div class="ss-feature-card"><span class="ss-feature-icon">A</span><h3 class="ss-feature-title">Warm</h3><p class="ss-feature-desc">Soft buttons are applied by wrapper.</p></div>
+            <div class="ss-feature-card"><span class="ss-feature-icon">B</span><h3 class="ss-feature-title">Trusted</h3><p class="ss-feature-desc">No component markup changes needed.</p></div>
+          </div>
+        </article>
+
+        <article class="ss-client-theme ss-theme-violet ss-radius-pill-heavy ss-shadow-strong ss-buttons-rounded ss-section ss-section-style-gradient ss-section-hero">
+          <div class="ss-section-header">
+            <p class="ss-section-eyebrow">Violet theme</p>
+            <h2 class="ss-section-title">Modern creative business.</h2>
+            <p class="ss-section-subtitle">A stronger brand without adding a separate design system.</p>
+            <div class="ss-section-actions">
+              <a class="ss-btn" href="#">Primary action</a>
+              <a class="ss-btn ss-btn-outline" href="#">Secondary</a>
+            </div>
+          </div>
+        </article>
+
+        <article class="ss-client-theme ss-theme-amber ss-radius-sharp ss-shadow-flat ss-buttons-outline ss-section ss-section-style-bordered ss-section-hero">
+          <div class="ss-section-header">
+            <p class="ss-section-eyebrow">Amber theme</p>
+            <h2 class="ss-section-title">Warm storefront style.</h2>
+            <p class="ss-section-subtitle">Sharper corners, flatter surfaces, and outline buttons.</p>
+            <div class="ss-section-actions">
+              <a class="ss-btn" href="#">Primary action</a>
+              <a class="ss-btn ss-btn-outline" href="#">Secondary</a>
+            </div>
+          </div>
+        </article>
+      </section>
+
+      <section class="ss-section" id="controls">
+        <div class="ss-section-header">
+          <p class="ss-section-eyebrow">Builder preview controls</p>
+          <h2 class="ss-section-title">Theme selectors and preset comparisons.</h2>
+        </div>
+        <div class="ss-grid ss-cols-1 ss-md-cols-2 ss-lg-cols-4 ss-gap-4">
+          <article class="ss-client-theme ss-theme-blueprint ss-theme-swatch-card ss-theme-swatch-card-active">
+            <strong>Blueprint</strong>
+            <div class="ss-theme-color-row">
+              <span class="ss-theme-color-chip"></span>
+              <span class="ss-theme-color-chip ss-theme-color-chip-secondary"></span>
+              <span class="ss-theme-color-chip ss-theme-color-chip-accent"></span>
+              <span class="ss-theme-color-chip ss-theme-color-chip-surface"></span>
+            </div>
+            <div class="ss-theme-mini-preview">
+              <span class="ss-theme-mini-bar"></span>
+              <span class="ss-theme-mini-line"></span>
+              <span class="ss-theme-mini-line"></span>
+            </div>
+          </article>
+          <article class="ss-client-theme ss-theme-emerald ss-theme-swatch-card">
+            <strong>Emerald</strong>
+            <div class="ss-theme-color-row">
+              <span class="ss-theme-color-chip"></span>
+              <span class="ss-theme-color-chip ss-theme-color-chip-secondary"></span>
+              <span class="ss-theme-color-chip ss-theme-color-chip-accent"></span>
+            </div>
+            <button class="ss-btn" type="button">Preview theme</button>
+          </article>
+          <article class="ss-client-theme ss-theme-slate ss-density-compact ss-theme-preview-card">
+            <strong>Compact density</strong>
+            <p class="ss-text ss-text-muted ss-mb-0">Smaller card padding and tighter controls.</p>
+            <button class="ss-btn" type="button">Apply</button>
+          </article>
+          <article class="ss-client-theme ss-theme-violet ss-density-spacious ss-theme-preview-card ss-theme-preview-card-disabled">
+            <strong>Disabled preview</strong>
+            <p class="ss-text ss-text-muted ss-mb-0">Unavailable states are visually muted.</p>
+            <button class="ss-btn" type="button">Locked</button>
+          </article>
+        </div>
+      </section>
+
+      <section class="ss-client-theme ss-theme-slate ss-theme-dark ss-section ss-section-style-dark ss-radius-rounded ss-p-8">
+        <p class="ss-section-eyebrow">Dark mode compatibility</p>
+        <h2 class="ss-section-title">Client themes and dark mode stay separate.</h2>
+        <p class="ss-section-subtitle">The builder can preview brand values independently from light or dark surfaces.</p>
+      </section>
+    </main>
+  </body>
+</html>

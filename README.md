@@ -40,6 +40,7 @@ Attach SS classes to the elements you want to style:
 - Optional system preference support with `.ss-theme-system`.
 - Builder-specific primitives for canvas editing, responsive previews, editable states, drop zones, handles, and published-output cleanup.
 - Business website section primitives and local-business patterns for reusable builder-generated pages.
+- Client theme wrappers, brand variables, and preset theme helpers for generated client websites.
 
 ## Color Palette
 
@@ -120,6 +121,14 @@ SS CSS includes business website section primitives for builder-generated and pu
 Section content classes such as `.ss-section-header`, `.ss-section-title`, `.ss-section-subtitle`, `.ss-section-actions`, and `.ss-section-media` compose with utilities and components. Local business patterns include service cards, pricing cards, testimonials, business hours, location cards, map wrappers, coupons, announcement bars, emergency banners, phone strips, and service-area lists.
 
 See [docs/website-sections-and-local-business-patterns.md](docs/website-sections-and-local-business-patterns.md) and [examples/sections.html](examples/sections.html).
+
+## Client Themes
+
+Use `.ss-client-theme` or `[data-ss-client-theme]` to apply client branding at a site, page, builder preview, or section level. Brand variables such as `--ss-brand-primary`, `--ss-brand-surface`, `--ss-brand-heading`, `--ss-brand-body`, and `--ss-brand-focus` map back into the framework's semantic tokens.
+
+Preset helpers include `.ss-theme-blueprint`, `.ss-theme-emerald`, `.ss-theme-violet`, `.ss-theme-slate`, and `.ss-theme-amber`, plus radius, shadow, density, button-style, and section-style presets. This is separate from dark mode: dark mode controls light/dark surfaces, while client themes control brand identity.
+
+See [docs/client-theme-system.md](docs/client-theme-system.md) and [examples/themes.html](examples/themes.html).
 
 ## Dark Mode
 

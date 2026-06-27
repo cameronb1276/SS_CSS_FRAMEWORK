@@ -17,6 +17,7 @@ SS CSS Framework `0.1.0` is the first usable release of the framework.
 - Light mode, explicit dark mode, and optional system dark mode.
 - Builder canvas and editable-state primitives for SloanSites editor surfaces.
 - Website section and local-business pattern primitives for generated client pages.
+- Client theme wrappers, brand variables, and preset theme helpers.
 - Documentation and examples.
 
 ## Not Included
