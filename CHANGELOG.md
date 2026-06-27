@@ -15,6 +15,7 @@
 - Added Phase 05 builder canvas primitives for edit, preview, and published modes, including responsive device previews, editable states, drop zones, handles, placeholders, and builder documentation.
 - Added Phase 06 website section primitives and local-business patterns for heroes, services, about sections, CTAs, pricing, reviews, FAQs, galleries, contact sections, footers, business hours, maps, offers, and service banners.
 - Added Phase 07 client theme wrappers, brand variables, preset themes, radius/shadow/density/button presets, section style helpers, and theme preview cards.
+- Added Phase 08 builder app UI shell styles for topbars, sidebars, inspector controls, layer trees, page lists, device switchers, status states, swatches, spacing/typography controls, assets, and mini previews.
 
 ## Known Limitations
 

@@ -41,6 +41,7 @@ Attach SS classes to the elements you want to style:
 - Builder-specific primitives for canvas editing, responsive previews, editable states, drop zones, handles, and published-output cleanup.
 - Business website section primitives and local-business patterns for reusable builder-generated pages.
 - Client theme wrappers, brand variables, and preset theme helpers for generated client websites.
+- Builder application UI classes for the SloanSites editor shell, panels, inspector controls, layer tree, assets, and statuses.
 
 ## Color Palette
 
@@ -163,6 +164,14 @@ Builder state can be controlled with classes such as `.ss-is-selected`, `.ss-is-
 Published pages should not include active builder state classes unless intentionally needed. When `data-ss-builder-mode="published"` or `data-ss-published="true"` is present, editor handles, drop zones, overlays, outlines, and hidden builder items are removed from the visual output.
 
 See [docs/builder-canvas-and-editable-states.md](docs/builder-canvas-and-editable-states.md) and [examples/builder.html](examples/builder.html).
+
+## Builder App UI
+
+SS CSS also includes editor-application classes for the SloanSites builder interface around the canvas. Use `.ss-builder-app`, `.ss-builder-topbar`, `.ss-builder-app-main`, `.ss-builder-sidebar`, `.ss-builder-inspector`, `.ss-builder-layer-*`, `.ss-builder-control-*`, `.ss-builder-asset-*`, and `.ss-builder-status-*` classes for the webapp shell.
+
+These classes are separate from published website classes. Published sites should not depend on inspector, sidebar, toolbar, layer tree, asset browser, or status UI classes.
+
+See [docs/builder-ui-shell-inspector-and-layer-panel.md](docs/builder-ui-shell-inspector-and-layer-panel.md) and [examples/builder-ui.html](examples/builder-ui.html).
 
 ## Accessibility
 

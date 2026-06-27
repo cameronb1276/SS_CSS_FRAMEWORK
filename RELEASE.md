@@ -18,6 +18,7 @@ SS CSS Framework `0.1.0` is the first usable release of the framework.
 - Builder canvas and editable-state primitives for SloanSites editor surfaces.
 - Website section and local-business pattern primitives for generated client pages.
 - Client theme wrappers, brand variables, and preset theme helpers.
+- Builder app UI shell, inspector, layer panel, asset browser, and status styles.
 - Documentation and examples.
 
 ## Not Included

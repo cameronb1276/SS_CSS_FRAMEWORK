@@ -1,0 +1,266 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>SS CSS Framework Builder UI Shell</title>
+    <link rel="stylesheet" href="../dist/ss.css">
+  </head>
+  <body class="ss-page">
+    <div class="ss-builder-app">
+      <header class="ss-builder-topbar">
+        <div class="ss-builder-project">
+          <strong class="ss-builder-project-name">Neighborhood Service Co.</strong>
+          <span class="ss-builder-status ss-builder-status-saved">Saved</span>
+        </div>
+        <span class="ss-builder-toolbar-divider"></span>
+        <div class="ss-builder-page-selector">
+          <span class="ss-text-muted">Page</span>
+          <button class="ss-btn ss-btn-sm ss-btn-outline" type="button">Home</button>
+        </div>
+        <div class="ss-builder-device-switcher" aria-label="Device preview">
+          <button class="ss-builder-device-button ss-builder-device-button-active" type="button" aria-pressed="true">Desktop</button>
+          <button class="ss-builder-device-button" type="button">Laptop</button>
+          <button class="ss-builder-device-button" type="button">Tablet</button>
+          <button class="ss-builder-device-button" type="button">Mobile</button>
+          <button class="ss-builder-device-button" type="button">Full</button>
+        </div>
+        <span class="ss-builder-toolbar-divider"></span>
+        <div class="ss-builder-toolbar-group">
+          <button class="ss-btn ss-btn-sm ss-btn-ghost" type="button">Undo</button>
+          <button class="ss-btn ss-btn-sm ss-btn-ghost" type="button">Redo</button>
+        </div>
+        <div class="ss-builder-preview-actions ss-ml-auto">
+          <button class="ss-btn ss-btn-sm ss-btn-outline" type="button">Preview</button>
+        </div>
+        <div class="ss-builder-publish-actions">
+          <span class="ss-builder-status ss-builder-status-publish-ready">Ready</span>
+          <button class="ss-btn ss-btn-sm" type="button">Publish</button>
+        </div>
+        <div class="ss-builder-account-menu">
+          <button class="ss-btn ss-btn-sm ss-btn-ghost" type="button">Menu</button>
+        </div>
+      </header>
+
+      <div class="ss-builder-app-main">
+        <aside class="ss-builder-sidebar ss-builder-sidebar-left">
+          <div class="ss-builder-sidebar-header">
+            <strong>Library</strong>
+            <input placeholder="Search sections">
+          </div>
+          <div class="ss-builder-sidebar-body">
+            <section class="ss-builder-category">
+              <div class="ss-builder-category-title">Sections</div>
+              <div class="ss-stack ss-mt-4">
+                <article class="ss-builder-component-item ss-builder-component-item-selected">
+                  <span class="ss-builder-component-icon">H</span>
+                  <div>
+                    <strong class="ss-builder-component-title">Hero section</strong>
+                    <p class="ss-builder-component-desc">Headline, actions, and media panel.</p>
+                  </div>
+                </article>
+                <article class="ss-builder-component-item">
+                  <span class="ss-builder-component-icon">S</span>
+                  <div>
+                    <strong class="ss-builder-component-title">Services grid</strong>
+                    <p class="ss-builder-component-desc">Reusable local business service cards.</p>
+                  </div>
+                </article>
+                <article class="ss-builder-component-item ss-builder-component-item-dragging">
+                  <span class="ss-builder-component-icon">R</span>
+                  <div>
+                    <strong class="ss-builder-component-title">Reviews</strong>
+                    <p class="ss-builder-component-desc">Dragging state preview.</p>
+                  </div>
+                </article>
+                <article class="ss-builder-component-item ss-builder-component-item-locked">
+                  <span class="ss-builder-component-icon">P</span>
+                  <div>
+                    <strong class="ss-builder-component-title">Premium template</strong>
+                    <p class="ss-builder-component-desc">Locked component state.</p>
+                  </div>
+                </article>
+              </div>
+            </section>
+
+            <section class="ss-builder-category">
+              <div class="ss-builder-category-title">Pages</div>
+              <ul class="ss-builder-page-list ss-mt-4">
+                <li class="ss-builder-page-item ss-builder-page-item-active">
+                  <span class="ss-builder-home-marker">Home</span>
+                  <strong class="ss-builder-page-title">Homepage</strong>
+                </li>
+                <li class="ss-builder-page-item ss-builder-page-item-draft">
+                  <strong class="ss-builder-page-title">Services and pricing draft page</strong>
+                </li>
+                <li class="ss-builder-page-item ss-builder-page-item-published">
+                  <strong class="ss-builder-page-title">Contact</strong>
+                </li>
+              </ul>
+              <div class="ss-builder-add-page-row">
+                <button class="ss-btn ss-btn-sm ss-btn-outline ss-w-full" type="button">Add page</button>
+              </div>
+            </section>
+          </div>
+          <div class="ss-builder-sidebar-footer">
+            <span class="ss-builder-status ss-builder-status-offline">Offline demo</span>
+          </div>
+        </aside>
+
+        <main class="ss-builder-canvas ss-builder-canvas-dot-grid">
+          <div class="ss-builder-stage">
+            <div class="ss-builder-viewport" data-ss-device="desktop">
+              <div class="ss-builder-page ss-client-theme ss-theme-blueprint" style="--ss-builder-page-min-height: 42rem;">
+                <section class="ss-builder-section ss-is-selected ss-section ss-section-hero ss-section-soft">
+                  <div class="ss-section-wide ss-section-split">
+                    <div class="ss-builder-block">
+                      <p class="ss-section-eyebrow">Editor canvas</p>
+                      <h1 class="ss-section-title">Builder UI shell surrounds the Phase 05 canvas.</h1>
+                      <p class="ss-section-subtitle">The canvas keeps selectable website content separate from app chrome.</p>
+                      <div class="ss-section-actions">
+                        <a class="ss-btn" href="#">Call to action</a>
+                        <a class="ss-btn ss-btn-outline" href="#">Secondary</a>
+                      </div>
+                    </div>
+                    <div class="ss-builder-block ss-feature-card ss-is-hovered">
+                      <span class="ss-builder-handle">Edit</span>
+                      <h2 class="ss-feature-title">Hovered block</h2>
+                      <p class="ss-feature-desc">Phase 05 states still work inside the Phase 08 app shell.</p>
+                    </div>
+                  </div>
+                </section>
+              </div>
+            </div>
+          </div>
+        </main>
+
+        <aside class="ss-builder-inspector">
+          <div class="ss-builder-inspector-header">
+            <strong>Inspector</strong>
+            <p class="ss-builder-selected-summary ss-mb-0">Hero section selected</p>
+          </div>
+          <div class="ss-builder-inspector-body">
+            <section class="ss-builder-property-group">
+              <div class="ss-builder-property-title">Layer tree</div>
+              <ul class="ss-builder-layer-list ss-mt-4">
+                <li class="ss-builder-layer-row ss-builder-layer-selected" style="--ss-layer-depth: 0;">
+                  <span class="ss-builder-layer-icon">S</span>
+                  <span>Hero section</span>
+                  <span class="ss-builder-layer-actions">...</span>
+                </li>
+                <li class="ss-builder-layer-row" style="--ss-layer-depth: 1;">
+                  <span class="ss-builder-layer-icon">T</span>
+                  <span>Headline column</span>
+                  <span class="ss-builder-layer-actions">...</span>
+                </li>
+                <li class="ss-builder-layer-row ss-builder-layer-hidden" style="--ss-layer-depth: 1;">
+                  <span class="ss-builder-layer-icon">M</span>
+                  <span>Hidden media card</span>
+                  <span class="ss-builder-layer-actions">...</span>
+                </li>
+                <li class="ss-builder-layer-row ss-builder-layer-invalid" style="--ss-layer-depth: 1;">
+                  <span class="ss-builder-layer-icon">!</span>
+                  <span>Invalid form embed</span>
+                  <span class="ss-builder-layer-actions">...</span>
+                </li>
+              </ul>
+            </section>
+
+            <section class="ss-builder-property-group">
+              <div class="ss-builder-property-title">Layout</div>
+              <div class="ss-builder-control-group">
+                <div class="ss-builder-control-row">
+                  <label class="ss-builder-control-label" for="section-pad">Padding</label>
+                  <input class="ss-builder-compact-input" id="section-pad" value="64">
+                </div>
+                <div class="ss-builder-spacing-box ss-builder-spacing-linked">
+                  <input class="ss-builder-compact-input ss-builder-spacing-top" value="64">
+                  <input class="ss-builder-compact-input ss-builder-spacing-right" value="32">
+                  <input class="ss-builder-compact-input ss-builder-spacing-bottom" value="64">
+                  <input class="ss-builder-compact-input ss-builder-spacing-left" value="32">
+                  <span class="ss-builder-spacing-center">Linked</span>
+                </div>
+                <div class="ss-builder-spacing-chips">
+                  <button class="ss-btn ss-btn-sm ss-btn-soft" type="button">Compact</button>
+                  <button class="ss-btn ss-btn-sm ss-btn-soft" type="button">Roomy</button>
+                </div>
+              </div>
+            </section>
+
+            <section class="ss-builder-property-group">
+              <div class="ss-builder-property-title">Color</div>
+              <div class="ss-builder-swatch-grid ss-mt-4">
+                <button class="ss-builder-swatch ss-builder-swatch-active" style="--ss-swatch-color: #2563eb;" type="button"></button>
+                <button class="ss-builder-swatch ss-builder-swatch-brand" style="--ss-swatch-color: #059669;" type="button"></button>
+                <button class="ss-builder-swatch ss-builder-swatch-transparent" type="button"></button>
+                <button class="ss-builder-swatch ss-builder-swatch-custom" type="button"></button>
+              </div>
+            </section>
+
+            <section class="ss-builder-property-group">
+              <div class="ss-builder-property-title">Typography</div>
+              <div class="ss-builder-typography-row ss-mt-4">
+                <span class="ss-builder-control-label">Heading size</span>
+                <input class="ss-builder-compact-input" value="64">
+              </div>
+              <div class="ss-builder-control-segmented ss-mt-4">
+                <button class="ss-builder-segment ss-builder-segment-active" type="button">Left</button>
+                <button class="ss-builder-segment" type="button">Center</button>
+                <button class="ss-builder-segment" type="button">Right</button>
+              </div>
+              <div class="ss-builder-text-style-chips ss-mt-4">
+                <button class="ss-btn ss-btn-sm ss-btn-outline" type="button">Bold</button>
+                <button class="ss-btn ss-btn-sm ss-btn-outline" type="button">Italic</button>
+              </div>
+            </section>
+
+            <section class="ss-builder-property-group">
+              <div class="ss-builder-property-title">Assets</div>
+              <div class="ss-builder-asset-grid ss-mt-4">
+                <article class="ss-builder-asset-card ss-builder-asset-card-selected">
+                  <div class="ss-builder-asset-thumb"><span class="ss-builder-asset-icon">JPG</span></div>
+                  <strong class="ss-builder-asset-title">hero-photo-long-file-name.jpg</strong>
+                  <span class="ss-builder-asset-meta">1280 x 720</span>
+                </article>
+                <article class="ss-builder-asset-card">
+                  <div class="ss-builder-asset-thumb"><span class="ss-builder-asset-icon">SVG</span></div>
+                  <strong class="ss-builder-asset-title">logo.svg</strong>
+                  <span class="ss-builder-asset-meta">Vector</span>
+                </article>
+              </div>
+              <div class="ss-builder-upload-drop ss-mt-4">Drop assets here</div>
+            </section>
+
+            <section class="ss-builder-property-group">
+              <div class="ss-builder-property-title">Mini previews</div>
+              <div class="ss-grid ss-cols-1 ss-gap-4 ss-mt-4">
+                <article class="ss-builder-mini-preview-card ss-builder-mini-preview-card-selected">
+                  <div class="ss-builder-mini-preview">
+                    <span class="ss-builder-mini-preview-line"></span>
+                    <span class="ss-builder-mini-preview-block"></span>
+                  </div>
+                  <strong>Hero A</strong>
+                </article>
+                <article class="ss-builder-mini-preview-card">
+                  <div class="ss-builder-mini-preview">
+                    <span class="ss-builder-mini-preview-line"></span>
+                    <span class="ss-builder-mini-preview-block"></span>
+                  </div>
+                  <span><span class="ss-builder-pro-badge">Pro</span> <span class="ss-builder-locked-badge">Locked</span></span>
+                </article>
+              </div>
+            </section>
+          </div>
+          <div class="ss-builder-inspector-footer">
+            <span class="ss-builder-status ss-builder-status-unsaved">Unsaved changes</span>
+          </div>
+        </aside>
+      </div>
+
+      <footer class="ss-builder-statusbar">
+        <span class="ss-builder-status ss-builder-status-saving">Autosaving</span>
+        <span class="ss-ml-auto">Static CSS-only builder UI demo</span>
+      </footer>
+    </div>
+  </body>
+</html>
