@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>SS CSS Framework Components Example</title>
+    <link rel="stylesheet" href="../dist/ss.css">
+  </head>
+  <body class="ss-page">
+    <nav class="ss-navbar">
+      <a class="ss-navbar-brand" href="#">SS Components</a>
+      <div class="ss-nav">
+        <a class="ss-navbar-link ss-navbar-link-active" href="#buttons">Buttons</a>
+        <a class="ss-navbar-link" href="#forms">Forms</a>
+        <a class="ss-navbar-link" href="#patterns">Patterns</a>
+      </div>
+    </nav>
+
+    <main class="ss-container-wide ss-py-8">
+      <header class="ss-mb-8">
+        <div class="ss-breadcrumb ss-mb-4">
+          <span class="ss-breadcrumb-item"><a class="ss-breadcrumb-link" href="./layout-utilities.html">Layout</a></span>
+          <span class="ss-breadcrumb-item ss-breadcrumb-current">Components</span>
+        </div>
+        <h1 class="ss-h1 ss-mb-2">Component Layer</h1>
+        <p class="ss-text ss-text-muted ss-mb-0">
+          Phase 03 adds polished component classes without JavaScript behavior.
+        </p>
+      </header>
+
+      <section class="ss-grid ss-cols-1 ss-lg-cols-3 ss-gap-6">
+        <article class="ss-card ss-card-elevated">
+          <div class="ss-card-header">
+            <h2 class="ss-card-title">Project Health</h2>
+            <p class="ss-card-subtitle">Status snapshot</p>
+          </div>
+          <div class="ss-card-body ss-stack">
+            <div class="ss-cluster">
+              <span class="ss-badge ss-badge-soft ss-badge-success ss-badge-pill">On track</span>
+              <span class="ss-badge ss-badge-soft ss-badge-info">12 updates</span>
+            </div>
+            <div class="ss-progress ss-progress-success">
+              <div class="ss-progress-bar" style="--ss-progress-value: 72%;"></div>
+            </div>
+            <p class="ss-text ss-text-muted ss-mb-0">Reusable status cards can be composed from cards, badges, and progress bars.</p>
+          </div>
+          <div class="ss-card-footer ss-card-actions">
+            <button class="ss-btn ss-btn-sm" type="button">Review</button>
+            <button class="ss-btn ss-btn-sm ss-btn-ghost" type="button">Dismiss</button>
+          </div>
+        </article>
+
+        <article class="ss-card">
+          <div class="ss-card-body ss-stack" id="buttons">
+            <h2 class="ss-card-title">Buttons</h2>
+            <div class="ss-cluster">
+              <button class="ss-btn" type="button">Primary</button>
+              <button class="ss-btn ss-btn-secondary" type="button">Secondary</button>
+              <button class="ss-btn ss-btn-outline" type="button">Outline</button>
+              <button class="ss-btn ss-btn-soft" type="button">Soft</button>
+              <button class="ss-btn ss-btn-danger" type="button">Danger</button>
+              <button class="ss-btn ss-btn-icon" type="button" aria-label="Settings">...</button>
+            </div>
+          </div>
+        </article>
+
+        <article class="ss-card">
+          <div class="ss-card-body ss-stack" id="forms">
+            <h2 class="ss-card-title">Form Controls</h2>
+            <div class="ss-field-group">
+              <label class="ss-label" for="name">Name</label>
+              <input class="ss-field" id="name" type="text" placeholder="Jane Sloan">
+              <p class="ss-help">Use validation classes for readable form states.</p>
+            </div>
+            <div class="ss-input-group">
+              <span class="ss-input-addon">@</span>
+              <input class="ss-field" type="text" placeholder="username">
+              <button class="ss-btn ss-btn-secondary" type="button">Check</button>
+            </div>
+            <label class="ss-switch">
+              <input class="ss-switch-input" type="checkbox">
+              <span>Email notifications</span>
+            </label>
+          </div>
+        </article>
+      </section>
+
+      <section class="ss-grid ss-cols-1 ss-lg-cols-2 ss-gap-6 ss-mt-8" id="patterns">
+        <article class="ss-card">
+          <div class="ss-card-body ss-stack">
+            <h2 class="ss-card-title">Messages</h2>
+            <div class="ss-alert ss-alert-info">
+              <p class="ss-alert-title">Information</p>
+              <p class="ss-alert-desc">Alerts use soft colors, clear borders, and optional title text.</p>
+            </div>
+            <div class="ss-toast ss-toast-success">
+              <div>
+                <p class="ss-alert-title">Saved</p>
+                <p class="ss-alert-desc">Toast appearance is styled; dismissal is intentionally not implemented.</p>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <article class="ss-card">
+          <div class="ss-card-body ss-stack">
+            <h2 class="ss-card-title">Lists and Loading</h2>
+            <div class="ss-list-group">
+              <a class="ss-list-item ss-list-item-hover ss-list-item-active" href="#">Inbox <span class="ss-badge ss-badge-pill">8</span></a>
+              <a class="ss-list-item ss-list-item-hover" href="#">Archive <span class="ss-text-muted">24</span></a>
+              <span class="ss-list-item ss-list-item-disabled">Disabled item</span>
+            </div>
+            <div class="ss-cluster">
+              <span class="ss-avatar">JS</span>
+              <span class="ss-avatar ss-avatar-accent ss-avatar-rounded">SS</span>
+              <span class="ss-spinner" aria-label="Loading"></span>
+            </div>
+            <div class="ss-stack ss-gap-2">
+              <span class="ss-skeleton ss-skeleton-title"></span>
+              <span class="ss-skeleton ss-skeleton-text"></span>
+              <span class="ss-skeleton ss-skeleton-text ss-w-75"></span>
+            </div>
+          </div>
+        </article>
+      </section>
+    </main>
+  </body>
+</html>
