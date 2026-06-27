@@ -1,0 +1,236 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>SS CSS Framework Docs</title>
+    <link rel="stylesheet" href="../dist/ss.css">
+    <style>
+      .docs-shell {
+        padding-block: var(--ss-space-8);
+      }
+
+      .docs-section {
+        margin-top: var(--ss-space-8);
+      }
+
+      .docs-swatch {
+        width: 100%;
+        height: 3rem;
+        border-radius: var(--ss-radius-md);
+      }
+
+      .docs-code {
+        white-space: pre-wrap;
+      }
+    </style>
+  </head>
+  <body class="ss-page">
+    <nav class="ss-navbar">
+      <a class="ss-navbar-brand" href="./demo.html">SS CSS Framework</a>
+      <div class="ss-nav">
+        <a class="ss-navbar-link ss-navbar-link-active" href="#quick-start">Quick Start</a>
+        <a class="ss-navbar-link" href="#components">Components</a>
+        <a class="ss-navbar-link" href="#dark-mode">Dark Mode</a>
+      </div>
+    </nav>
+
+    <main class="ss-container-wide docs-shell">
+      <header class="ss-grid ss-cols-1 ss-lg-cols-2 ss-gap-8 ss-items-center">
+        <div>
+          <span class="ss-badge ss-badge-soft ss-badge-primary ss-badge-pill">Current release 0.1.0</span>
+          <h1 class="ss-h1 ss-mt-4 ss-mb-2">SS CSS Framework</h1>
+          <p class="ss-text ss-text-muted">
+            A lightweight, class-based CSS framework for business websites, dashboards, SaaS pages, admin panels, and client projects.
+          </p>
+          <div class="ss-cluster">
+            <a class="ss-btn" href="./demo.html">View demo</a>
+            <a class="ss-btn ss-btn-outline" href="../dist/ss.min.css">Open minified CSS</a>
+          </div>
+        </div>
+        <article class="ss-card ss-card-elevated">
+          <div class="ss-card-body ss-stack">
+            <h2 class="ss-card-title">Single-file CSS</h2>
+            <p class="ss-text ss-text-muted">Link one stylesheet and attach predictable <code class="ss-code">ss-*</code> classes to the elements you want to style.</p>
+            <pre class="ss-pre docs-code"><code class="ss-code">&lt;link rel="stylesheet" href="dist/ss.min.css"&gt;</code></pre>
+            <div class="ss-cluster">
+              <span class="ss-badge ss-badge-soft ss-badge-success">No JS required</span>
+              <span class="ss-badge ss-badge-soft ss-badge-info">Class-based</span>
+              <span class="ss-badge ss-badge-soft ss-badge-accent">Dark mode</span>
+            </div>
+          </div>
+        </article>
+      </header>
+
+      <section class="docs-section" id="quick-start">
+        <div class="ss-split ss-mb-4">
+          <h2 class="ss-h2 ss-mb-0">Quick Start</h2>
+          <a class="ss-link" href="../README.md">Original Markdown README</a>
+        </div>
+        <div class="ss-grid ss-cols-1 ss-lg-cols-3 ss-gap-6">
+          <article class="ss-card">
+            <div class="ss-card-body ss-stack">
+              <h3 class="ss-card-title">Readable CSS</h3>
+              <pre class="ss-pre docs-code"><code class="ss-code">&lt;link rel="stylesheet" href="dist/ss.css"&gt;</code></pre>
+            </div>
+          </article>
+          <article class="ss-card">
+            <div class="ss-card-body ss-stack">
+              <h3 class="ss-card-title">Production CSS</h3>
+              <pre class="ss-pre docs-code"><code class="ss-code">&lt;link rel="stylesheet" href="dist/ss.min.css"&gt;</code></pre>
+            </div>
+          </article>
+          <article class="ss-card">
+            <div class="ss-card-body ss-stack">
+              <h3 class="ss-card-title">Attach Classes</h3>
+              <pre class="ss-pre docs-code"><code class="ss-code">&lt;body class="ss-page"&gt;
+  &lt;main class="ss-container ss-py-8"&gt;
+    &lt;h1 class="ss-h1"&gt;Page title&lt;/h1&gt;
+    &lt;button class="ss-btn"&gt;Action&lt;/button&gt;
+  &lt;/main&gt;
+&lt;/body&gt;</code></pre>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section class="docs-section">
+        <h2 class="ss-h2">What Is Included</h2>
+        <div class="ss-grid-auto ss-gap-4">
+          <article class="ss-card">
+            <div class="ss-card-body">
+              <h3 class="ss-card-title">Foundation</h3>
+              <p class="ss-text ss-text-muted ss-mb-0">Tokens, typography, media, forms, tables, code, blockquotes, and content classes.</p>
+            </div>
+          </article>
+          <article class="ss-card">
+            <div class="ss-card-body">
+              <h3 class="ss-card-title">Utilities</h3>
+              <p class="ss-text ss-text-muted ss-mb-0">Containers, grids, flex, display, spacing, sizing, text, color, borders, radius, shadows, position, and z-index.</p>
+            </div>
+          </article>
+          <article class="ss-card">
+            <div class="ss-card-body">
+              <h3 class="ss-card-title">Components</h3>
+              <p class="ss-text ss-text-muted ss-mb-0">Buttons, badges, alerts, cards, forms, input groups, tables, navs, dropdowns, modals, toasts, progress, skeletons, accordions, lists, and avatars.</p>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section class="docs-section">
+        <h2 class="ss-h2">Color Palette</h2>
+        <p class="ss-text ss-text-muted">The official palette is centered on a blue primary color with slate neutrals.</p>
+        <div class="ss-grid ss-cols-2 ss-md-cols-4 ss-lg-cols-6 ss-gap-4">
+          <div class="ss-stack ss-gap-2"><span class="docs-swatch" style="background:#3B82F6"></span><span class="ss-small ss-fw-semibold">Primary</span><code class="ss-code">#3B82F6</code></div>
+          <div class="ss-stack ss-gap-2"><span class="docs-swatch" style="background:#64748B"></span><span class="ss-small ss-fw-semibold">Secondary</span><code class="ss-code">#64748B</code></div>
+          <div class="ss-stack ss-gap-2"><span class="docs-swatch" style="background:#A855F7"></span><span class="ss-small ss-fw-semibold">Accent</span><code class="ss-code">#A855F7</code></div>
+          <div class="ss-stack ss-gap-2"><span class="docs-swatch" style="background:#22C55E"></span><span class="ss-small ss-fw-semibold">Success</span><code class="ss-code">#22C55E</code></div>
+          <div class="ss-stack ss-gap-2"><span class="docs-swatch" style="background:#F59E0B"></span><span class="ss-small ss-fw-semibold">Warning</span><code class="ss-code">#F59E0B</code></div>
+          <div class="ss-stack ss-gap-2"><span class="docs-swatch" style="background:#EF4444"></span><span class="ss-small ss-fw-semibold">Danger</span><code class="ss-code">#EF4444</code></div>
+        </div>
+      </section>
+
+      <section class="docs-section">
+        <h2 class="ss-h2">Containers and Grids</h2>
+        <div class="ss-grid ss-cols-1 ss-lg-cols-2 ss-gap-6">
+          <article class="ss-card">
+            <div class="ss-card-body ss-stack">
+              <h3 class="ss-card-title">Containers</h3>
+              <ul class="ss-list ss-list-spaced">
+                <li><code class="ss-code">.ss-container</code> for standard pages.</li>
+                <li><code class="ss-code">.ss-container-narrow</code> for readable text pages.</li>
+                <li><code class="ss-code">.ss-container-wide</code> for dashboards.</li>
+                <li><code class="ss-code">.ss-container-full</code> for app shells.</li>
+              </ul>
+            </div>
+          </article>
+          <article class="ss-card">
+            <div class="ss-card-body ss-stack">
+              <h3 class="ss-card-title">Grid Example</h3>
+              <pre class="ss-pre docs-code"><code class="ss-code">&lt;section class="ss-grid ss-cols-1 ss-md-cols-2 ss-lg-cols-3 ss-gap-4"&gt;
+  &lt;article class="ss-card"&gt;...&lt;/article&gt;
+&lt;/section&gt;</code></pre>
+              <p class="ss-text ss-text-muted ss-mb-0">Breakpoints are mobile-first: <code class="ss-code">sm</code>, <code class="ss-code">md</code>, <code class="ss-code">lg</code>, <code class="ss-code">xl</code>, and <code class="ss-code">2xl</code>.</p>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section class="docs-section">
+        <h2 class="ss-h2">Utilities</h2>
+        <div class="ss-grid ss-cols-1 ss-md-cols-2 ss-lg-cols-4 ss-gap-4">
+          <div class="ss-card"><div class="ss-card-body"><h3 class="ss-card-title">Display</h3><p class="ss-text ss-text-muted ss-mb-0"><code class="ss-code">.ss-flex</code>, <code class="ss-code">.ss-grid-display</code>, <code class="ss-code">.ss-sr-only</code></p></div></div>
+          <div class="ss-card"><div class="ss-card-body"><h3 class="ss-card-title">Spacing</h3><p class="ss-text ss-text-muted ss-mb-0"><code class="ss-code">.ss-p-4</code>, <code class="ss-code">.ss-mt-4</code>, <code class="ss-code">.ss-mx-auto</code></p></div></div>
+          <div class="ss-card"><div class="ss-card-body"><h3 class="ss-card-title">Color</h3><p class="ss-text ss-text-muted ss-mb-0"><code class="ss-code">.ss-text-muted</code>, <code class="ss-code">.ss-bg-surface</code>, <code class="ss-code">.ss-border-accent</code></p></div></div>
+          <div class="ss-card"><div class="ss-card-body"><h3 class="ss-card-title">Effects</h3><p class="ss-text ss-text-muted ss-mb-0"><code class="ss-code">.ss-radius-lg</code>, <code class="ss-code">.ss-shadow-md</code>, <code class="ss-code">.ss-z-modal</code></p></div></div>
+        </div>
+        <p class="ss-text ss-text-muted ss-mt-4">See <a class="ss-link" href="../docs/layout-and-utilities.md">layout-and-utilities.md</a> for the fuller utility guide.</p>
+      </section>
+
+      <section class="docs-section" id="components">
+        <h2 class="ss-h2">Components</h2>
+        <article class="ss-card ss-card-elevated">
+          <div class="ss-card-body ss-stack">
+            <div class="ss-cluster">
+              <span class="ss-badge ss-badge-soft ss-badge-success">Active</span>
+              <span class="ss-badge ss-badge-soft ss-badge-info">Component</span>
+            </div>
+            <h3 class="ss-card-title">Project card</h3>
+            <p class="ss-text ss-text-muted">Components compose with utility classes and semantic tokens.</p>
+            <div class="ss-card-actions">
+              <button class="ss-btn" type="button">Open</button>
+              <button class="ss-btn ss-btn-outline" type="button">Details</button>
+            </div>
+          </div>
+        </article>
+        <p class="ss-text ss-text-muted ss-mt-4">See <a class="ss-link" href="../docs/components-and-patterns.md">components-and-patterns.md</a> for supported variants and behavior notes.</p>
+      </section>
+
+      <section class="docs-section ss-theme-dark ss-bg-page ss-border ss-radius-xl ss-p-6" id="dark-mode">
+        <span class="ss-badge ss-badge-soft ss-badge-info">Dark mode</span>
+        <h2 class="ss-h2 ss-mt-4">Dark Mode</h2>
+        <p class="ss-text ss-text-muted">Dark mode is opt-in and class-based. Use <code class="ss-code">.ss-theme-dark</code>, <code class="ss-code">[data-ss-theme="dark"]</code>, or <code class="ss-code">.ss-theme-system</code>.</p>
+        <div class="ss-grid ss-cols-1 ss-lg-cols-2 ss-gap-4">
+          <pre class="ss-pre docs-code"><code class="ss-code">&lt;body class="ss-page ss-theme-dark"&gt;
+  ...
+&lt;/body&gt;</code></pre>
+          <article class="ss-card">
+            <div class="ss-card-body ss-stack">
+              <h3 class="ss-card-title">Dark card</h3>
+              <p class="ss-text ss-text-muted">Surfaces, borders, focus rings, status colors, overlays, and shadows adapt through tokens.</p>
+              <button class="ss-btn ss-btn-soft" type="button">Dark action</button>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section class="docs-section">
+        <h2 class="ss-h2">Accessibility and Browser Support</h2>
+        <div class="ss-grid ss-cols-1 ss-lg-cols-2 ss-gap-6">
+          <article class="ss-card">
+            <div class="ss-card-body">
+              <h3 class="ss-card-title">Accessibility</h3>
+              <p class="ss-text ss-text-muted ss-mb-0">Native semantics are preserved. Focus states are visible, links remain underlined, disabled states remain readable, validation states use color plus a thicker left border, and reduced motion is respected.</p>
+            </div>
+          </article>
+          <article class="ss-card">
+            <div class="ss-card-body">
+              <h3 class="ss-card-title">Browser Support</h3>
+              <p class="ss-text ss-text-muted ss-mb-0">The framework targets current Chromium-based browsers, Firefox, and Safari. No legacy Internet Explorer support is planned.</p>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section class="docs-section">
+        <h2 class="ss-h2">Customization</h2>
+        <pre class="ss-pre docs-code"><code class="ss-code">:root {
+  --ss-color-primary: #0ea5e9;
+  --ss-radius-default: 0.375rem;
+  --ss-page-gutter: clamp(1rem, 4vw, 2.5rem);
+}</code></pre>
+      </section>
+    </main>
+  </body>
+</html>
