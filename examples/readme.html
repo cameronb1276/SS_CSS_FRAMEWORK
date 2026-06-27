@@ -115,6 +115,12 @@
               <p class="ss-text ss-text-muted ss-mb-0">Buttons, badges, alerts, cards, forms, input groups, tables, navs, dropdowns, modals, toasts, progress, skeletons, accordions, lists, and avatars.</p>
             </div>
           </article>
+          <article class="ss-card">
+            <div class="ss-card-body">
+              <h3 class="ss-card-title">Builder</h3>
+              <p class="ss-text ss-text-muted ss-mb-0">Canvas, stage, device previews, editable states, drop zones, handles, and published-output cleanup.</p>
+            </div>
+          </article>
         </div>
       </section>
 
@@ -185,6 +191,28 @@
           </div>
         </article>
         <p class="ss-text ss-text-muted ss-mt-4">See <a class="ss-link" href="../docs/components-and-patterns.md">components-and-patterns.md</a> for supported variants and behavior notes.</p>
+      </section>
+
+      <section class="docs-section">
+        <h2 class="ss-h2">Builder Primitives</h2>
+        <article class="ss-card">
+          <div class="ss-card-body ss-stack">
+            <p class="ss-text ss-text-muted">SS CSS includes editor-only primitives for the SloanSites website builder. Use <code class="ss-code">ss-builder-*</code> classes for the builder shell, canvas, stage, viewport, page, editable regions, drop zones, handles, and placeholders.</p>
+            <pre class="ss-pre docs-code"><code class="ss-code">&lt;div class="ss-builder-shell" data-ss-builder-mode="edit"&gt;
+  &lt;main class="ss-builder-canvas ss-builder-canvas-dot-grid"&gt;
+    &lt;div class="ss-builder-stage"&gt;
+      &lt;div class="ss-builder-viewport" data-ss-device="desktop"&gt;
+        &lt;div class="ss-builder-page"&gt;...&lt;/div&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/main&gt;
+&lt;/div&gt;</code></pre>
+            <div class="ss-cluster">
+              <a class="ss-btn" href="./builder.html">Builder demo</a>
+              <a class="ss-btn ss-btn-outline" href="../docs/builder-canvas-and-editable-states.md">Builder docs</a>
+            </div>
+          </div>
+        </article>
       </section>
 
       <section class="docs-section ss-theme-dark ss-bg-page ss-border ss-radius-xl ss-p-6" id="dark-mode">

@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>SS CSS Framework Builder Demo</title>
+    <link rel="stylesheet" href="../dist/ss.css">
+  </head>
+  <body class="ss-page">
+    <nav class="ss-navbar">
+      <a class="ss-navbar-brand" href="./demo.html">SS CSS Framework</a>
+      <div class="ss-nav">
+        <a class="ss-navbar-link ss-navbar-link-active" href="#edit">Edit</a>
+        <a class="ss-navbar-link" href="#preview">Preview</a>
+        <a class="ss-navbar-link" href="#published">Published</a>
+      </div>
+    </nav>
+
+    <main class="ss-container-wide ss-py-8">
+      <header class="ss-split ss-mb-8">
+        <div>
+          <span class="ss-badge ss-badge-soft ss-badge-accent ss-badge-pill">Phase 05</span>
+          <h1 class="ss-h1 ss-mt-4 ss-mb-2">Builder Canvas and Editable States</h1>
+          <p class="ss-text ss-text-muted ss-mb-0">Static examples for edit mode, responsive device previews, drop targets, handles, and published-mode cleanup.</p>
+        </div>
+        <a class="ss-btn ss-btn-outline" href="../docs/builder-canvas-and-editable-states.md">Builder docs</a>
+      </header>
+
+      <section class="ss-builder-shell" data-ss-builder-mode="edit" id="edit" style="min-height: 34rem; border-radius: var(--ss-radius-xl); overflow: hidden;">
+        <header class="ss-builder-toolbar">
+          <div class="ss-cluster">
+            <strong>Builder edit mode</strong>
+            <span class="ss-badge ss-badge-soft ss-badge-primary">Desktop</span>
+          </div>
+          <div class="ss-cluster">
+            <span class="ss-builder-handle ss-builder-move-handle">Move</span>
+            <span class="ss-builder-handle ss-builder-duplicate-handle">Copy</span>
+            <span class="ss-builder-handle ss-builder-delete-handle">Del</span>
+          </div>
+        </header>
+        <div class="ss-builder-workspace ss-builder-workspace-with-panels">
+          <aside class="ss-builder-sidebar ss-builder-sidebar-left ss-p-4">
+            <h2 class="ss-h4">Blocks</h2>
+            <div class="ss-list-group">
+              <span class="ss-list-item">Hero section</span>
+              <span class="ss-list-item">Service card</span>
+              <span class="ss-list-item">Contact form</span>
+            </div>
+          </aside>
+          <main class="ss-builder-canvas ss-builder-canvas-dot-grid">
+            <div class="ss-builder-stage">
+              <div class="ss-builder-viewport" data-ss-device="desktop">
+                <div class="ss-builder-page" style="--ss-builder-page-min-height: 26rem;">
+                  <section class="ss-builder-section ss-is-parent-selected ss-p-8">
+                    <div class="ss-builder-handle-bar">
+                      <span class="ss-builder-section-handle">Section</span>
+                      <span class="ss-builder-lock-handle">Lock</span>
+                    </div>
+                    <div class="ss-grid ss-cols-1 ss-md-cols-2 ss-gap-6">
+                      <div class="ss-builder-block ss-is-selected ss-card">
+                        <div class="ss-builder-handle-bar">
+                          <span class="ss-builder-block-handle">Block</span>
+                          <span class="ss-builder-visibility-handle">Eye</span>
+                        </div>
+                        <div class="ss-card-body">
+                          <h2 class="ss-h2">Selected hero copy</h2>
+                          <p class="ss-text ss-text-muted">Selected blocks use outlines and focus rings without shifting layout.</p>
+                          <button class="ss-btn" type="button">Call to action</button>
+                        </div>
+                      </div>
+                      <div class="ss-builder-block ss-is-hovered ss-card">
+                        <div class="ss-card-body">
+                          <h3 class="ss-card-title">Hovered card</h3>
+                          <p class="ss-text ss-text-muted ss-mb-0">Hover outlines are softer and disappear in preview mode.</p>
+                        </div>
+                      </div>
+                    </div>
+                  </section>
+
+                  <div class="ss-builder-dropzone ss-builder-dropzone-active ss-mx-4">Drop new section here</div>
+
+                  <section class="ss-builder-section ss-p-8">
+                    <div class="ss-grid ss-cols-1 ss-md-cols-3 ss-gap-4">
+                      <article class="ss-builder-block ss-is-dragging ss-card"><div class="ss-card-body">Dragging block</div></article>
+                      <article class="ss-builder-block ss-is-locked ss-card"><div class="ss-card-body">Locked block</div></article>
+                      <article class="ss-builder-block ss-is-hidden ss-card"><div class="ss-card-body">Hidden block in edit mode</div></article>
+                      <article class="ss-builder-block ss-is-empty"><div class="ss-builder-placeholder">Empty content placeholder</div></article>
+                      <article class="ss-builder-block ss-is-invalid ss-card"><div class="ss-card-body">Invalid block configuration</div></article>
+                      <article class="ss-builder-block ss-is-drop-inside ss-card"><div class="ss-card-body">Drop inside target</div></article>
+                    </div>
+                  </section>
+                </div>
+              </div>
+            </div>
+          </main>
+          <aside class="ss-builder-panel ss-builder-panel-right ss-p-4">
+            <h2 class="ss-h4">Inspector</h2>
+            <p class="ss-text ss-text-muted">Panels use builder chrome tokens and can be hidden on small screens.</p>
+          </aside>
+        </div>
+      </section>
+
+      <section class="ss-grid ss-cols-1 ss-lg-cols-3 ss-gap-6 ss-mt-8">
+        <article class="ss-card" id="preview">
+          <div class="ss-card-header">
+            <h2 class="ss-card-title">Preview mode</h2>
+            <p class="ss-card-subtitle">Handles, drop zones, and outlines are hidden.</p>
+          </div>
+          <div class="ss-builder" data-ss-builder-mode="preview" style="min-height: 18rem;">
+            <main class="ss-builder-canvas ss-builder-canvas-line-grid">
+              <div class="ss-builder-stage">
+                <div class="ss-builder-viewport" data-ss-device="tablet">
+                  <div class="ss-builder-page ss-p-6" style="--ss-builder-page-min-height: 12rem;">
+                    <div class="ss-builder-block ss-is-selected ss-card">
+                      <div class="ss-builder-handle-bar"><span class="ss-builder-handle">Hidden</span></div>
+                      <div class="ss-card-body">Preview keeps the tablet frame but hides editor UI.</div>
+                    </div>
+                    <div class="ss-builder-dropzone ss-mt-4">Hidden drop zone</div>
+                  </div>
+                </div>
+              </div>
+            </main>
+          </div>
+        </article>
+
+        <article class="ss-card">
+          <div class="ss-card-header">
+            <h2 class="ss-card-title">Mobile preview</h2>
+            <p class="ss-card-subtitle">Device width around 390px.</p>
+          </div>
+          <div class="ss-builder" data-ss-builder-mode="edit" style="min-height: 18rem;">
+            <main class="ss-builder-canvas ss-builder-canvas-checkerboard">
+              <div class="ss-builder-stage">
+                <div class="ss-builder-viewport" data-ss-device="mobile">
+                  <div class="ss-builder-page ss-p-4" style="--ss-builder-page-min-height: 12rem;">
+                    <div class="ss-builder-text ss-is-active-editing ss-bg-soft ss-radius-lg ss-p-4">Active text edit target</div>
+                  </div>
+                </div>
+              </div>
+            </main>
+          </div>
+        </article>
+
+        <article class="ss-card" id="published">
+          <div class="ss-card-header">
+            <h2 class="ss-card-title">Published mode</h2>
+            <p class="ss-card-subtitle">Builder UI is removed from output.</p>
+          </div>
+          <div class="ss-builder" data-ss-builder-mode="published" style="min-height: 18rem;">
+            <main class="ss-builder-canvas">
+              <div class="ss-builder-stage">
+                <div class="ss-builder-viewport" data-ss-device="full">
+                  <div class="ss-builder-page ss-p-4" style="--ss-builder-page-min-height: 12rem;">
+                    <div class="ss-builder-block ss-is-selected ss-card">
+                      <div class="ss-builder-handle-bar"><span class="ss-builder-handle">Gone</span></div>
+                      <div class="ss-card-body">
+                        <h3 class="ss-card-title">Published content</h3>
+                        <p class="ss-text ss-text-muted ss-mb-0">Outlines, handles, and editor drop zones are hidden.</p>
+                      </div>
+                    </div>
+                    <div class="ss-builder-dropzone ss-mt-4">Hidden in published mode</div>
+                    <div class="ss-builder-block ss-is-hidden ss-card ss-mt-4"><div class="ss-card-body">Hidden content</div></div>
+                  </div>
+                </div>
+              </div>
+            </main>
+          </div>
+        </article>
+      </section>
+    </main>
+  </body>
+</html>

@@ -38,6 +38,7 @@ Attach SS classes to the elements you want to style:
 - Components for buttons, badges, alerts, cards, forms, input groups, tables, navigation, dropdown appearance, modal appearance, toasts, progress, skeletons, accordions, list groups, and avatars.
 - Explicit dark mode with `.ss-theme-dark` or `[data-ss-theme="dark"]`.
 - Optional system preference support with `.ss-theme-system`.
+- Builder-specific primitives for canvas editing, responsive previews, editable states, drop zones, handles, and published-output cleanup.
 
 ## Color Palette
 
@@ -134,6 +135,16 @@ For OS preference support without forcing dark mode, add `.ss-theme-system`:
 ```
 
 Dark mode adjusts surfaces, borders, text, focus rings, soft status backgrounds, overlays, and shadows.
+
+## Builder Primitives
+
+SS CSS now includes editor-only classes for the SloanSites website builder. Use `.ss-builder-*` classes for builder shell, canvas, stage, viewport, page, editable regions, drop zones, handles, and placeholders.
+
+Builder state can be controlled with classes such as `.ss-is-selected`, `.ss-is-dragging`, `.ss-is-hidden`, and `.ss-is-invalid`, or with attributes such as `data-ss-builder-mode`, `data-ss-device`, `data-ss-state`, and `data-ss-drop-position`.
+
+Published pages should not include active builder state classes unless intentionally needed. When `data-ss-builder-mode="published"` or `data-ss-published="true"` is present, editor handles, drop zones, overlays, outlines, and hidden builder items are removed from the visual output.
+
+See [docs/builder-canvas-and-editable-states.md](docs/builder-canvas-and-editable-states.md) and [examples/builder.html](examples/builder.html).
 
 ## Accessibility
 

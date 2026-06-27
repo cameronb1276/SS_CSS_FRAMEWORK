@@ -12,6 +12,7 @@
 - Added `dist/ss.css` and `dist/ss.min.css` as release-ready CSS files.
 - Added README, foundation docs, utility docs, component docs, release notes, focused examples, and a full demo page.
 - Completed Phase 04 release prep with dark mode, documentation, testing notes, demo coverage, and first-release polish.
+- Added Phase 05 builder canvas primitives for edit, preview, and published modes, including responsive device previews, editable states, drop zones, handles, placeholders, and builder documentation.
 
 ## Known Limitations
 
