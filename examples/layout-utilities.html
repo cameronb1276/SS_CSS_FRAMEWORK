@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>SS CSS Framework Layout Utilities Example</title>
+    <link rel="stylesheet" href="../dist/ss.css">
+  </head>
+  <body class="ss-page">
+    <main class="ss-container-wide ss-py-8">
+      <header class="ss-split ss-mb-8">
+        <div>
+          <h1 class="ss-h1 ss-mb-2">Layout Utilities</h1>
+          <p class="ss-text ss-text-muted ss-mb-0">
+            A compact sample using containers, grid, flex, spacing, color, radius, and shadow utilities.
+          </p>
+        </div>
+        <a class="ss-link ss-shrink-0" href="./foundation.html">Foundation example</a>
+      </header>
+
+      <section class="ss-grid ss-cols-1 ss-md-cols-2 ss-lg-cols-4 ss-gap-4">
+        <article class="ss-bg-surface ss-border ss-radius-lg ss-shadow-sm ss-p-4">
+          <p class="ss-small ss-text-muted ss-uppercase ss-fw-semibold ss-mb-2">Revenue</p>
+          <h2 class="ss-h3 ss-mb-2">$48.2k</h2>
+          <p class="ss-text ss-text-success ss-mb-0">Up 12% this month</p>
+        </article>
+        <article class="ss-bg-surface ss-border ss-radius-lg ss-shadow-sm ss-p-4">
+          <p class="ss-small ss-text-muted ss-uppercase ss-fw-semibold ss-mb-2">Leads</p>
+          <h2 class="ss-h3 ss-mb-2">1,284</h2>
+          <p class="ss-text ss-text-primary ss-mb-0">Healthy pipeline</p>
+        </article>
+        <article class="ss-bg-surface ss-border ss-radius-lg ss-shadow-sm ss-p-4">
+          <p class="ss-small ss-text-muted ss-uppercase ss-fw-semibold ss-mb-2">Risk</p>
+          <h2 class="ss-h3 ss-mb-2">Low</h2>
+          <p class="ss-text ss-text-soft ss-mb-0">No urgent alerts</p>
+        </article>
+        <article class="ss-bg-primary ss-radius-lg ss-shadow-md ss-p-4">
+          <p class="ss-small ss-uppercase ss-fw-semibold ss-mb-2">Focus</p>
+          <h2 class="ss-h3 ss-mb-2">Q3 launch</h2>
+          <p class="ss-text ss-mb-0">Utility classes keep this layout class-driven.</p>
+        </article>
+      </section>
+
+      <section class="ss-grid ss-cols-1 ss-lg-cols-3 ss-gap-6 ss-mt-8">
+        <article class="ss-bg-surface ss-border ss-radius-lg ss-p-6">
+          <div class="ss-cluster ss-justify-between ss-mb-4">
+            <h2 class="ss-h2 ss-mb-0">Pipeline</h2>
+            <span class="ss-bg-accent-soft ss-text-accent ss-radius-pill ss-px-4 ss-py-2 ss-small ss-fw-semibold">Live</span>
+          </div>
+          <div class="ss-grid-auto ss-gap-4">
+            <div class="ss-bg-soft ss-radius-md ss-p-4">
+              <p class="ss-small ss-text-muted ss-mb-2">Discovery</p>
+              <p class="ss-text ss-fw-semibold ss-mb-0">24 accounts</p>
+            </div>
+            <div class="ss-bg-soft ss-radius-md ss-p-4">
+              <p class="ss-small ss-text-muted ss-mb-2">Proposal</p>
+              <p class="ss-text ss-fw-semibold ss-mb-0">9 accounts</p>
+            </div>
+            <div class="ss-bg-soft ss-radius-md ss-p-4">
+              <p class="ss-small ss-text-muted ss-mb-2">Closing</p>
+              <p class="ss-text ss-fw-semibold ss-mb-0">4 accounts</p>
+            </div>
+          </div>
+        </article>
+      </section>
+    </main>
+  </body>
+</html>
