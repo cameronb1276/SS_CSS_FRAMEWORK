@@ -29,8 +29,8 @@ Core Phase 01 classes include:
 - `.ss-page` for page background, text color, font family, and base line height.
 - `.ss-h1` through `.ss-h6`, `.ss-heading`, `.ss-text`, `.ss-link`, `.ss-list`, and `.ss-list-spaced` for typography.
 - `.ss-quote`, `.ss-code`, `.ss-kbd`, `.ss-samp`, `.ss-pre`, `.ss-figure`, `.ss-caption`, and `.ss-hr` for content treatments.
-- `.ss-label`, `.ss-field`, `.ss-textarea`, and `.ss-btn` for form and action elements.
-- `.ss-table`, `.ss-table-caption`, `.ss-th`, and `.ss-td` for table presentation.
+- `.ss-label`, `.ss-field`, `.ss-select`, `.ss-textarea`, and `.ss-btn` for form and action elements.
+- `.ss-table`, `.ss-tr`, `.ss-table-caption`, `.ss-th`, and `.ss-td` for table presentation.
 - `.ss-img`, `.ss-media`, and `.ss-svg` for responsive media behavior.
 
 ## Accessibility

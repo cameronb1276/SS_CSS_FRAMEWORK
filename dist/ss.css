@@ -11,11 +11,18 @@
   --ss-color-primary-hover: #2563eb;
   --ss-color-primary-active: #1d4ed8;
   --ss-color-secondary: #64748b;
+  --ss-color-secondary-hover: #475569;
+  --ss-color-secondary-active: #334155;
   --ss-color-accent: #a855f7;
+  --ss-color-accent-hover: #9333ea;
   --ss-color-success: #22c55e;
+  --ss-color-success-hover: #16a34a;
   --ss-color-warning: #f59e0b;
+  --ss-color-warning-hover: #d97706;
   --ss-color-danger: #ef4444;
+  --ss-color-danger-hover: #dc2626;
   --ss-color-info: #06b6d4;
+  --ss-color-info-hover: #0891b2;
   --ss-color-bg: #f8fafc;
   --ss-color-surface: #ffffff;
   --ss-color-surface-soft: #f1f5f9;
@@ -52,6 +59,7 @@
   --ss-link-hover: var(--ss-color-primary-hover);
   --ss-focus: var(--ss-color-primary);
   --ss-disabled-bg: #e2e8f0;
+  --ss-disabled-border: #cbd5e1;
   --ss-disabled-text: #94a3b8;
 
   /* Typography */
@@ -142,6 +150,7 @@
   --ss-link-hover: #93c5fd;
   --ss-focus: #60a5fa;
   --ss-disabled-bg: #1e293b;
+  --ss-disabled-border: #334155;
   --ss-disabled-text: #64748b;
 }
 
@@ -304,8 +313,7 @@ body {
   padding: var(--ss-space-4);
 }
 
-.ss-pre .ss-code,
-.ss-pre code {
+.ss-pre .ss-code {
   border-radius: 0;
   background: transparent;
   padding: 0;
@@ -328,7 +336,9 @@ body {
   font-weight: var(--ss-font-weight-medium);
 }
 
-.ss-field {
+.ss-field,
+.ss-select,
+.ss-textarea {
   width: 100%;
   margin: 0;
   border: var(--ss-border-width) solid var(--ss-border);
@@ -343,17 +353,25 @@ body {
     background-color var(--ss-transition-fast);
 }
 
+.ss-select {
+  appearance: auto;
+}
+
 .ss-textarea {
   min-height: 8rem;
   resize: vertical;
 }
 
-.ss-field::placeholder {
+.ss-field::placeholder,
+.ss-textarea::placeholder {
   color: var(--ss-text-soft);
 }
 
-.ss-field:disabled {
+.ss-field:disabled,
+.ss-select:disabled,
+.ss-textarea:disabled {
   background: var(--ss-disabled-bg);
+  border-color: var(--ss-disabled-border);
   color: var(--ss-disabled-text);
   cursor: not-allowed;
   opacity: 0.65;
@@ -1536,7 +1554,7 @@ body {
 }
 
 .ss-btn-secondary:hover {
-  background: #475569;
+  background: var(--ss-color-secondary-hover);
 }
 
 .ss-btn-accent {
@@ -1545,7 +1563,7 @@ body {
 }
 
 .ss-btn-accent:hover {
-  background: #9333ea;
+  background: var(--ss-color-accent-hover);
 }
 
 .ss-btn-success {
@@ -1554,7 +1572,7 @@ body {
 }
 
 .ss-btn-success:hover {
-  background: #16a34a;
+  background: var(--ss-color-success-hover);
 }
 
 .ss-btn-warning {
@@ -1563,7 +1581,7 @@ body {
 }
 
 .ss-btn-warning:hover {
-  background: #d97706;
+  background: var(--ss-color-warning-hover);
 }
 
 .ss-btn-danger {
@@ -1572,7 +1590,7 @@ body {
 }
 
 .ss-btn-danger:hover {
-  background: #dc2626;
+  background: var(--ss-color-danger-hover);
 }
 
 .ss-btn-info {
@@ -1581,7 +1599,7 @@ body {
 }
 
 .ss-btn-info:hover {
-  background: #0891b2;
+  background: var(--ss-color-info-hover);
 }
 
 .ss-btn-ghost {
@@ -1869,12 +1887,9 @@ body {
   font-size: var(--ss-font-size-lg);
 }
 
-.ss-select {
-  appearance: auto;
-}
-
 .ss-field:focus,
 .ss-select:focus,
+.ss-textarea:focus,
 .ss-check-input:focus,
 .ss-radio-input:focus,
 .ss-switch-input:focus,

@@ -3,6 +3,7 @@
 ## Unreleased
 
 - Revised Phase 01 foundation styles to use attachable `ss-*` classes instead of styling raw HTML elements directly.
+- Tightened Phase 01 class-first form and code styles so `.ss-select` and `.ss-textarea` work as standalone foundation classes.
 
 ## 0.3.0 - Phase 03
 
