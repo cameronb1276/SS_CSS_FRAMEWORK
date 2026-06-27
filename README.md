@@ -2,7 +2,7 @@
 
 SS CSS Framework is a lightweight, class-based CSS framework for business websites, dashboards, SaaS pages, admin panels, and client projects. It works by linking one CSS file and does not require JavaScript or external CSS dependencies.
 
-Current release: `0.1.0`
+Current release: `0.2.0`
 
 ## Quick Start
 
@@ -222,9 +222,28 @@ Theme overrides can be scoped:
 ## Project Structure
 
 ```text
-instructions/  Phase instructions for controlled development
-src/           Source CSS
-dist/          Drop-in CSS release files
-docs/          Framework documentation
-examples/      Demo and focused examples
+src/       Source CSS
+dist/      Drop-in CSS release files
+docs/      Framework documentation and guides
+examples/  Demo and focused examples
 ```
+
+`instructions/` is used locally for controlled phase work and is intentionally ignored from GitHub.
+
+## Documentation Entry Points
+
+- [docs/index.html](docs/index.html): static docs landing page.
+- [docs/class-reference.md](docs/class-reference.md): category-based class reference.
+- [docs/builder-usage.md](docs/builder-usage.md): SloanSites builder implementation guide.
+- [docs/published-sites.md](docs/published-sites.md): published client site guide.
+- [examples/readme.html](examples/readme.html): styled HTML version of this README.
+
+## Development Workflow
+
+The framework is a plain CSS project. Edit `src/ss.css`, then sync it to `dist/ss.css` and regenerate `dist/ss.min.css`. Before committing, check that source and distribution CSS match, examples only use defined `ss-` classes, and no external CSS framework dependency has been introduced.
+
+Phase work should be committed and pushed one phase at a time using the phase instruction files.
+
+## License
+
+No separate license file is currently included.

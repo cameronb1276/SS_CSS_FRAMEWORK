@@ -1,6 +1,6 @@
 # Dark Mode, Accessibility, and Release Notes
 
-SS CSS Framework `0.1.0` is designed as a single-file CSS framework with optional dark mode and no required JavaScript.
+SS CSS Framework `0.2.0` is designed as a single-file CSS framework with optional dark mode and no required JavaScript.
 
 ## Dark Mode
 
@@ -43,12 +43,15 @@ Known browser notes:
 - `.ss-theme-system` depends on `prefers-color-scheme`.
 - No Internet Explorer support is planned.
 
-## First Release Scope
+## Release Scope
 
-Version `0.1.0` includes:
+Version `0.2.0` includes:
 
 - Foundation tokens and class-based base styles.
 - Layout and utility helpers.
 - Reusable components and UI pattern appearance.
 - Explicit and optional system dark mode.
+- Builder canvas and builder UI classes.
+- Business website section primitives and client theme helpers.
+- Published-site safety utilities.
 - User documentation, focused examples, a full demo page, and minified CSS output.

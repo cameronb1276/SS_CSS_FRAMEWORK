@@ -1,6 +1,6 @@
-# SS CSS Framework 0.1.0
+# SS CSS Framework 0.2.0
 
-SS CSS Framework `0.1.0` is the first usable release of the framework.
+SS CSS Framework `0.2.0` packages the foundation framework plus the SloanSites builder, section, theme, and published-site safety layers.
 
 ## Release Files
 
@@ -8,6 +8,8 @@ SS CSS Framework `0.1.0` is the first usable release of the framework.
 - `dist/ss.css`: drop-in readable distribution CSS.
 - `dist/ss.min.css`: drop-in minified distribution CSS.
 - `examples/demo.html`: full visual demo.
+- `docs/index.html`: static documentation entry point.
+- `docs/class-reference.md`: category-based class reference.
 
 ## Included
 
@@ -31,3 +33,10 @@ SS CSS Framework `0.1.0` is the first usable release of the framework.
 ## Recommended Use
 
 Link `dist/ss.min.css` in production and `dist/ss.css` while developing or inspecting the framework.
+
+## Release Checklist
+
+- Source and distribution CSS are synchronized.
+- Example pages cover foundation, layout, components, sections, builder canvas, builder UI, themes, and published safety.
+- Documentation covers tokens, utilities, components, sections, builder usage, client themes, and published output.
+- `instructions/` is a local ignored working folder and is not part of the GitHub release package.
