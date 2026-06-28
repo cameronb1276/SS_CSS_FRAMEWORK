@@ -13,6 +13,7 @@
 - Added Phase 16 element registry, normalized element tree adapter, parent/child validation, class and attribute safety checks, published-safety checks, and read-only registry/tree API endpoints.
 - Added Phase 17 validated element mutation API for add, patch, delete, duplicate, move, rename, visibility, and lock operations with backup, audit, and publish compatibility checks.
 - Added Phase 18 reference element tree builder UI with backend-loaded registry/tree data, tree/canvas selection sync, quick CRUD controls, visible error states, and documentation.
+- Added Phase 19 inspector panel controls for selected elements, safe content and attribute saves, curated SS utility picker with simple class conflict handling, locked-state behavior, and documentation.
 
 ## 0.2.0 - Builder and Published Site Toolkit
 

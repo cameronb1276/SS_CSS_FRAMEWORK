@@ -435,11 +435,14 @@ async function main() {
   if (!elementTreeBuilder.includes("/element-operations") || !elementTreeBuilder.includes("../dist/ss.css")) {
     throw new Error("Element tree builder example is missing backend operation wiring or SS CSS.");
   }
+  if (!elementTreeBuilder.includes("utilityPicker") || !elementTreeBuilder.includes("saveAttributes") || !elementTreeBuilder.includes("saveContentFields")) {
+    throw new Error("Element tree builder example is missing inspector controls.");
+  }
   if (/bootstrap|tailwind|material-ui/i.test(elementTreeBuilder)) {
     throw new Error("Element tree builder example must not depend on another CSS framework.");
   }
 
-    console.log("Phase 18 verification passed.");
+    console.log("Phase 19 verification passed.");
 }
 
 main().catch((error) => {

@@ -211,6 +211,8 @@ Open `../../examples/element-tree-builder.html` while the backend is running on 
 
 See `../../docs/element-tree-ui.md`.
 
+The same example also includes Phase 19 inspector controls for selected-element content fields, safe attributes, locked-state handling, and a curated SS utility picker. See `../../docs/inspector-panel-and-utility-picker.md`.
+
 ## Static Publish Output
 
 Publish a site's JSON pages into local static output:

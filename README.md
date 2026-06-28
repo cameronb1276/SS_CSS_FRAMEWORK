@@ -233,6 +233,12 @@ Phase 18 adds a reference builder page that renders the backend element tree, sy
 
 See [docs/element-tree-ui.md](docs/element-tree-ui.md) and [examples/element-tree-builder.html](examples/element-tree-builder.html).
 
+## Optional Inspector And Utility Picker
+
+Phase 19 extends the reference builder with selected-element inspector controls, safe content/attribute editing, and a curated SS utility picker that saves through backend validation.
+
+See [docs/inspector-panel-and-utility-picker.md](docs/inspector-panel-and-utility-picker.md).
+
 ## Accessibility
 
 SS CSS Framework keeps native semantics intact. Focus states are visible, links remain underlined, disabled states remain readable, validation states use a thicker left border in addition to color, `.ss-sr-only` is available for accessible hidden text, and motion-heavy helpers respect `prefers-reduced-motion`.
@@ -294,6 +300,7 @@ server/    Optional backend services for builder workflows
 - [docs/element-tree-data-model.md](docs/element-tree-data-model.md): optional builder element registry and tree model.
 - [docs/element-crud-api.md](docs/element-crud-api.md): optional backend element mutation API.
 - [docs/element-tree-ui.md](docs/element-tree-ui.md): optional reference element tree builder UI.
+- [docs/inspector-panel-and-utility-picker.md](docs/inspector-panel-and-utility-picker.md): optional selected-element inspector and utility picker.
 - [docs/published-sites.md](docs/published-sites.md): published client site guide.
 - [examples/readme.html](examples/readme.html): styled HTML version of this README.
 

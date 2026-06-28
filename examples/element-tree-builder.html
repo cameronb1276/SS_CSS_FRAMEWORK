@@ -97,6 +97,64 @@
             </section>
 
             <section class="ss-builder-property-group">
+              <div class="ss-builder-property-title">Content</div>
+              <label class="ss-field-stack">
+                <span class="ss-builder-control-label">URL or href</span>
+                <input class="ss-input" id="hrefInput" placeholder="#contact">
+              </label>
+              <label class="ss-field-stack">
+                <span class="ss-builder-control-label">Image source</span>
+                <input class="ss-input" id="srcInput" placeholder="assets/photo.jpg">
+              </label>
+              <label class="ss-field-stack">
+                <span class="ss-builder-control-label">Alt text</span>
+                <input class="ss-input" id="altInput" placeholder="Image description">
+              </label>
+              <button class="ss-btn ss-btn-sm ss-btn-outline" id="saveContentFields" type="button">Save content fields</button>
+            </section>
+
+            <section class="ss-builder-property-group">
+              <div class="ss-builder-property-title">SS utility picker</div>
+              <label class="ss-field-stack">
+                <span class="ss-builder-control-label">Utility class</span>
+                <select class="ss-select" id="utilityPicker">
+                  <option value="ss-text-center" data-group="text-align">Text center</option>
+                  <option value="ss-text-muted" data-group="text-color">Muted text</option>
+                  <option value="ss-bg-surface" data-group="background">Surface background</option>
+                  <option value="ss-bg-primary-soft" data-group="background">Primary soft background</option>
+                  <option value="ss-p-4" data-group="spacing">Padding 4</option>
+                  <option value="ss-p-6" data-group="spacing">Padding 6</option>
+                  <option value="ss-mt-4" data-group="margin-top">Margin top 4</option>
+                  <option value="ss-radius-lg" data-group="radius">Radius large</option>
+                  <option value="ss-shadow-md" data-group="shadow">Shadow medium</option>
+                  <option value="ss-grid" data-group="display">Grid</option>
+                  <option value="ss-flex" data-group="display">Flex</option>
+                </select>
+              </label>
+              <div class="ss-row ss-wrap ss-gap-2">
+                <button class="ss-btn ss-btn-sm ss-btn-outline" id="addUtility" type="button">Add utility</button>
+                <button class="ss-btn ss-btn-sm ss-btn-outline" id="removeUtility" type="button">Remove utility</button>
+              </div>
+            </section>
+
+            <section class="ss-builder-property-group">
+              <div class="ss-builder-property-title">Advanced attributes</div>
+              <label class="ss-field-stack">
+                <span class="ss-builder-control-label">HTML ID</span>
+                <input class="ss-input" id="attrIdInput" placeholder="section-heading">
+              </label>
+              <label class="ss-field-stack">
+                <span class="ss-builder-control-label">Title</span>
+                <input class="ss-input" id="attrTitleInput" placeholder="Tooltip title">
+              </label>
+              <label class="ss-field-stack">
+                <span class="ss-builder-control-label">ARIA label</span>
+                <input class="ss-input" id="attrAriaInput" placeholder="Accessible label">
+              </label>
+              <button class="ss-btn ss-btn-sm ss-btn-outline" id="saveAttributes" type="button">Save attributes</button>
+            </section>
+
+            <section class="ss-builder-property-group">
               <div class="ss-builder-property-title">Actions</div>
               <div class="ss-row ss-wrap ss-gap-2">
                 <button class="ss-btn ss-btn-sm ss-btn-outline" id="duplicateElement" type="button">Duplicate</button>
@@ -189,6 +247,18 @@
           el("labelInput").value = node?.label || "";
           el("textInput").value = node?.content?.text || node?.content?.title || "";
           el("classInput").value = [...(node?.classes?.custom || [])].join(" ");
+          el("hrefInput").value = node?.content?.href || "";
+          el("srcInput").value = node?.content?.src || "";
+          el("altInput").value = node?.content?.alt || "";
+          el("attrIdInput").value = node?.attributes?.id || "";
+          el("attrTitleInput").value = node?.attributes?.title || "";
+          el("attrAriaInput").value = node?.attributes?.["aria-label"] || "";
+          const locked = Boolean(node?.locked);
+          ["labelInput", "textInput", "classInput", "hrefInput", "srcInput", "altInput", "attrIdInput", "attrTitleInput", "attrAriaInput", "renameElement", "saveText", "saveClasses", "saveContentFields", "addUtility", "removeUtility", "saveAttributes", "deleteElement", "duplicateElement", "moveUp", "moveDown"].forEach((id) => {
+            el(id).disabled = !node || locked;
+          });
+          el("toggleLocked").disabled = !node;
+          el("toggleHidden").disabled = !node;
         };
 
         const loadRegistry = async () => {
@@ -280,6 +350,41 @@
         el("renameElement").addEventListener("click", () => mutate({ operation: "rename", elementId: state.selectedId, label: el("labelInput").value }).catch((error) => message("Rename failed", error.message, "danger")));
         el("saveText").addEventListener("click", () => mutate({ operation: "patch", elementId: state.selectedId, patch: { content: { text: el("textInput").value, title: el("textInput").value } } }).catch((error) => message("Text edit failed", error.message, "danger")));
         el("saveClasses").addEventListener("click", () => mutate({ operation: "patch", elementId: state.selectedId, patch: { classes: el("classInput").value } }).catch((error) => message("Class edit failed", error.message, "danger")));
+        el("saveContentFields").addEventListener("click", () => mutate({ operation: "patch", elementId: state.selectedId, patch: { content: { href: el("hrefInput").value, src: el("srcInput").value, alt: el("altInput").value } } }).catch((error) => message("Content edit failed", error.message, "danger")));
+        const utilityGroups = {
+          "text-align": ["ss-text-center"],
+          "text-color": ["ss-text-muted"],
+          background: ["ss-bg-surface", "ss-bg-primary-soft"],
+          spacing: ["ss-p-4", "ss-p-6"],
+          "margin-top": ["ss-mt-4"],
+          radius: ["ss-radius-lg"],
+          shadow: ["ss-shadow-md"],
+          display: ["ss-grid", "ss-flex"]
+        };
+        const utilitySelection = () => {
+          const option = el("utilityPicker").selectedOptions[0];
+          return { value: option.value, group: option.dataset.group };
+        };
+        el("addUtility").addEventListener("click", () => {
+          const selectedUtility = utilitySelection();
+          const current = el("classInput").value.split(/\s+/).filter(Boolean);
+          const conflictFree = current.filter((item) => !(utilityGroups[selectedUtility.group] || []).includes(item));
+          if (!conflictFree.includes(selectedUtility.value)) conflictFree.push(selectedUtility.value);
+          el("classInput").value = conflictFree.join(" ");
+          mutate({ operation: "patch", elementId: state.selectedId, patch: { classes: el("classInput").value } }).catch((error) => message("Utility failed", error.message, "danger"));
+        });
+        el("removeUtility").addEventListener("click", () => {
+          const selectedUtility = utilitySelection();
+          el("classInput").value = el("classInput").value.split(/\s+/).filter(Boolean).filter((item) => item !== selectedUtility.value).join(" ");
+          mutate({ operation: "patch", elementId: state.selectedId, patch: { classes: el("classInput").value } }).catch((error) => message("Utility failed", error.message, "danger"));
+        });
+        el("saveAttributes").addEventListener("click", () => {
+          const attributes = {};
+          if (el("attrIdInput").value) attributes.id = el("attrIdInput").value;
+          if (el("attrTitleInput").value) attributes.title = el("attrTitleInput").value;
+          if (el("attrAriaInput").value) attributes["aria-label"] = el("attrAriaInput").value;
+          mutate({ operation: "patch", elementId: state.selectedId, patch: { attributes } }).catch((error) => message("Attribute edit failed", error.message, "danger"));
+        });
         el("duplicateElement").addEventListener("click", () => mutate({ operation: "duplicate", elementId: state.selectedId }).catch((error) => message("Duplicate failed", error.message, "danger")));
         el("deleteElement").addEventListener("click", () => { if (confirm("Delete the selected element?")) mutate({ operation: "delete", elementId: state.selectedId }).catch((error) => message("Delete failed", error.message, "danger")); });
         el("toggleHidden").addEventListener("click", () => { const node = selected(); if (node) mutate({ operation: "set-visibility", elementId: node.elementId, hidden: !node.visibility.hidden }).catch((error) => message("Visibility failed", error.message, "danger")); });
