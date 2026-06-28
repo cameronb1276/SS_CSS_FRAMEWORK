@@ -20,6 +20,8 @@ import { customJsEditingEnabled, serverPort } from "../config";
 import { createPage, listPages, readPage, updatePage, validatePagePayload } from "../services/contentService";
 import { validateContentId } from "../validation/contentValidation";
 import { publishSite, readPublishMetadata } from "../services/publishService";
+import { elementRegistryForApi, pageToElementTree } from "../services/elementTreeService";
+import { validateElementTree } from "../validation/elementTreeValidation";
 
 export const apiRouter = Router();
 
@@ -36,6 +38,10 @@ apiRouter.get("/health", (_req: Request, res: Response) => {
     port: serverPort(),
     timestamp: new Date().toISOString()
   });
+});
+
+apiRouter.get("/element-registry", requireAccess("read-element-registry"), (_req: Request, res: Response) => {
+  res.json({ elements: elementRegistryForApi() });
 });
 
 apiRouter.get("/sites", requireAccess("list-sites"), asyncRoute(async (_req, res) => {
@@ -134,6 +140,14 @@ apiRouter.get("/sites/:siteId/pages/:pageId", requireAccess("read-page", (req) =
   validateSiteId(req.params.siteId);
   validateContentId(req.params.pageId, "pageId");
   res.json({ page: await readPage(req.params.siteId, req.params.pageId) });
+}));
+
+apiRouter.get("/sites/:siteId/pages/:pageId/tree", requireAccess("read-page-tree", (req) => req.params.siteId), asyncRoute(async (req, res) => {
+  validateSiteId(req.params.siteId);
+  validateContentId(req.params.pageId, "pageId");
+  const page = await readPage(req.params.siteId, req.params.pageId);
+  const tree = pageToElementTree(page);
+  res.json({ tree, issues: validateElementTree(tree, { published: true }) });
 }));
 
 apiRouter.put("/sites/:siteId/pages/:pageId", requireAccess("update-page", (req) => req.params.siteId), writeRateLimit, requireJsonContent, asyncRoute(async (req, res) => {

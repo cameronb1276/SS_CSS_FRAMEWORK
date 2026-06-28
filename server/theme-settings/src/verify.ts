@@ -5,6 +5,10 @@ import { AddressInfo } from "node:net";
 import { createApp } from "./app";
 import { allowedOrigins } from "./config";
 import { resetWriteRateLimitBuckets } from "./middleware/rateLimit";
+import { ElementNode } from "./types/elements";
+import { PageDocument } from "./types/content";
+import { pageToElementTree } from "./services/elementTreeService";
+import { validateElementTree } from "./validation/elementTreeValidation";
 
 async function request(baseUrl: string, method: string, route: string, body?: unknown, headers?: Record<string, string>) {
   const response = await fetch(`${baseUrl}${route}`, {
@@ -29,6 +33,12 @@ function getRecord(value: unknown, label: string): Record<string, unknown> {
 
 function clone<T>(value: T): T {
   return JSON.parse(JSON.stringify(value)) as T;
+}
+
+function firstChild(root: ElementNode): ElementNode {
+  const child = root.children[0];
+  if (!child) throw new Error("Expected element tree child.");
+  return child;
 }
 
 async function withServer<T>(run: (baseUrl: string, tempRoot: string) => Promise<T>): Promise<T> {
@@ -82,6 +92,57 @@ async function main() {
     result = await request(baseUrl, "GET", "/api/sites/demo-site/pages/home");
     if (!result.response.ok) throw new Error("Home page read failed.");
     const homePage = getRecord(result.json, "home page response").page;
+    const initialTree = pageToElementTree(homePage as PageDocument);
+    if (validateElementTree(initialTree, { published: true }).length > 0) {
+      throw new Error("Default page element tree did not validate.");
+    }
+    result = await request(baseUrl, "GET", "/api/element-registry");
+    if (!result.response.ok || !Array.isArray(getRecord(result.json, "registry").elements)) throw new Error("Element registry endpoint failed.");
+    result = await request(baseUrl, "GET", "/api/sites/demo-site/pages/home/tree");
+    if (!result.response.ok) throw new Error("Page tree endpoint failed.");
+    const duplicateTree = clone(initialTree);
+    firstChild(duplicateTree).elementId = "page-home";
+    if (!validateElementTree(duplicateTree).some((item) => item.message.includes("Duplicate element ID"))) {
+      throw new Error("Duplicate element IDs were not rejected.");
+    }
+    const invalidNestingTree = clone(initialTree);
+    firstChild(firstChild(invalidNestingTree)).children.push({ ...firstChild(invalidNestingTree), parentId: firstChild(firstChild(invalidNestingTree)).elementId, children: [] });
+    if (!validateElementTree(invalidNestingTree).some((item) => item.message.includes("cannot have children") || item.message.includes("cannot contain"))) {
+      throw new Error("Invalid nesting was not rejected.");
+    }
+    const unsafeAttributeTree = clone(initialTree);
+    firstChild(unsafeAttributeTree).attributes.onclick = "alert(1)";
+    if (!validateElementTree(unsafeAttributeTree).some((item) => item.message.includes("Unsafe attribute"))) {
+      throw new Error("Unsafe attributes were not rejected.");
+    }
+    const badClassTree = clone(initialTree);
+    firstChild(badClassTree).classes.custom.push("bad class");
+    if (!validateElementTree(badClassTree).some((item) => item.message.includes("Malformed class"))) {
+      throw new Error("Malformed class names were not rejected.");
+    }
+    const missingContentTree = clone(initialTree);
+    firstChild(firstChild(missingContentTree)).content.text = "";
+    if (!validateElementTree(missingContentTree).some((item) => item.message.includes("requires content field"))) {
+      throw new Error("Required content fields were not detected.");
+    }
+    const builderOnlyTree = clone(initialTree);
+    firstChild(builderOnlyTree).children.push({
+      elementId: "builder-only-placeholder",
+      label: "Builder only",
+      type: "custom-code-placeholder",
+      parentId: firstChild(builderOnlyTree).elementId,
+      children: [],
+      content: {},
+      design: {},
+      classes: { system: [], custom: [] },
+      attributes: {},
+      visibility: { hidden: false },
+      locked: false,
+      metadata: { source: "virtual", createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() }
+    });
+    if (!validateElementTree(builderOnlyTree, { published: true }).some((item) => item.message.includes("not safe"))) {
+      throw new Error("Published-safety checks did not identify builder-only elements.");
+    }
     const updatedHome = clone(homePage);
     const updatedHomeRecord = getRecord(updatedHome, "home page");
     updatedHomeRecord.title = "Updated Home";
@@ -270,7 +331,7 @@ async function main() {
     if (result.response.status !== 429) throw new Error("Write rate limit did not reject the second write.");
   });
 
-    console.log("Phase 15 verification passed.");
+    console.log("Phase 16 verification passed.");
 }
 
 main().catch((error) => {

@@ -10,6 +10,7 @@
 - Added Phase 13 backend auth/access-check structure, production fail-closed behavior, environment-driven origin/body/custom-code limits, write rate limiting, audit logging, safer custom JS handling, and backup restore guidance.
 - Added Phase 14 site content JSON model with page, section, and block storage, default home page creation, page validation endpoints, and page backup-before-replace behavior.
 - Added Phase 15 static publish pipeline with JSON page rendering, local preview output, published artifact cleanup, required CSS load order, custom CSS output, and gated custom JS publishing.
+- Added Phase 16 element registry, normalized element tree adapter, parent/child validation, class and attribute safety checks, published-safety checks, and read-only registry/tree API endpoints.
 
 ## 0.2.0 - Builder and Published Site Toolkit
 

@@ -70,6 +70,7 @@ See `.env.example` for placeholder-only configuration.
 All admin routes live under `/api`.
 
 - `GET /api/health`
+- `GET /api/element-registry`
 - `GET /api/sites`
 - `POST /api/sites`
 - `GET /api/sites/:siteId/settings`
@@ -84,6 +85,7 @@ All admin routes live under `/api`.
 - `POST /api/sites/:siteId/pages`
 - `POST /api/sites/:siteId/pages/validate`
 - `GET /api/sites/:siteId/pages/:pageId`
+- `GET /api/sites/:siteId/pages/:pageId/tree`
 - `PUT /api/sites/:siteId/pages/:pageId`
 - `GET /api/sites/:siteId/publish`
 - `POST /api/sites/:siteId/publish`
@@ -186,6 +188,14 @@ Before replacing a page JSON file, the backend writes a timestamped backup to `d
 
 See `../../docs/site-content-json-model.md`.
 
+## Element Tree Model
+
+The backend can normalize page JSON into a canonical editable element tree. The registry defines allowed element types, parent/child rules, defaults, editable fields, required content fields, and published safety. The live DOM should not be treated as the source of truth.
+
+Use `GET /api/element-registry` for allowed elements and `GET /api/sites/<site-id>/pages/<page-id>/tree` for the normalized page tree.
+
+See `../../docs/element-tree-data-model.md`.
+
 ## Static Publish Output
 
 Publish a site's JSON pages into local static output:
@@ -236,7 +246,7 @@ Run:
 npm run verify
 ```
 
-The verification script builds the backend, starts temporary servers, checks health, creates a site, reads settings, verifies default page creation, lists/reads/updates page JSON, rejects invalid page slugs and duplicate IDs, checks page backups, accepts a valid theme update, rejects invalid colors and unsafe IDs, rejects unknown presets, rejects oversized custom CSS, verifies custom JS is disabled by default, rebuilds `theme.css`, generates static publish output, checks CSS order, checks preview serving, checks builder artifact cleanup, checks custom JS publish gates, checks audit logs, checks production fail-closed behavior, and checks write rate limiting.
+The verification script builds the backend, starts temporary servers, checks health, creates a site, reads settings, verifies default page creation, validates the normalized element tree, checks registry/tree endpoints, rejects invalid tree structures, lists/reads/updates page JSON, rejects invalid page slugs and duplicate IDs, checks page backups, accepts a valid theme update, rejects invalid colors and unsafe IDs, rejects unknown presets, rejects oversized custom CSS, verifies custom JS is disabled by default, rebuilds `theme.css`, generates static publish output, checks CSS order, checks preview serving, checks builder artifact cleanup, checks custom JS publish gates, checks audit logs, checks production fail-closed behavior, and checks write rate limiting.
 
 Manual health check:
 

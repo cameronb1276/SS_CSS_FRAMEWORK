@@ -215,6 +215,12 @@ Phase 15 adds a local static output pipeline that renders JSON pages into publis
 
 See [docs/static-publish-output.md](docs/static-publish-output.md).
 
+## Optional Element Tree Model
+
+Phase 16 adds a backend element registry and normalized element tree model for builder editing. Existing page JSON remains the source of truth, while the tree model gives the future canvas, layer panel, inspector, and publish checks one validated structure to share.
+
+See [docs/element-tree-data-model.md](docs/element-tree-data-model.md).
+
 ## Accessibility
 
 SS CSS Framework keeps native semantics intact. Focus states are visible, links remain underlined, disabled states remain readable, validation states use a thicker left border in addition to color, `.ss-sr-only` is available for accessible hidden text, and motion-heavy helpers respect `prefers-reduced-motion`.
@@ -273,6 +279,7 @@ server/    Optional backend services for builder workflows
 - [docs/theme-backend-security-hardening.md](docs/theme-backend-security-hardening.md): optional backend security and production-readiness notes.
 - [docs/site-content-json-model.md](docs/site-content-json-model.md): optional builder page, section, and block JSON model.
 - [docs/static-publish-output.md](docs/static-publish-output.md): optional JSON-to-static published output workflow.
+- [docs/element-tree-data-model.md](docs/element-tree-data-model.md): optional builder element registry and tree model.
 - [docs/published-sites.md](docs/published-sites.md): published client site guide.
 - [examples/readme.html](examples/readme.html): styled HTML version of this README.
 
