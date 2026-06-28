@@ -12,6 +12,9 @@
       .ss-demo-tree-row[data-locked="true"]::after { content: " locked"; font-size: var(--ss-font-size-xs); color: var(--ss-text-muted); }
       .ss-demo-canvas-node { position: relative; cursor: pointer; }
       .ss-demo-canvas-node.ss-is-selected { outline: 2px solid var(--ss-color-primary); outline-offset: 3px; }
+      .ss-demo-drop-valid { box-shadow: inset 0 0 0 2px var(--ss-color-success); }
+      .ss-demo-drop-invalid { box-shadow: inset 0 0 0 2px var(--ss-color-danger); }
+      .ss-demo-library { display: grid; gap: var(--ss-space-2); grid-template-columns: repeat(2, minmax(0, 1fr)); }
     </style>
   </head>
   <body class="ss-page">
@@ -56,6 +59,7 @@
                 <button class="ss-btn ss-btn-sm ss-btn-outline" id="addBefore" type="button">Before</button>
                 <button class="ss-btn ss-btn-sm ss-btn-outline" id="addAfter" type="button">After</button>
               </div>
+              <div class="ss-demo-library ss-mt-4" id="dragLibrary" aria-label="Draggable element library"></div>
             </div>
             <div class="ss-builder-layer-list" id="treePanel" role="tree" aria-label="Page element tree"></div>
           </div>
@@ -179,7 +183,7 @@
       (() => {
         const API = "http://localhost:3004/api";
         const el = (id) => document.getElementById(id);
-        let state = { sites: [], pages: [], registry: [], tree: null, selectedId: null, expanded: new Set() };
+        let state = { sites: [], pages: [], registry: [], tree: null, selectedId: null, expanded: new Set(), drag: null };
 
         const request = async (path, options = {}) => {
           const response = await fetch(`${API}${path}`, {
@@ -203,6 +207,20 @@
 
         const flatten = (node) => [node, ...node.children.flatMap(flatten)];
         const selected = () => state.tree ? flatten(state.tree).find((node) => node.elementId === state.selectedId) : null;
+        const registryEntry = (type) => state.registry.find((item) => item.type === type);
+        const canContain = (parentType, childType) => {
+          const parent = registryEntry(parentType);
+          const child = registryEntry(childType);
+          if (!parent || !child || !parent.canHaveChildren) return false;
+          const childAllowed = parent.allowedChildren === "*" || parent.allowedChildren.includes(childType);
+          const parentAllowed = child.allowedParents === "*" || child.allowedParents.includes(parentType);
+          return childAllowed && parentAllowed;
+        };
+        const isDescendant = (sourceId, targetId) => {
+          const source = state.tree ? flatten(state.tree).find((node) => node.elementId === sourceId) : null;
+          if (!source) return false;
+          return flatten(source).some((node) => node.elementId === targetId);
+        };
         const currentSite = () => el("siteSelect").value;
         const currentPage = () => el("pageSelect").value || "home";
 
@@ -216,7 +234,7 @@
         const renderTreeNode = (node, depth = 0) => {
           const hasChildren = node.children.length > 0;
           const open = state.expanded.has(node.elementId) || depth < 2;
-          const row = `<button class="ss-btn ss-btn-sm ss-btn-ghost ss-demo-tree-row" role="treeitem" aria-selected="${node.elementId === state.selectedId}" data-id="${node.elementId}" data-hidden="${node.visibility.hidden}" data-locked="${node.locked}" style="--ss-layer-depth:${depth}; padding-left:${0.5 + depth * 1.25}rem;">
+          const row = `<button class="ss-btn ss-btn-sm ss-btn-ghost ss-demo-tree-row" role="treeitem" draggable="${node.type !== "page-root" && !node.locked}" aria-selected="${node.elementId === state.selectedId}" data-id="${node.elementId}" data-hidden="${node.visibility.hidden}" data-locked="${node.locked}" style="--ss-layer-depth:${depth}; padding-left:${0.5 + depth * 1.25}rem;">
             ${hasChildren ? (open ? "[-]" : "[+]") : "-"} <span class="ss-badge ss-badge-soft">${safeText(node.type)}</span> ${safeText(labelFor(node))}
           </button>`;
           if (!hasChildren || !open) return row;
@@ -267,6 +285,10 @@
           el("elementType").innerHTML = data.elements
             .filter((item) => item.type !== "page-root" && !item.builderOnly)
             .map((item) => `<option value="${item.type}">${item.category} / ${item.label}</option>`).join("");
+          el("dragLibrary").innerHTML = data.elements
+            .filter((item) => ["heading", "paragraph", "button", "card", "image", "business-hours"].includes(item.type))
+            .map((item) => `<button class="ss-btn ss-btn-sm ss-btn-outline" type="button" draggable="true" data-library-type="${item.type}">${item.label}</button>`)
+            .join("");
         };
 
         const ensureDemoSite = async () => {
@@ -335,6 +357,90 @@
           const id = row.getAttribute("data-id");
           if (state.expanded.has(id)) state.expanded.delete(id); else state.expanded.add(id);
           select(id);
+        });
+
+        const dropPlan = (targetId) => {
+          if (!state.drag || !state.tree) return null;
+          const target = flatten(state.tree).find((node) => node.elementId === targetId);
+          if (!target || target.locked) return null;
+          const draggedType = state.drag.kind === "new" ? state.drag.elementType : flatten(state.tree).find((node) => node.elementId === state.drag.elementId)?.type;
+          if (!draggedType) return null;
+          if (state.drag.kind === "existing" && (state.drag.elementId === targetId || isDescendant(state.drag.elementId, targetId))) return null;
+          if (canContain(target.type, draggedType)) return { position: "inside", target };
+          const parent = flatten(state.tree).find((node) => node.elementId === target.parentId);
+          if (parent && canContain(parent.type, draggedType)) return { position: "after", target, parent };
+          return null;
+        };
+
+        const markDrop = (target, valid) => {
+          target.classList.remove("ss-demo-drop-valid", "ss-demo-drop-invalid");
+          target.classList.add(valid ? "ss-demo-drop-valid" : "ss-demo-drop-invalid");
+        };
+
+        const clearDropMarks = () => {
+          document.querySelectorAll(".ss-demo-drop-valid, .ss-demo-drop-invalid").forEach((node) => node.classList.remove("ss-demo-drop-valid", "ss-demo-drop-invalid"));
+        };
+
+        document.addEventListener("dragstart", (event) => {
+          const treeRow = event.target.closest("[data-id]");
+          const libraryItem = event.target.closest("[data-library-type]");
+          if (treeRow) {
+            const node = flatten(state.tree).find((item) => item.elementId === treeRow.getAttribute("data-id"));
+            if (!node || node.locked || node.type === "page-root") {
+              event.preventDefault();
+              return;
+            }
+            state.drag = { kind: "existing", elementId: node.elementId };
+            event.dataTransfer.setData("text/plain", node.elementId);
+          } else if (libraryItem) {
+            state.drag = { kind: "new", elementType: libraryItem.getAttribute("data-library-type") };
+            event.dataTransfer.setData("text/plain", state.drag.elementType);
+          }
+        });
+
+        document.addEventListener("dragover", (event) => {
+          const target = event.target.closest("[data-id], [data-element-id]");
+          if (!target) return;
+          const targetId = target.getAttribute("data-id") || target.getAttribute("data-element-id");
+          const plan = dropPlan(targetId);
+          markDrop(target, Boolean(plan));
+          if (plan) event.preventDefault();
+        });
+
+        document.addEventListener("dragleave", (event) => {
+          const target = event.target.closest("[data-id], [data-element-id]");
+          if (target) target.classList.remove("ss-demo-drop-valid", "ss-demo-drop-invalid");
+        });
+
+        document.addEventListener("drop", (event) => {
+          const target = event.target.closest("[data-id], [data-element-id]");
+          if (!target || !state.drag) return;
+          event.preventDefault();
+          const targetId = target.getAttribute("data-id") || target.getAttribute("data-element-id");
+          const plan = dropPlan(targetId);
+          clearDropMarks();
+          if (!plan) {
+            message("Invalid drop", "The registry does not allow that drop target.", "danger");
+            state.drag = null;
+            return;
+          }
+          const payload = state.drag.kind === "new"
+            ? plan.position === "inside"
+              ? { operation: "add", elementType: state.drag.elementType, parentId: plan.target.elementId, position: "inside" }
+              : { operation: "add", elementType: state.drag.elementType, siblingId: plan.target.elementId, position: "after" }
+            : plan.position === "inside"
+              ? { operation: "move", elementId: state.drag.elementId, targetParentId: plan.target.elementId, position: "inside" }
+              : { operation: "move", elementId: state.drag.elementId, targetParentId: plan.parent.elementId, siblingId: plan.target.elementId, position: "after" };
+          state.drag = null;
+          mutate(payload).catch((error) => {
+            message("Drop failed", error.message, "danger");
+            loadTree().catch(() => {});
+          });
+        });
+
+        document.addEventListener("dragend", () => {
+          state.drag = null;
+          clearDropMarks();
         });
 
         el("canvasPanel").addEventListener("click", (event) => {

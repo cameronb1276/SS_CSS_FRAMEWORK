@@ -239,6 +239,12 @@ Phase 19 extends the reference builder with selected-element inspector controls,
 
 See [docs/inspector-panel-and-utility-picker.md](docs/inspector-panel-and-utility-picker.md).
 
+## Optional Drag And Drop Builder Operations
+
+Phase 20 adds reference drag-and-drop for tree rows and element-library items, with registry-based feedback and backend-validated add/move operations.
+
+See [docs/drag-drop-builder-operations.md](docs/drag-drop-builder-operations.md).
+
 ## Accessibility
 
 SS CSS Framework keeps native semantics intact. Focus states are visible, links remain underlined, disabled states remain readable, validation states use a thicker left border in addition to color, `.ss-sr-only` is available for accessible hidden text, and motion-heavy helpers respect `prefers-reduced-motion`.
@@ -301,6 +307,7 @@ server/    Optional backend services for builder workflows
 - [docs/element-crud-api.md](docs/element-crud-api.md): optional backend element mutation API.
 - [docs/element-tree-ui.md](docs/element-tree-ui.md): optional reference element tree builder UI.
 - [docs/inspector-panel-and-utility-picker.md](docs/inspector-panel-and-utility-picker.md): optional selected-element inspector and utility picker.
+- [docs/drag-drop-builder-operations.md](docs/drag-drop-builder-operations.md): optional drag/drop builder operation flow.
 - [docs/published-sites.md](docs/published-sites.md): published client site guide.
 - [examples/readme.html](examples/readme.html): styled HTML version of this README.
 

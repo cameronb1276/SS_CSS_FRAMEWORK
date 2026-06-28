@@ -438,11 +438,14 @@ async function main() {
   if (!elementTreeBuilder.includes("utilityPicker") || !elementTreeBuilder.includes("saveAttributes") || !elementTreeBuilder.includes("saveContentFields")) {
     throw new Error("Element tree builder example is missing inspector controls.");
   }
+  if (!elementTreeBuilder.includes("data-library-type") || !elementTreeBuilder.includes("dragover") || !elementTreeBuilder.includes("dropPlan")) {
+    throw new Error("Element tree builder example is missing drag/drop controls.");
+  }
   if (/bootstrap|tailwind|material-ui/i.test(elementTreeBuilder)) {
     throw new Error("Element tree builder example must not depend on another CSS framework.");
   }
 
-    console.log("Phase 19 verification passed.");
+    console.log("Phase 20 verification passed.");
 }
 
 main().catch((error) => {

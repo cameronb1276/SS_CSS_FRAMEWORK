@@ -213,6 +213,8 @@ See `../../docs/element-tree-ui.md`.
 
 The same example also includes Phase 19 inspector controls for selected-element content fields, safe attributes, locked-state handling, and a curated SS utility picker. See `../../docs/inspector-panel-and-utility-picker.md`.
 
+Phase 20 adds tree and library drag/drop to the same reference page. Drop operations call the backend add/move endpoint and reload backend state after success. See `../../docs/drag-drop-builder-operations.md`.
+
 ## Static Publish Output
 
 Publish a site's JSON pages into local static output:
