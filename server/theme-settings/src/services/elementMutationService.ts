@@ -271,7 +271,9 @@ function addElement(page: PageDocument, operation: ElementOperation): string {
   if (operation.siblingId && operation.position !== "inside") {
     const sectionSibling = findSection(page, operation.siblingId);
     if (sectionSibling) {
-      if (!canContain("page-root", operation.elementType)) throw badRequest(`page-root cannot contain ${operation.elementType}.`);
+      if (!canContain("page-root", operation.elementType)) {
+        throw badRequest(`${operation.elementType} cannot be inserted before or after a top-level section. Add it inside a section instead.`);
+      }
       const section = createSection(page, operation.elementType, newId);
       const siblingIndex = page.sectionOrder.indexOf(operation.siblingId);
       const at = operation.position === "before" ? siblingIndex : siblingIndex + 1;
@@ -291,7 +293,10 @@ function addElement(page: PageDocument, operation: ElementOperation): string {
 
   const parentId = operation.parentId ?? rootId(page);
   const parentType = elementTypeOf(page, parentId);
-  if (!canContain(parentType, operation.elementType)) throw badRequest(`${parentType} cannot contain ${operation.elementType}.`);
+  if (!canContain(parentType, operation.elementType)) {
+    const hint = parentType === "page-root" ? " Select a section or add a section first." : "";
+    throw badRequest(`${parentType} cannot contain ${operation.elementType}.${hint}`);
+  }
   if (parentType === "page-root") {
     const section = createSection(page, operation.elementType, newId);
     const at = insertIndex(page.sections.length, operation.position, operation.index);

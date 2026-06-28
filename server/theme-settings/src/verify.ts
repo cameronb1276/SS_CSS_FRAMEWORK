@@ -154,6 +154,26 @@ async function main() {
 
     result = await request(baseUrl, "POST", "/api/sites/demo-site/pages/home/element-operations", {
       operation: "add",
+      elementType: "image",
+      parentId: "hero-section",
+      position: "inside",
+      newElementId: "phase-image-inside-section"
+    });
+    if (!result.response.ok) throw new Error("Add image inside section operation failed.");
+
+    result = await request(baseUrl, "POST", "/api/sites/demo-site/pages/home/element-operations", {
+      operation: "add",
+      elementType: "image",
+      siblingId: "hero-section",
+      position: "after",
+      newElementId: "bad-root-image"
+    });
+    if (result.response.status !== 400 || !JSON.stringify(result.json).includes("inside a section")) {
+      throw new Error("Top-level image insertion did not return a helpful rejection.");
+    }
+
+    result = await request(baseUrl, "POST", "/api/sites/demo-site/pages/home/element-operations", {
+      operation: "add",
       elementType: "section",
       parentId: "phase17-heading",
       position: "inside",
@@ -471,6 +491,9 @@ async function main() {
   }
   if (!elementTreeBuilder.includes("undoPage") || !elementTreeBuilder.includes("redoPage") || !elementTreeBuilder.includes("data-restore-revision")) {
     throw new Error("Element tree builder example is missing history controls.");
+  }
+  if (!elementTreeBuilder.includes("resolveAddInsideTarget") || !elementTreeBuilder.includes("Use Add inside")) {
+    throw new Error("Element tree builder example is missing compatible add-target handling.");
   }
   if (/bootstrap|tailwind|material-ui/i.test(elementTreeBuilder)) {
     throw new Error("Element tree builder example must not depend on another CSS framework.");

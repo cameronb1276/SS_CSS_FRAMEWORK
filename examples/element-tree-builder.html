@@ -215,8 +215,11 @@
         };
 
         const flatten = (node) => [node, ...node.children.flatMap(flatten)];
-        const selected = () => state.tree ? flatten(state.tree).find((node) => node.elementId === state.selectedId) : null;
+        const allNodes = () => state.tree ? flatten(state.tree) : [];
+        const nodeById = (id) => id ? allNodes().find((node) => node.elementId === id) : null;
+        const selected = () => nodeById(state.selectedId);
         const registryEntry = (type) => state.registry.find((item) => item.type === type);
+        const elementLabel = (type) => registryEntry(type)?.label || type;
         const canContain = (parentType, childType) => {
           const parent = registryEntry(parentType);
           const child = registryEntry(childType);
@@ -226,9 +229,43 @@
           return childAllowed && parentAllowed;
         };
         const isDescendant = (sourceId, targetId) => {
-          const source = state.tree ? flatten(state.tree).find((node) => node.elementId === sourceId) : null;
+          const source = nodeById(sourceId);
           if (!source) return false;
           return flatten(source).some((node) => node.elementId === targetId);
+        };
+        const resolveAddInsideTarget = (childType) => {
+          const node = selected();
+          if (node && canContain(node.type, childType)) return node;
+          const parent = nodeById(node?.parentId);
+          if (parent && canContain(parent.type, childType)) return parent;
+          return state.tree?.children.find((child) => canContain(child.type, childType)) || null;
+        };
+        const addInsideSelected = () => {
+          const elementType = el("elementType").value;
+          const parent = resolveAddInsideTarget(elementType);
+          if (!parent) {
+            message("Add failed", `${elementLabel(elementType)} needs a compatible parent. Select a section or add a section first.`, "danger");
+            return;
+          }
+          mutate({ operation: "add", elementType, parentId: parent.elementId, position: "inside" }).catch((error) => message("Add failed", error.message, "danger"));
+        };
+        const addBesideSelected = (position) => {
+          const elementType = el("elementType").value;
+          const node = selected();
+          if (!node) {
+            message("Add failed", "Select an element first.", "danger");
+            return;
+          }
+          const parent = nodeById(node.parentId);
+          if (!parent || !canContain(parent.type, elementType)) {
+            const direction = position === "before" ? "before" : "after";
+            const body = node.type === "section" && canContain(node.type, elementType)
+              ? `${elementLabel(elementType)} cannot be inserted ${direction} a top-level section. Use Add inside to place it in the selected section.`
+              : `${elementLabel(elementType)} cannot be inserted ${direction} ${node.label}. Select a compatible sibling or use Add inside.`;
+            message("Add failed", body, "danger");
+            return;
+          }
+          mutate({ operation: "add", elementType, siblingId: node.elementId, position }).catch((error) => message("Add failed", error.message, "danger"));
         };
         const currentSite = () => el("siteSelect").value;
         const currentPage = () => el("pageSelect").value || "home";
@@ -392,13 +429,13 @@
 
         const dropPlan = (targetId) => {
           if (!state.drag || !state.tree) return null;
-          const target = flatten(state.tree).find((node) => node.elementId === targetId);
+          const target = nodeById(targetId);
           if (!target || target.locked) return null;
-          const draggedType = state.drag.kind === "new" ? state.drag.elementType : flatten(state.tree).find((node) => node.elementId === state.drag.elementId)?.type;
+          const draggedType = state.drag.kind === "new" ? state.drag.elementType : nodeById(state.drag.elementId)?.type;
           if (!draggedType) return null;
           if (state.drag.kind === "existing" && (state.drag.elementId === targetId || isDescendant(state.drag.elementId, targetId))) return null;
           if (canContain(target.type, draggedType)) return { position: "inside", target };
-          const parent = flatten(state.tree).find((node) => node.elementId === target.parentId);
+          const parent = nodeById(target.parentId);
           if (parent && canContain(parent.type, draggedType)) return { position: "after", target, parent };
           return null;
         };
@@ -416,7 +453,7 @@
           const treeRow = event.target.closest("[data-id]");
           const libraryItem = event.target.closest("[data-library-type]");
           if (treeRow) {
-            const node = flatten(state.tree).find((item) => item.elementId === treeRow.getAttribute("data-id"));
+            const node = nodeById(treeRow.getAttribute("data-id"));
             if (!node || node.locked || node.type === "page-root") {
               event.preventDefault();
               return;
@@ -481,9 +518,9 @@
           select(node.getAttribute("data-element-id"));
         });
 
-        el("addInside").addEventListener("click", () => mutate({ operation: "add", elementType: el("elementType").value, parentId: state.selectedId, position: "inside" }).catch((error) => message("Add failed", error.message, "danger")));
-        el("addBefore").addEventListener("click", () => mutate({ operation: "add", elementType: el("elementType").value, siblingId: state.selectedId, position: "before" }).catch((error) => message("Add failed", error.message, "danger")));
-        el("addAfter").addEventListener("click", () => mutate({ operation: "add", elementType: el("elementType").value, siblingId: state.selectedId, position: "after" }).catch((error) => message("Add failed", error.message, "danger")));
+        el("addInside").addEventListener("click", addInsideSelected);
+        el("addBefore").addEventListener("click", () => addBesideSelected("before"));
+        el("addAfter").addEventListener("click", () => addBesideSelected("after"));
         el("renameElement").addEventListener("click", () => mutate({ operation: "rename", elementId: state.selectedId, label: el("labelInput").value }).catch((error) => message("Rename failed", error.message, "danger")));
         el("saveText").addEventListener("click", () => mutate({ operation: "patch", elementId: state.selectedId, patch: { content: { text: el("textInput").value, title: el("textInput").value } } }).catch((error) => message("Text edit failed", error.message, "danger")));
         el("saveClasses").addEventListener("click", () => mutate({ operation: "patch", elementId: state.selectedId, patch: { classes: el("classInput").value } }).catch((error) => message("Class edit failed", error.message, "danger")));
