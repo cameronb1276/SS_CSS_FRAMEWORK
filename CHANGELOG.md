@@ -12,6 +12,7 @@
 - Added Phase 15 static publish pipeline with JSON page rendering, local preview output, published artifact cleanup, required CSS load order, custom CSS output, and gated custom JS publishing.
 - Added Phase 16 element registry, normalized element tree adapter, parent/child validation, class and attribute safety checks, published-safety checks, and read-only registry/tree API endpoints.
 - Added Phase 17 validated element mutation API for add, patch, delete, duplicate, move, rename, visibility, and lock operations with backup, audit, and publish compatibility checks.
+- Added Phase 18 reference element tree builder UI with backend-loaded registry/tree data, tree/canvas selection sync, quick CRUD controls, visible error states, and documentation.
 
 ## 0.2.0 - Builder and Published Site Toolkit
 

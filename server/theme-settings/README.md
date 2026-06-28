@@ -205,6 +205,12 @@ The backend validates registry rules, locked state, class names, attributes, and
 
 See `../../docs/element-crud-api.md`.
 
+## Element Tree Builder Example
+
+Open `../../examples/element-tree-builder.html` while the backend is running on port `3004`. The example loads the element registry, site pages, and normalized page tree, then calls the element operation endpoint for add, rename, edit, duplicate, delete, hide, lock, and move controls.
+
+See `../../docs/element-tree-ui.md`.
+
 ## Static Publish Output
 
 Publish a site's JSON pages into local static output:

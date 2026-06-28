@@ -227,6 +227,12 @@ Phase 17 adds a validated backend operation endpoint for adding, editing, deleti
 
 See [docs/element-crud-api.md](docs/element-crud-api.md).
 
+## Optional Element Tree Builder UI
+
+Phase 18 adds a reference builder page that renders the backend element tree, syncs tree and canvas selection, and calls the mutation API for common CRUD controls.
+
+See [docs/element-tree-ui.md](docs/element-tree-ui.md) and [examples/element-tree-builder.html](examples/element-tree-builder.html).
+
 ## Accessibility
 
 SS CSS Framework keeps native semantics intact. Focus states are visible, links remain underlined, disabled states remain readable, validation states use a thicker left border in addition to color, `.ss-sr-only` is available for accessible hidden text, and motion-heavy helpers respect `prefers-reduced-motion`.
@@ -287,6 +293,7 @@ server/    Optional backend services for builder workflows
 - [docs/static-publish-output.md](docs/static-publish-output.md): optional JSON-to-static published output workflow.
 - [docs/element-tree-data-model.md](docs/element-tree-data-model.md): optional builder element registry and tree model.
 - [docs/element-crud-api.md](docs/element-crud-api.md): optional backend element mutation API.
+- [docs/element-tree-ui.md](docs/element-tree-ui.md): optional reference element tree builder UI.
 - [docs/published-sites.md](docs/published-sites.md): published client site guide.
 - [examples/readme.html](examples/readme.html): styled HTML version of this README.
 

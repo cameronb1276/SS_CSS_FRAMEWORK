@@ -431,7 +431,15 @@ async function main() {
     if (result.response.status !== 429) throw new Error("Write rate limit did not reject the second write.");
   });
 
-    console.log("Phase 17 verification passed.");
+  const elementTreeBuilder = await fs.readFile(path.resolve(process.cwd(), "..", "..", "examples", "element-tree-builder.html"), "utf8");
+  if (!elementTreeBuilder.includes("/element-operations") || !elementTreeBuilder.includes("../dist/ss.css")) {
+    throw new Error("Element tree builder example is missing backend operation wiring or SS CSS.");
+  }
+  if (/bootstrap|tailwind|material-ui/i.test(elementTreeBuilder)) {
+    throw new Error("Element tree builder example must not depend on another CSS framework.");
+  }
+
+    console.log("Phase 18 verification passed.");
 }
 
 main().catch((error) => {

@@ -1,0 +1,321 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>SS CSS Framework Element Tree Builder</title>
+    <link rel="stylesheet" href="../dist/ss.css">
+    <style>
+      .ss-demo-tree-row { width: 100%; justify-content: flex-start; text-align: left; }
+      .ss-demo-tree-row[aria-selected="true"] { outline: 2px solid var(--ss-color-primary); outline-offset: 2px; }
+      .ss-demo-tree-row[data-hidden="true"] { opacity: 0.58; }
+      .ss-demo-tree-row[data-locked="true"]::after { content: " locked"; font-size: var(--ss-font-size-xs); color: var(--ss-text-muted); }
+      .ss-demo-canvas-node { position: relative; cursor: pointer; }
+      .ss-demo-canvas-node.ss-is-selected { outline: 2px solid var(--ss-color-primary); outline-offset: 3px; }
+    </style>
+  </head>
+  <body class="ss-page">
+    <div class="ss-builder-app">
+      <header class="ss-builder-topbar">
+        <div class="ss-builder-project">
+          <strong class="ss-builder-project-name">Element Tree Builder</strong>
+          <span class="ss-builder-status ss-builder-status-saving" id="backendStatus">Checking backend</span>
+        </div>
+        <span class="ss-builder-toolbar-divider"></span>
+        <div class="ss-builder-page-selector">
+          <label class="ss-label ss-mb-0" for="siteSelect">Site</label>
+          <select class="ss-select" id="siteSelect"></select>
+          <label class="ss-label ss-mb-0" for="pageSelect">Page</label>
+          <select class="ss-select" id="pageSelect"></select>
+          <button class="ss-btn ss-btn-sm ss-btn-outline" id="createDemo" type="button">Create demo</button>
+        </div>
+        <div class="ss-builder-toolbar-group ss-ml-auto">
+          <span class="ss-builder-status ss-builder-status-saved" id="saveStatus">Idle</span>
+          <button class="ss-btn ss-btn-sm ss-btn-outline" id="refreshPage" type="button">Refresh</button>
+        </div>
+      </header>
+
+      <div class="ss-builder-app-main">
+        <aside class="ss-builder-sidebar ss-builder-sidebar-left">
+          <div class="ss-builder-sidebar-header">
+            <strong>Element tree</strong>
+            <p class="ss-builder-component-desc ss-mb-0">JSON source, backend mutations.</p>
+          </div>
+          <div class="ss-builder-sidebar-body">
+            <div class="ss-alert ss-alert-info" id="messageBox">
+              <strong class="ss-alert-title">Start backend</strong>
+              <p class="ss-alert-desc">Run <code class="ss-code">npm run dev</code> in <code class="ss-code">server/theme-settings</code>.</p>
+            </div>
+            <div class="ss-builder-control-group">
+              <label class="ss-field-stack">
+                <span class="ss-builder-control-label">Add element</span>
+                <select class="ss-select" id="elementType"></select>
+              </label>
+              <div class="ss-row ss-wrap ss-gap-2">
+                <button class="ss-btn ss-btn-sm" id="addInside" type="button">Add inside</button>
+                <button class="ss-btn ss-btn-sm ss-btn-outline" id="addBefore" type="button">Before</button>
+                <button class="ss-btn ss-btn-sm ss-btn-outline" id="addAfter" type="button">After</button>
+              </div>
+            </div>
+            <div class="ss-builder-layer-list" id="treePanel" role="tree" aria-label="Page element tree"></div>
+          </div>
+        </aside>
+
+        <main class="ss-builder-canvas ss-builder-canvas-dot-grid">
+          <div class="ss-builder-stage">
+            <div class="ss-builder-viewport" data-ss-device="desktop">
+              <div class="ss-builder-page ss-client-theme ss-p-6" id="canvasPanel" data-ss-builder-mode="edit"></div>
+            </div>
+          </div>
+        </main>
+
+        <aside class="ss-builder-inspector">
+          <div class="ss-builder-inspector-header">
+            <strong>Selected element</strong>
+            <p class="ss-builder-selected-summary ss-mb-0" id="selectedSummary">None selected</p>
+          </div>
+          <div class="ss-builder-inspector-body">
+            <section class="ss-builder-property-group">
+              <div class="ss-builder-property-title">Quick edits</div>
+              <label class="ss-field-stack">
+                <span class="ss-builder-control-label">Label</span>
+                <input class="ss-input" id="labelInput" placeholder="Element label">
+              </label>
+              <label class="ss-field-stack">
+                <span class="ss-builder-control-label">Simple text</span>
+                <textarea class="ss-textarea" id="textInput" rows="4" placeholder="Heading, paragraph, or button text"></textarea>
+              </label>
+              <label class="ss-field-stack">
+                <span class="ss-builder-control-label">Custom classes</span>
+                <input class="ss-input" id="classInput" placeholder="ss-text-center ss-mt-4">
+              </label>
+              <div class="ss-row ss-wrap ss-gap-2">
+                <button class="ss-btn ss-btn-sm" id="renameElement" type="button">Rename</button>
+                <button class="ss-btn ss-btn-sm ss-btn-outline" id="saveText" type="button">Save text</button>
+                <button class="ss-btn ss-btn-sm ss-btn-outline" id="saveClasses" type="button">Save classes</button>
+              </div>
+            </section>
+
+            <section class="ss-builder-property-group">
+              <div class="ss-builder-property-title">Actions</div>
+              <div class="ss-row ss-wrap ss-gap-2">
+                <button class="ss-btn ss-btn-sm ss-btn-outline" id="duplicateElement" type="button">Duplicate</button>
+                <button class="ss-btn ss-btn-sm ss-btn-outline" id="moveUp" type="button">Move up</button>
+                <button class="ss-btn ss-btn-sm ss-btn-outline" id="moveDown" type="button">Move down</button>
+                <button class="ss-btn ss-btn-sm ss-btn-soft" id="toggleHidden" type="button">Hide/show</button>
+                <button class="ss-btn ss-btn-sm ss-btn-soft" id="toggleLocked" type="button">Lock/unlock</button>
+                <button class="ss-btn ss-btn-sm ss-btn-danger" id="deleteElement" type="button">Delete</button>
+              </div>
+            </section>
+
+            <section class="ss-builder-property-group">
+              <div class="ss-builder-property-title">Backend response</div>
+              <pre class="ss-code ss-block ss-p-4" id="responseLog">No mutations yet.</pre>
+            </section>
+          </div>
+        </aside>
+      </div>
+    </div>
+
+    <script>
+      (() => {
+        const API = "http://localhost:3004/api";
+        const el = (id) => document.getElementById(id);
+        let state = { sites: [], pages: [], registry: [], tree: null, selectedId: null, expanded: new Set() };
+
+        const request = async (path, options = {}) => {
+          const response = await fetch(`${API}${path}`, {
+            ...options,
+            headers: { "content-type": "application/json", ...(options.headers || {}) }
+          });
+          const json = await response.json().catch(() => ({}));
+          if (!response.ok) throw new Error(json.error?.message || `Request failed: ${response.status}`);
+          return json;
+        };
+
+        const message = (title, body, type = "info") => {
+          el("messageBox").className = `ss-alert ss-alert-${type}`;
+          el("messageBox").innerHTML = `<strong class="ss-alert-title">${title}</strong><p class="ss-alert-desc">${body}</p>`;
+        };
+
+        const status = (text, type = "saved") => {
+          el("saveStatus").textContent = text;
+          el("saveStatus").className = `ss-builder-status ss-builder-status-${type}`;
+        };
+
+        const flatten = (node) => [node, ...node.children.flatMap(flatten)];
+        const selected = () => state.tree ? flatten(state.tree).find((node) => node.elementId === state.selectedId) : null;
+        const currentSite = () => el("siteSelect").value;
+        const currentPage = () => el("pageSelect").value || "home";
+
+        const safeText = (value) => String(value ?? "").replace(/[&<>"']/g, (char) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", "\"": "&quot;", "'": "&#39;" }[char]));
+
+        const labelFor = (node) => {
+          const text = node.content.text || node.content.title || node.content.label || "";
+          return text ? `${node.label}: ${String(text).slice(0, 34)}` : node.label;
+        };
+
+        const renderTreeNode = (node, depth = 0) => {
+          const hasChildren = node.children.length > 0;
+          const open = state.expanded.has(node.elementId) || depth < 2;
+          const row = `<button class="ss-btn ss-btn-sm ss-btn-ghost ss-demo-tree-row" role="treeitem" aria-selected="${node.elementId === state.selectedId}" data-id="${node.elementId}" data-hidden="${node.visibility.hidden}" data-locked="${node.locked}" style="--ss-layer-depth:${depth}; padding-left:${0.5 + depth * 1.25}rem;">
+            ${hasChildren ? (open ? "[-]" : "[+]") : "-"} <span class="ss-badge ss-badge-soft">${safeText(node.type)}</span> ${safeText(labelFor(node))}
+          </button>`;
+          if (!hasChildren || !open) return row;
+          return row + `<div role="group">${node.children.map((child) => renderTreeNode(child, depth + 1)).join("")}</div>`;
+        };
+
+        const renderCanvasNode = (node) => {
+          if (node.visibility.hidden) return "";
+          const nodeClass = `ss-demo-canvas-node ${node.elementId === state.selectedId ? "ss-is-selected" : ""}`;
+          const attrs = `data-element-id="${safeText(node.elementId)}" class="${nodeClass}"`;
+          const dataAttr = `data-element-id="${safeText(node.elementId)}"`;
+          const children = node.children.map(renderCanvasNode).join("");
+          if (node.type === "page-root") return children;
+          if (node.type === "section") return `<section ${attrs}><div class="ss-section ss-section-soft"><div class="ss-section-wide">${children}</div></div></section>`;
+          if (node.type === "heading") return `<h2 ${attrs}>${safeText(node.content.text || node.label)}</h2>`;
+          if (node.type === "paragraph") return `<p ${dataAttr} class="${nodeClass} ss-text">${safeText(node.content.text || "")}</p>`;
+          if (node.type === "button") return `<p ${attrs}><a class="ss-btn" href="#">${safeText(node.content.text || node.label)}</a></p>`;
+          if (node.type === "card" || node.type === "service-card") return `<article ${dataAttr} class="${nodeClass} ss-card"><div class="ss-card-body"><h3 class="ss-card-title">${safeText(node.content.title || node.label)}</h3><p class="ss-card-subtitle">${safeText(node.content.text || "")}</p></div></article>`;
+          return `<div ${attrs}>${safeText(node.label)}${children}</div>`;
+        };
+
+        const render = () => {
+          if (!state.tree) return;
+          el("treePanel").innerHTML = renderTreeNode(state.tree);
+          el("canvasPanel").innerHTML = renderCanvasNode(state.tree);
+          const node = selected();
+          el("selectedSummary").textContent = node ? `${node.label} (${node.type})` : "None selected";
+          el("labelInput").value = node?.label || "";
+          el("textInput").value = node?.content?.text || node?.content?.title || "";
+          el("classInput").value = [...(node?.classes?.custom || [])].join(" ");
+        };
+
+        const loadRegistry = async () => {
+          const data = await request("/element-registry");
+          state.registry = data.elements;
+          el("elementType").innerHTML = data.elements
+            .filter((item) => item.type !== "page-root" && !item.builderOnly)
+            .map((item) => `<option value="${item.type}">${item.category} / ${item.label}</option>`).join("");
+        };
+
+        const ensureDemoSite = async () => {
+          try {
+            await request("/sites", { method: "POST", body: JSON.stringify({ siteId: "element-tree-demo", siteName: "Element Tree Demo" }) });
+          } catch (error) {
+            if (!String(error.message).includes("already exists")) throw error;
+          }
+        };
+
+        const loadSites = async () => {
+          const data = await request("/sites");
+          if (!data.sites.length) {
+            await ensureDemoSite();
+            return loadSites();
+          }
+          state.sites = data.sites;
+          el("siteSelect").innerHTML = data.sites.map((site) => `<option value="${site.siteId}">${site.siteId}</option>`).join("");
+          if (data.sites.some((site) => site.siteId === "element-tree-demo")) el("siteSelect").value = "element-tree-demo";
+        };
+
+        const loadPages = async () => {
+          const data = await request(`/sites/${currentSite()}/pages`);
+          state.pages = data.pages;
+          el("pageSelect").innerHTML = data.pages.map((page) => `<option value="${page.pageId}">${page.title}</option>`).join("");
+        };
+
+        const loadTree = async () => {
+          status("Loading", "saving");
+          const data = await request(`/sites/${currentSite()}/pages/${currentPage()}/tree`);
+          state.tree = data.tree;
+          if (!state.selectedId) state.selectedId = state.tree.elementId;
+          state.expanded.add(state.tree.elementId);
+          render();
+          status("Loaded", "saved");
+        };
+
+        const mutate = async (payload) => {
+          status("Saving", "saving");
+          const data = await request(`/sites/${currentSite()}/pages/${currentPage()}/element-operations`, { method: "POST", body: JSON.stringify(payload) });
+          state.tree = null;
+          state.selectedId = data.selectedElementId || state.selectedId;
+          el("responseLog").textContent = JSON.stringify({ operation: data.operation, selectedElementId: data.selectedElementId, issues: data.issues }, null, 2);
+          await loadTree();
+          status("Saved", "saved");
+          message("Saved", `${payload.operation} completed.`, "success");
+        };
+
+        const select = (id) => {
+          state.selectedId = id;
+          render();
+        };
+
+        const selectedSiblings = () => {
+          const node = selected();
+          if (!node || !state.tree) return null;
+          const parent = flatten(state.tree).find((item) => item.elementId === node.parentId);
+          if (!parent) return null;
+          const index = parent.children.findIndex((item) => item.elementId === node.elementId);
+          return { node, parent, index };
+        };
+
+        el("treePanel").addEventListener("click", (event) => {
+          const row = event.target.closest("[data-id]");
+          if (!row) return;
+          const id = row.getAttribute("data-id");
+          if (state.expanded.has(id)) state.expanded.delete(id); else state.expanded.add(id);
+          select(id);
+        });
+
+        el("canvasPanel").addEventListener("click", (event) => {
+          const node = event.target.closest("[data-element-id]");
+          if (!node) return;
+          event.preventDefault();
+          select(node.getAttribute("data-element-id"));
+        });
+
+        el("addInside").addEventListener("click", () => mutate({ operation: "add", elementType: el("elementType").value, parentId: state.selectedId, position: "inside" }).catch((error) => message("Add failed", error.message, "danger")));
+        el("addBefore").addEventListener("click", () => mutate({ operation: "add", elementType: el("elementType").value, siblingId: state.selectedId, position: "before" }).catch((error) => message("Add failed", error.message, "danger")));
+        el("addAfter").addEventListener("click", () => mutate({ operation: "add", elementType: el("elementType").value, siblingId: state.selectedId, position: "after" }).catch((error) => message("Add failed", error.message, "danger")));
+        el("renameElement").addEventListener("click", () => mutate({ operation: "rename", elementId: state.selectedId, label: el("labelInput").value }).catch((error) => message("Rename failed", error.message, "danger")));
+        el("saveText").addEventListener("click", () => mutate({ operation: "patch", elementId: state.selectedId, patch: { content: { text: el("textInput").value, title: el("textInput").value } } }).catch((error) => message("Text edit failed", error.message, "danger")));
+        el("saveClasses").addEventListener("click", () => mutate({ operation: "patch", elementId: state.selectedId, patch: { classes: el("classInput").value } }).catch((error) => message("Class edit failed", error.message, "danger")));
+        el("duplicateElement").addEventListener("click", () => mutate({ operation: "duplicate", elementId: state.selectedId }).catch((error) => message("Duplicate failed", error.message, "danger")));
+        el("deleteElement").addEventListener("click", () => { if (confirm("Delete the selected element?")) mutate({ operation: "delete", elementId: state.selectedId }).catch((error) => message("Delete failed", error.message, "danger")); });
+        el("toggleHidden").addEventListener("click", () => { const node = selected(); if (node) mutate({ operation: "set-visibility", elementId: node.elementId, hidden: !node.visibility.hidden }).catch((error) => message("Visibility failed", error.message, "danger")); });
+        el("toggleLocked").addEventListener("click", () => { const node = selected(); if (node) mutate({ operation: "set-locked", elementId: node.elementId, locked: !node.locked }).catch((error) => message("Lock failed", error.message, "danger")); });
+        el("moveUp").addEventListener("click", () => {
+          const data = selectedSiblings();
+          if (!data || data.index <= 0) return message("Move unavailable", "The selected element cannot move up.", "warning");
+          mutate({ operation: "move", elementId: data.node.elementId, targetParentId: data.parent.elementId, siblingId: data.parent.children[data.index - 1].elementId, position: "before" }).catch((error) => message("Move failed", error.message, "danger"));
+        });
+        el("moveDown").addEventListener("click", () => {
+          const data = selectedSiblings();
+          if (!data || data.index >= data.parent.children.length - 1) return message("Move unavailable", "The selected element cannot move down.", "warning");
+          mutate({ operation: "move", elementId: data.node.elementId, targetParentId: data.parent.elementId, siblingId: data.parent.children[data.index + 1].elementId, position: "after" }).catch((error) => message("Move failed", error.message, "danger"));
+        });
+        el("refreshPage").addEventListener("click", () => loadTree().catch((error) => message("Refresh failed", error.message, "danger")));
+        el("siteSelect").addEventListener("change", async () => { state.selectedId = null; await loadPages(); await loadTree(); });
+        el("pageSelect").addEventListener("change", async () => { state.selectedId = null; await loadTree(); });
+        el("createDemo").addEventListener("click", async () => { await ensureDemoSite(); await loadSites(); await loadPages(); await loadTree(); });
+
+        (async () => {
+          try {
+            await request("/health");
+            el("backendStatus").textContent = "Backend online";
+            el("backendStatus").className = "ss-builder-status ss-builder-status-saved";
+            await loadRegistry();
+            await loadSites();
+            await loadPages();
+            await loadTree();
+            message("Ready", "Select tree or canvas elements, then use CRUD controls. All saves go through the backend.", "info");
+          } catch (error) {
+            el("backendStatus").textContent = "Backend offline";
+            el("backendStatus").className = "ss-builder-status ss-builder-status-offline";
+            message("Backend offline", error.message, "danger");
+          }
+        })();
+      })();
+    </script>
+  </body>
+</html>
