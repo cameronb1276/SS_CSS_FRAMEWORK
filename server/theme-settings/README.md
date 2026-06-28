@@ -87,6 +87,7 @@ All admin routes live under `/api`.
 - `GET /api/sites/:siteId/pages/:pageId`
 - `GET /api/sites/:siteId/pages/:pageId/tree`
 - `PUT /api/sites/:siteId/pages/:pageId`
+- `POST /api/sites/:siteId/pages/:pageId/element-operations`
 - `GET /api/sites/:siteId/publish`
 - `POST /api/sites/:siteId/publish`
 
@@ -196,6 +197,14 @@ Use `GET /api/element-registry` for allowed elements and `GET /api/sites/<site-i
 
 See `../../docs/element-tree-data-model.md`.
 
+## Element Mutations
+
+Use `POST /api/sites/<site-id>/pages/<page-id>/element-operations` to mutate page JSON through validated operations. Supported operations are `add`, `patch`, `delete`, `duplicate`, `move`, `rename`, `set-visibility`, and `set-locked`.
+
+The backend validates registry rules, locked state, class names, attributes, and the resulting page tree before saving. Successful mutations use page backup-before-replace behavior and emit audit events.
+
+See `../../docs/element-crud-api.md`.
+
 ## Static Publish Output
 
 Publish a site's JSON pages into local static output:
@@ -246,7 +255,7 @@ Run:
 npm run verify
 ```
 
-The verification script builds the backend, starts temporary servers, checks health, creates a site, reads settings, verifies default page creation, validates the normalized element tree, checks registry/tree endpoints, rejects invalid tree structures, lists/reads/updates page JSON, rejects invalid page slugs and duplicate IDs, checks page backups, accepts a valid theme update, rejects invalid colors and unsafe IDs, rejects unknown presets, rejects oversized custom CSS, verifies custom JS is disabled by default, rebuilds `theme.css`, generates static publish output, checks CSS order, checks preview serving, checks builder artifact cleanup, checks custom JS publish gates, checks audit logs, checks production fail-closed behavior, and checks write rate limiting.
+The verification script builds the backend, starts temporary servers, checks health, creates a site, reads settings, verifies default page creation, validates the normalized element tree, checks registry/tree endpoints, rejects invalid tree structures, verifies add/patch/rename/duplicate/move/hide/lock/delete operations, confirms publish output after mutations, lists/reads/updates page JSON, rejects invalid page slugs and duplicate IDs, checks page backups, accepts a valid theme update, rejects invalid colors and unsafe IDs, rejects unknown presets, rejects oversized custom CSS, verifies custom JS is disabled by default, rebuilds `theme.css`, generates static publish output, checks CSS order, checks preview serving, checks builder artifact cleanup, checks custom JS publish gates, checks audit logs, checks production fail-closed behavior, and checks write rate limiting.
 
 Manual health check:
 

@@ -22,6 +22,7 @@ export type AccessAction =
   | "validate-page"
   | "read-element-registry"
   | "read-page-tree"
+  | "mutate-elements"
   | "publish-site"
   | "read-publish";
 

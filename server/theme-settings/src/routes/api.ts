@@ -22,6 +22,7 @@ import { validateContentId } from "../validation/contentValidation";
 import { publishSite, readPublishMetadata } from "../services/publishService";
 import { elementRegistryForApi, pageToElementTree } from "../services/elementTreeService";
 import { validateElementTree } from "../validation/elementTreeValidation";
+import { applyElementOperation } from "../services/elementMutationService";
 
 export const apiRouter = Router();
 
@@ -148,6 +149,23 @@ apiRouter.get("/sites/:siteId/pages/:pageId/tree", requireAccess("read-page-tree
   const page = await readPage(req.params.siteId, req.params.pageId);
   const tree = pageToElementTree(page);
   res.json({ tree, issues: validateElementTree(tree, { published: true }) });
+}));
+
+apiRouter.post("/sites/:siteId/pages/:pageId/element-operations", requireAccess("mutate-elements", (req) => req.params.siteId), writeRateLimit, requireJsonContent, asyncRoute(async (req, res) => {
+  validateSiteId(req.params.siteId);
+  validateContentId(req.params.pageId, "pageId");
+  const result = await applyElementOperation(req.params.siteId, req.params.pageId, req.body);
+  await auditEventFromRequest(req, {
+    action: "element.mutated",
+    result: "success",
+    siteId: req.params.siteId,
+    metadata: {
+      pageId: req.params.pageId,
+      operation: result.operation,
+      selectedElementId: result.selectedElementId
+    }
+  });
+  res.json(result);
 }));
 
 apiRouter.put("/sites/:siteId/pages/:pageId", requireAccess("update-page", (req) => req.params.siteId), writeRateLimit, requireJsonContent, asyncRoute(async (req, res) => {

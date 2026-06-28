@@ -11,6 +11,7 @@
 - Added Phase 14 site content JSON model with page, section, and block storage, default home page creation, page validation endpoints, and page backup-before-replace behavior.
 - Added Phase 15 static publish pipeline with JSON page rendering, local preview output, published artifact cleanup, required CSS load order, custom CSS output, and gated custom JS publishing.
 - Added Phase 16 element registry, normalized element tree adapter, parent/child validation, class and attribute safety checks, published-safety checks, and read-only registry/tree API endpoints.
+- Added Phase 17 validated element mutation API for add, patch, delete, duplicate, move, rename, visibility, and lock operations with backup, audit, and publish compatibility checks.
 
 ## 0.2.0 - Builder and Published Site Toolkit
 

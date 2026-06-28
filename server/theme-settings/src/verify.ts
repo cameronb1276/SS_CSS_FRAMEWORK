@@ -143,6 +143,106 @@ async function main() {
     if (!validateElementTree(builderOnlyTree, { published: true }).some((item) => item.message.includes("not safe"))) {
       throw new Error("Published-safety checks did not identify builder-only elements.");
     }
+    result = await request(baseUrl, "POST", "/api/sites/demo-site/pages/home/element-operations", {
+      operation: "add",
+      elementType: "heading",
+      parentId: "hero-section",
+      position: "inside",
+      newElementId: "phase17-heading"
+    });
+    if (!result.response.ok) throw new Error("Add heading operation failed.");
+
+    result = await request(baseUrl, "POST", "/api/sites/demo-site/pages/home/element-operations", {
+      operation: "add",
+      elementType: "section",
+      parentId: "phase17-heading",
+      position: "inside",
+      newElementId: "bad-nested-section"
+    });
+    if (result.response.status !== 400) throw new Error("Invalid section inside heading was not rejected.");
+
+    result = await request(baseUrl, "POST", "/api/sites/demo-site/pages/home/element-operations", {
+      operation: "patch",
+      elementId: "phase17-heading",
+      patch: { content: { text: "Phase 17 edited heading" } }
+    });
+    if (!result.response.ok) throw new Error("Patch heading text operation failed.");
+
+    result = await request(baseUrl, "POST", "/api/sites/demo-site/pages/home/element-operations", {
+      operation: "rename",
+      elementId: "phase17-heading",
+      label: "Renamed heading"
+    });
+    if (!result.response.ok) throw new Error("Rename element operation failed.");
+
+    result = await request(baseUrl, "POST", "/api/sites/demo-site/pages/home/element-operations", {
+      operation: "duplicate",
+      elementId: "service-card"
+    });
+    if (!result.response.ok) throw new Error("Duplicate element operation failed.");
+    const duplicatedId = String(getRecord(result.json, "duplicate response").selectedElementId);
+
+    result = await request(baseUrl, "POST", "/api/sites/demo-site/pages/home/element-operations", {
+      operation: "move",
+      elementId: duplicatedId,
+      targetParentId: "services-section",
+      siblingId: "services-heading",
+      position: "before"
+    });
+    if (!result.response.ok) throw new Error("Move element before sibling failed.");
+
+    result = await request(baseUrl, "POST", "/api/sites/demo-site/pages/home/element-operations", {
+      operation: "move",
+      elementId: "services-section",
+      targetParentId: "service-card",
+      position: "inside"
+    });
+    if (result.response.status !== 400) throw new Error("Moving parent into child or unsupported section move was not rejected.");
+
+    result = await request(baseUrl, "POST", "/api/sites/demo-site/pages/home/element-operations", {
+      operation: "set-visibility",
+      elementId: "phase17-heading",
+      hidden: true
+    });
+    if (!result.response.ok) throw new Error("Hide element operation failed.");
+    result = await request(baseUrl, "POST", "/api/sites/demo-site/pages/home/element-operations", {
+      operation: "set-visibility",
+      elementId: "phase17-heading",
+      hidden: false
+    });
+    if (!result.response.ok) throw new Error("Show element operation failed.");
+
+    result = await request(baseUrl, "POST", "/api/sites/demo-site/pages/home/element-operations", {
+      operation: "set-locked",
+      elementId: "phase17-heading",
+      locked: true
+    });
+    if (!result.response.ok) throw new Error("Lock element operation failed.");
+    result = await request(baseUrl, "POST", "/api/sites/demo-site/pages/home/element-operations", {
+      operation: "patch",
+      elementId: "phase17-heading",
+      patch: { content: { text: "Should not save" } }
+    });
+    if (result.response.status !== 400) throw new Error("Locked element edit was not rejected.");
+    result = await request(baseUrl, "POST", "/api/sites/demo-site/pages/home/element-operations", {
+      operation: "set-locked",
+      elementId: "phase17-heading",
+      locked: false
+    });
+    if (!result.response.ok) throw new Error("Unlock element operation failed.");
+
+    result = await request(baseUrl, "POST", "/api/sites/demo-site/pages/home/element-operations", {
+      operation: "delete",
+      elementId: duplicatedId
+    });
+    if (!result.response.ok) throw new Error("Delete element operation failed.");
+
+    result = await request(baseUrl, "POST", "/api/sites/demo-site/publish", {});
+    if (!result.response.ok) throw new Error("Publish after element mutations failed.");
+    const phase17Html = await fs.readFile(path.join(tempRoot, "published", "demo-site", "index.html"), "utf8");
+    if (!phase17Html.includes("Phase 17 edited heading")) throw new Error("Published output did not include edited heading.");
+    if (phase17Html.includes(`${duplicatedId} copy`)) throw new Error("Deleted duplicated element leaked into published output.");
+
     const updatedHome = clone(homePage);
     const updatedHomeRecord = getRecord(updatedHome, "home page");
     updatedHomeRecord.title = "Updated Home";
@@ -331,7 +431,7 @@ async function main() {
     if (result.response.status !== 429) throw new Error("Write rate limit did not reject the second write.");
   });
 
-    console.log("Phase 16 verification passed.");
+    console.log("Phase 17 verification passed.");
 }
 
 main().catch((error) => {
