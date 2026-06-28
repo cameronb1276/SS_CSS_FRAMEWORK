@@ -5,6 +5,8 @@
 - Added Phase 11 optional TypeScript/Express theme settings backend under `server/theme-settings`.
 - Added per-site JSON settings storage, safe site ID validation, color/preset validation, backup-before-replace writes, scoped `theme.css` generation, custom CSS storage, custom JS storage, and verification script.
 - Backend defaults to port `3004` and is documented as local/builder infrastructure, not production-ready without authentication and deployment hardening.
+- Added Phase 12 builder theme editor reference UI with site selection, live theme preview, save status, rebuild status, custom CSS controls, and custom JS disabled by default.
+- Added a Phase 11 backend save/rebuild workflow from the editor and documentation for future SloanSites builder integration.
 
 ## 0.2.0 - Builder and Published Site Toolkit
 

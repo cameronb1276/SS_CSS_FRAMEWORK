@@ -48,7 +48,7 @@ Environment variables:
 
 - `PORT`: server port, defaults to `3004`.
 - `THEME_SETTINGS_DATA_DIR`: storage root, defaults to `server/theme-settings/data`.
-- `ALLOWED_ORIGINS`: comma-separated CORS allowlist. Defaults to local development origins.
+- `ALLOWED_ORIGINS`: comma-separated CORS allowlist. Defaults to local development origins for the builder app, backend, static example servers on ports `8080` and `8095`, and direct local file examples.
 - `REQUEST_LOGGING`: set to `false` to silence request logs.
 
 ## API Routes
@@ -88,6 +88,18 @@ Rebuild generated CSS:
 ```bash
 curl -X POST http://localhost:3004/api/sites/demo-site/rebuild-theme
 ```
+
+## Theme Editor Example
+
+The framework includes a reference builder theme editor at:
+
+```text
+../../examples/theme-editor.html
+```
+
+Run this backend on port `3004`, then open the example in a browser. The editor loads a site list, creates `theme-editor-demo` if needed, previews theme changes by applying scoped SS CSS variables, saves settings through the API, saves custom CSS separately, and triggers `theme.css` rebuilds.
+
+The editor does not execute custom JS. Custom JS editing is disabled by default and is expected to be further restricted by production auth and configuration.
 
 ## Storage Model
 

@@ -191,6 +191,12 @@ The CSS framework does not depend on this backend. Published sites should still 
 
 See [server/theme-settings/README.md](server/theme-settings/README.md).
 
+## Optional Theme Editor
+
+Phase 12 adds a builder-facing reference editor at [examples/theme-editor.html](examples/theme-editor.html). Start the optional backend on port `3004`, load or create a test site, edit theme controls with live preview, save settings, and rebuild the generated `theme.css`.
+
+See [docs/theme-editor-integration.md](docs/theme-editor-integration.md).
+
 ## Accessibility
 
 SS CSS Framework keeps native semantics intact. Focus states are visible, links remain underlined, disabled states remain readable, validation states use a thicker left border in addition to color, `.ss-sr-only` is available for accessible hidden text, and motion-heavy helpers respect `prefers-reduced-motion`.
@@ -245,6 +251,7 @@ server/    Optional backend services for builder workflows
 - [docs/index.html](docs/index.html): static docs landing page.
 - [docs/class-reference.md](docs/class-reference.md): category-based class reference.
 - [docs/builder-usage.md](docs/builder-usage.md): SloanSites builder implementation guide.
+- [docs/theme-editor-integration.md](docs/theme-editor-integration.md): optional backend-powered theme editor workflow.
 - [docs/published-sites.md](docs/published-sites.md): published client site guide.
 - [examples/readme.html](examples/readme.html): styled HTML version of this README.
 

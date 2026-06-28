@@ -1,0 +1,369 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>SS CSS Framework Theme Editor</title>
+    <link rel="stylesheet" href="../dist/ss.css">
+  </head>
+  <body class="ss-page">
+    <div class="ss-builder-app">
+      <header class="ss-builder-topbar">
+        <div class="ss-builder-project">
+          <strong class="ss-builder-project-name">Theme Editor</strong>
+          <span class="ss-builder-status ss-builder-status-saving" id="backendStatus">Checking backend</span>
+        </div>
+        <span class="ss-builder-toolbar-divider"></span>
+        <div class="ss-builder-page-selector">
+          <label class="ss-label ss-mb-0" for="siteSelect">Site</label>
+          <select class="ss-select" id="siteSelect" style="min-width: 12rem;">
+            <option value="">Loading sites...</option>
+          </select>
+          <button class="ss-btn ss-btn-sm ss-btn-outline" id="createDemoSite" type="button">Create demo site</button>
+        </div>
+        <div class="ss-builder-toolbar-group ss-ml-auto">
+          <span class="ss-builder-status ss-builder-status-saved" id="loadStatus">Not loaded</span>
+          <span class="ss-builder-status ss-builder-status-saved" id="saveStatus">No changes</span>
+          <span class="ss-builder-status ss-builder-status-saved" id="rebuildStatus">Theme CSS idle</span>
+        </div>
+      </header>
+
+      <div class="ss-builder-app-main">
+        <aside class="ss-builder-sidebar ss-builder-sidebar-left">
+          <div class="ss-builder-sidebar-header">
+            <strong>Theme controls</strong>
+            <p class="ss-builder-component-desc ss-mb-0">Backend: <code class="ss-code">http://localhost:3004</code></p>
+          </div>
+          <div class="ss-builder-sidebar-body">
+            <div class="ss-alert ss-alert-info" id="messageBox">
+              <strong class="ss-alert-title">Start the backend first</strong>
+              <p class="ss-alert-desc">Run <code class="ss-code">npm run dev</code> inside <code class="ss-code">server/theme-settings</code>.</p>
+            </div>
+
+            <section class="ss-builder-property-group">
+              <div class="ss-builder-property-title">Site</div>
+              <div class="ss-builder-control-group">
+                <div class="ss-builder-control-row"><span class="ss-builder-control-label">Current site ID</span><code class="ss-code" id="currentSiteId">none</code></div>
+                <button class="ss-btn ss-btn-sm" id="loadSite" type="button">Load settings</button>
+              </div>
+            </section>
+
+            <section class="ss-builder-property-group">
+              <div class="ss-builder-property-title">Brand colors</div>
+              <div class="ss-builder-control-grid">
+                <label class="ss-field-stack"><span class="ss-builder-control-label">Primary</span><input type="color" id="primaryColor"></label>
+                <label class="ss-field-stack"><span class="ss-builder-control-label">Secondary</span><input type="color" id="secondaryColor"></label>
+                <label class="ss-field-stack"><span class="ss-builder-control-label">Accent</span><input type="color" id="accentColor"></label>
+                <label class="ss-field-stack"><span class="ss-builder-control-label">Focus</span><input type="color" id="focusColor"></label>
+                <label class="ss-field-stack"><span class="ss-builder-control-label">Background</span><input type="color" id="backgroundColor"></label>
+                <label class="ss-field-stack"><span class="ss-builder-control-label">Surface</span><input type="color" id="surfaceColor"></label>
+                <label class="ss-field-stack"><span class="ss-builder-control-label">Heading</span><input type="color" id="headingColor"></label>
+                <label class="ss-field-stack"><span class="ss-builder-control-label">Body</span><input type="color" id="bodyColor"></label>
+                <label class="ss-field-stack"><span class="ss-builder-control-label">Muted</span><input type="color" id="mutedColor"></label>
+              </div>
+            </section>
+
+            <section class="ss-builder-property-group">
+              <div class="ss-builder-property-title">Presets</div>
+              <div class="ss-builder-control-group">
+                <label class="ss-field-stack"><span class="ss-builder-control-label">Radius</span><select class="ss-select" id="radiusPreset"><option>sharp</option><option>soft</option><option>rounded</option><option>pill-heavy</option></select></label>
+                <label class="ss-field-stack"><span class="ss-builder-control-label">Shadow</span><select class="ss-select" id="shadowPreset"><option>flat</option><option>soft</option><option>elevated</option><option>strong</option></select></label>
+                <label class="ss-field-stack"><span class="ss-builder-control-label">Density</span><select class="ss-select" id="densityPreset"><option>compact</option><option>comfortable</option><option>spacious</option></select></label>
+                <label class="ss-field-stack"><span class="ss-builder-control-label">Button style</span><select class="ss-select" id="buttonStyle"><option>filled</option><option>soft</option><option>outline</option><option>rounded</option><option>minimal</option></select></label>
+                <label class="ss-field-stack"><span class="ss-builder-control-label">CTA section style</span><select class="ss-select" id="sectionStyle"><option value="plain">plain</option><option value="soft">soft</option><option value="tinted">tinted</option><option value="dark">dark</option></select></label>
+                <label class="ss-field-stack"><span class="ss-builder-control-label">Dark mode preference</span><select class="ss-select" id="darkPreference"><option value="light">Light preview</option><option value="dark">Dark preview</option></select></label>
+              </div>
+            </section>
+          </div>
+        </aside>
+
+        <main class="ss-builder-canvas ss-builder-canvas-line-grid">
+          <div class="ss-builder-stage">
+            <div class="ss-builder-viewport" data-ss-device="desktop">
+              <div class="ss-builder-page ss-client-theme ss-p-8" id="previewRoot" data-ss-site-theme="preview" style="--ss-builder-page-min-height: 42rem;">
+                <section class="ss-section ss-section-hero ss-section-soft">
+                  <div class="ss-section-wide ss-section-split">
+                    <div>
+                      <p class="ss-section-eyebrow">Live preview</p>
+                      <h1 class="ss-section-title">Theme variables update before saving.</h1>
+                      <p class="ss-section-subtitle">This preview uses the same SS CSS variable names generated into each site's <code class="ss-code">theme.css</code>.</p>
+                      <p class="ss-text ss-text-muted">Muted text remains readable as brand colors change.</p>
+                      <div class="ss-section-actions">
+                        <button class="ss-btn" type="button">Primary button</button>
+                        <button class="ss-btn ss-btn-outline" type="button">Outline button</button>
+                      </div>
+                    </div>
+                    <article class="ss-card ss-card-elevated">
+                      <div class="ss-card-body ss-stack">
+                        <span class="ss-badge ss-badge-soft ss-badge-primary">Badge</span>
+                        <h2 class="ss-card-title">Preview card</h2>
+                        <p class="ss-card-subtitle">Cards, buttons, alerts, and sections respond to scoped variables.</p>
+                        <label class="ss-label" for="previewField">Form field</label>
+                        <input id="previewField" placeholder="Example input">
+                      </div>
+                    </article>
+                  </div>
+                </section>
+                <section class="ss-section ss-section-cta ss-section-style-soft">
+                  <div class="ss-section-wide ss-grid ss-cols-1 ss-md-cols-2 ss-gap-6">
+                    <div class="ss-alert ss-alert-success">
+                      <strong class="ss-alert-title">Alert sample</strong>
+                      <p class="ss-alert-desc">Status surfaces remain token-driven.</p>
+                    </div>
+                    <article class="ss-business-hours-card">
+                      <h3 class="ss-h4">Local business pattern</h3>
+                      <div class="ss-business-hours-row"><span>Mon-Fri</span><strong>8:00-5:00</strong></div>
+                      <span class="ss-status-open ss-mt-4">Open now</span>
+                    </article>
+                  </div>
+                </section>
+              </div>
+            </div>
+          </div>
+        </main>
+
+        <aside class="ss-builder-inspector">
+          <div class="ss-builder-inspector-header">
+            <strong>Save and code</strong>
+            <p class="ss-builder-component-desc ss-mb-0">Custom code is site-specific and never edits SS CSS core files.</p>
+          </div>
+          <div class="ss-builder-inspector-body">
+            <section class="ss-builder-property-group">
+              <div class="ss-builder-property-title">Actions</div>
+              <div class="ss-builder-control-group">
+                <button class="ss-btn" id="saveSettings" type="button">Save settings</button>
+                <button class="ss-btn ss-btn-outline" id="resetChanges" type="button">Reset unsaved changes</button>
+                <button class="ss-btn ss-btn-soft" id="rebuildTheme" type="button">Rebuild theme CSS</button>
+                <p class="ss-help-text ss-mb-0">Generated file: <code class="ss-code" id="themePath">theme.css</code></p>
+              </div>
+            </section>
+
+            <section class="ss-builder-property-group">
+              <div class="ss-builder-property-title">Custom CSS</div>
+              <label class="ss-field-stack">
+                <span class="ss-builder-control-label">Site custom CSS</span>
+                <textarea class="ss-textarea" id="customCss" rows="7" placeholder="/* Loads after SS CSS and generated theme.css */"></textarea>
+              </label>
+              <p class="ss-help-text">Broad global selectors can break generated layouts. Save sends this to <code class="ss-code">custom.css</code>, not <code class="ss-code">dist/ss.css</code>.</p>
+            </section>
+
+            <section class="ss-builder-property-group">
+              <div class="ss-builder-property-title">Custom JS</div>
+              <label><input type="checkbox" id="customJsEnabled"> Enable custom JS editing</label>
+              <textarea class="ss-textarea ss-mt-4" id="customJs" rows="7" disabled placeholder="// Disabled by default and never executed in this editor"></textarea>
+              <p class="ss-help-text">Custom JS is advanced, disabled by default, stored separately, and should not run inside builder preview unless a future safe mode explicitly allows it.</p>
+            </section>
+          </div>
+        </aside>
+      </div>
+    </div>
+
+    <script>
+      (() => {
+        const API = "http://localhost:3004/api";
+        const hex = /^#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$/;
+        const ids = ["primaryColor", "secondaryColor", "accentColor", "focusColor", "backgroundColor", "surfaceColor", "headingColor", "bodyColor", "mutedColor", "radiusPreset", "shadowPreset", "densityPreset", "buttonStyle", "sectionStyle", "darkPreference"];
+        const el = (id) => document.getElementById(id);
+        let settings = null;
+        let dirty = false;
+
+        const setStatus = (id, text, type = "saved") => {
+          const node = el(id);
+          node.textContent = text;
+          node.className = `ss-builder-status ss-builder-status-${type}`;
+        };
+
+        const message = (title, body, type = "info") => {
+          el("messageBox").className = `ss-alert ss-alert-${type}`;
+          el("messageBox").innerHTML = `<strong class="ss-alert-title">${title}</strong><p class="ss-alert-desc">${body}</p>`;
+        };
+
+        const request = async (path, options = {}) => {
+          const response = await fetch(`${API}${path}`, {
+            ...options,
+            headers: { "content-type": "application/json", ...(options.headers || {}) }
+          });
+          const json = await response.json().catch(() => ({}));
+          if (!response.ok) throw new Error(json.error?.message || `Request failed: ${response.status}`);
+          return json;
+        };
+
+        const ensureDemoSite = async () => {
+          try {
+            await request("/sites", { method: "POST", body: JSON.stringify({ siteId: "theme-editor-demo", siteName: "Theme Editor Demo", themeName: "Demo Theme" }) });
+          } catch (error) {
+            if (!String(error.message).includes("already exists")) throw error;
+          }
+        };
+
+        const loadSites = async () => {
+          const data = await request("/sites");
+          if (!data.sites.length) {
+            await ensureDemoSite();
+            return loadSites();
+          }
+          el("siteSelect").innerHTML = data.sites.map((site) => `<option value="${site.siteId}">${site.siteId}</option>`).join("");
+          return data.sites[0].siteId;
+        };
+
+        const setControls = (doc) => {
+          const light = doc.theme.light;
+          el("primaryColor").value = light.primary;
+          el("secondaryColor").value = light.secondary;
+          el("accentColor").value = light.accent;
+          el("focusColor").value = light.focus;
+          el("backgroundColor").value = light.background;
+          el("surfaceColor").value = light.surface;
+          el("headingColor").value = light.headingText;
+          el("bodyColor").value = light.bodyText;
+          el("mutedColor").value = light.mutedText;
+          el("radiusPreset").value = doc.layout.borderRadius;
+          el("shadowPreset").value = doc.layout.shadow;
+          el("densityPreset").value = doc.layout.contentDensity;
+          el("buttonStyle").value = doc.buttons.primaryStyle;
+          el("sectionStyle").value = doc.sections.ctaBackground;
+          el("darkPreference").value = "light";
+          el("currentSiteId").textContent = doc.site.id;
+          el("themePath").textContent = doc.published.themeFilePath;
+        };
+
+        const applyPreview = () => {
+          const root = el("previewRoot");
+          const colorMap = {
+            primaryColor: "--ss-brand-primary",
+            secondaryColor: "--ss-brand-secondary",
+            accentColor: "--ss-brand-accent",
+            focusColor: "--ss-brand-focus",
+            backgroundColor: "--ss-brand-bg",
+            surfaceColor: "--ss-brand-surface",
+            headingColor: "--ss-brand-heading",
+            bodyColor: "--ss-brand-body",
+            mutedColor: "--ss-brand-muted"
+          };
+          for (const [id, variable] of Object.entries(colorMap)) root.style.setProperty(variable, el(id).value);
+          root.style.setProperty("--ss-color-primary", el("primaryColor").value);
+          root.style.setProperty("--ss-color-secondary", el("secondaryColor").value);
+          root.style.setProperty("--ss-color-accent", el("accentColor").value);
+          root.style.setProperty("--ss-bg", el("backgroundColor").value);
+          root.style.setProperty("--ss-surface", el("surfaceColor").value);
+          root.style.setProperty("--ss-text", el("bodyColor").value);
+          root.style.setProperty("--ss-text-muted", el("mutedColor").value);
+          root.classList.toggle("ss-theme-dark", el("darkPreference").value === "dark");
+          root.classList.remove("ss-radius-sharp", "ss-radius-soft", "ss-radius-rounded", "ss-radius-pill-heavy", "ss-shadow-flat", "ss-shadow-soft", "ss-shadow-elevated", "ss-shadow-strong", "ss-density-compact", "ss-density-comfortable", "ss-density-spacious", "ss-buttons-filled", "ss-buttons-soft", "ss-buttons-outline", "ss-buttons-rounded", "ss-buttons-minimal");
+          root.classList.add(`ss-radius-${el("radiusPreset").value}`, `ss-shadow-${el("shadowPreset").value}`, `ss-density-${el("densityPreset").value}`, `ss-buttons-${el("buttonStyle").value}`);
+        };
+
+        const markDirty = () => {
+          dirty = true;
+          setStatus("saveStatus", "Unsaved changes", "unsaved");
+          applyPreview();
+        };
+
+        const buildPatch = () => {
+          const requiredColors = ["primaryColor", "secondaryColor", "accentColor", "focusColor", "backgroundColor", "surfaceColor", "headingColor", "bodyColor", "mutedColor"];
+          const invalid = requiredColors.filter((id) => !hex.test(el(id).value));
+          if (invalid.length) throw new Error(`Invalid color fields: ${invalid.join(", ")}`);
+          return {
+            theme: {
+              light: {
+                primary: el("primaryColor").value,
+                primaryHover: el("primaryColor").value,
+                secondary: el("secondaryColor").value,
+                accent: el("accentColor").value,
+                background: el("backgroundColor").value,
+                surface: el("surfaceColor").value,
+                surfaceSoft: el("surfaceColor").value,
+                headingText: el("headingColor").value,
+                bodyText: el("bodyColor").value,
+                mutedText: el("mutedColor").value,
+                border: settings.theme.light.border,
+                focus: el("focusColor").value
+              }
+            },
+            layout: {
+              borderRadius: el("radiusPreset").value,
+              shadow: el("shadowPreset").value,
+              contentDensity: el("densityPreset").value
+            },
+            buttons: { primaryStyle: el("buttonStyle").value },
+            sections: { ctaBackground: el("sectionStyle").value }
+          };
+        };
+
+        const loadSettings = async (siteId) => {
+          setStatus("loadStatus", "Loading", "saving");
+          const data = await request(`/sites/${siteId}/settings`);
+          settings = data.settings;
+          setControls(settings);
+          const css = await request(`/sites/${siteId}/custom-css`);
+          const js = await request(`/sites/${siteId}/custom-js`);
+          el("customCss").value = css.customCss.content || "";
+          el("customJsEnabled").checked = Boolean(js.customJs.enabled);
+          el("customJs").disabled = !el("customJsEnabled").checked;
+          el("customJs").value = js.customJs.content || "";
+          dirty = false;
+          setStatus("loadStatus", "Settings loaded", "saved");
+          setStatus("saveStatus", "No changes", "saved");
+          applyPreview();
+        };
+
+        const save = async () => {
+          if (!settings) throw new Error("Select and load a site first.");
+          setStatus("saveStatus", "Saving", "saving");
+          const siteId = settings.site.id;
+          const data = await request(`/sites/${siteId}/settings`, { method: "PUT", body: JSON.stringify(buildPatch()) });
+          settings = data.settings;
+          await request(`/sites/${siteId}/custom-css`, { method: "PUT", body: JSON.stringify({ enabled: true, content: el("customCss").value }) });
+          await request(`/sites/${siteId}/custom-js`, { method: "PUT", body: JSON.stringify({ enabled: el("customJsEnabled").checked, content: el("customJs").value }) });
+          dirty = false;
+          setStatus("saveStatus", "Saved", "saved");
+          message("Saved", "Settings and custom code were saved through the backend.", "success");
+        };
+
+        const rebuild = async () => {
+          if (!settings) throw new Error("Select and load a site first.");
+          setStatus("rebuildStatus", "Rebuilding", "publishing");
+          const data = await request(`/sites/${settings.site.id}/rebuild-theme`, { method: "POST" });
+          setStatus("rebuildStatus", "Theme CSS rebuilt", "published");
+          el("themePath").textContent = data.theme.path;
+          message("Theme CSS rebuilt", `${data.theme.path} generated with ${data.theme.bytes} bytes.`, "success");
+        };
+
+        ids.forEach((id) => el(id).addEventListener("input", markDirty));
+        el("customCss").addEventListener("input", markDirty);
+        el("customJs").addEventListener("input", markDirty);
+        el("customJsEnabled").addEventListener("change", () => {
+          el("customJs").disabled = !el("customJsEnabled").checked;
+          markDirty();
+        });
+        el("siteSelect").addEventListener("change", async () => {
+          if (dirty && !confirm("Discard unsaved changes and switch sites?")) return;
+          await loadSettings(el("siteSelect").value).catch((error) => message("Load failed", error.message, "danger"));
+        });
+        el("loadSite").addEventListener("click", () => loadSettings(el("siteSelect").value).catch((error) => message("Load failed", error.message, "danger")));
+        el("createDemoSite").addEventListener("click", async () => {
+          await ensureDemoSite();
+          el("siteSelect").value = await loadSites();
+          await loadSettings("theme-editor-demo");
+        });
+        el("saveSettings").addEventListener("click", () => save().catch((error) => { setStatus("saveStatus", "Save failed", "failed"); message("Save failed", error.message, "danger"); }));
+        el("resetChanges").addEventListener("click", () => settings && (setControls(settings), applyPreview(), dirty = false, setStatus("saveStatus", "Reset", "saved")));
+        el("rebuildTheme").addEventListener("click", () => rebuild().catch((error) => { setStatus("rebuildStatus", "Rebuild failed", "failed"); message("Rebuild failed", error.message, "danger"); }));
+
+        (async () => {
+          try {
+            await request("/health");
+            setStatus("backendStatus", "Backend online", "saved");
+            const siteId = await loadSites();
+            el("siteSelect").value = siteId;
+            await loadSettings(siteId);
+            message("Ready", "Change a control to update the preview immediately. Save when you want to write settings JSON.", "info");
+          } catch (error) {
+            setStatus("backendStatus", "Backend offline", "offline");
+            message("Backend offline", error.message || "Start the Phase 11 backend on port 3004.", "danger");
+          }
+        })();
+      })();
+    </script>
+  </body>
+</html>

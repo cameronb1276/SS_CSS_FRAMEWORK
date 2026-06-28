@@ -5,7 +5,7 @@ import { ApiError } from "./utils/errors";
 
 export function createApp() {
   const app = express();
-  const allowedOrigins = (process.env.ALLOWED_ORIGINS ?? "http://localhost:3000,http://localhost:3004,http://127.0.0.1:3000,http://127.0.0.1:3004")
+  const allowedOrigins = (process.env.ALLOWED_ORIGINS ?? "http://localhost:3000,http://localhost:3004,http://localhost:8080,http://localhost:8095,http://127.0.0.1:3000,http://127.0.0.1:3004,http://127.0.0.1:8080,http://127.0.0.1:8095,null")
     .split(",")
     .map((origin) => origin.trim())
     .filter(Boolean);
