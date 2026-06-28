@@ -78,6 +78,10 @@ export function customHtmlBlocksEnabled(): boolean {
   return boolEnv("CUSTOM_HTML_BLOCKS_ENABLED", false);
 }
 
+export function customJsPublishingEnabled(): boolean {
+  return boolEnv("CUSTOM_JS_PUBLISHING_ENABLED", false);
+}
+
 export function writeRateLimitMax(): number {
   return intEnv("WRITE_RATE_LIMIT_MAX", 60, 1, 10_000);
 }

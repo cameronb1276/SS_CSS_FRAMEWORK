@@ -1,9 +1,11 @@
 import cors from "cors";
+import path from "node:path";
 import express, { ErrorRequestHandler } from "express";
 import { apiRouter } from "./routes/api";
 import { ApiError } from "./utils/errors";
 import { allowedOrigins, jsonBodyLimit } from "./config";
 import { auditEventFromRequest } from "./services/auditLog";
+import { dataRoot } from "./services/paths";
 
 export function createApp() {
   const app = express();
@@ -28,6 +30,11 @@ export function createApp() {
   });
 
   app.use("/api", apiRouter);
+  app.use("/preview", express.static(path.join(dataRoot(), "published"), {
+    dotfiles: "deny",
+    index: "index.html",
+    redirect: true
+  }));
 
   app.use((_req, res) => {
     res.status(404).json({ error: { message: "Route not found." } });

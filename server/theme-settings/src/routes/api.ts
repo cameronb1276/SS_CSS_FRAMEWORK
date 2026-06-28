@@ -19,6 +19,7 @@ import { auditEventFromRequest } from "../services/auditLog";
 import { customJsEditingEnabled, serverPort } from "../config";
 import { createPage, listPages, readPage, updatePage, validatePagePayload } from "../services/contentService";
 import { validateContentId } from "../validation/contentValidation";
+import { publishSite, readPublishMetadata } from "../services/publishService";
 
 export const apiRouter = Router();
 
@@ -141,4 +142,21 @@ apiRouter.put("/sites/:siteId/pages/:pageId", requireAccess("update-page", (req)
   const page = await updatePage(req.params.siteId, req.params.pageId, req.body);
   await auditEventFromRequest(req, { action: "page.updated", result: "success", siteId: req.params.siteId, metadata: { pageId: page.pageId } });
   res.json({ page });
+}));
+
+apiRouter.get("/sites/:siteId/publish", requireAccess("read-publish", (req) => req.params.siteId), asyncRoute(async (req, res) => {
+  validateSiteId(req.params.siteId);
+  res.json({ publish: await readPublishMetadata(req.params.siteId) });
+}));
+
+apiRouter.post("/sites/:siteId/publish", requireAccess("publish-site", (req) => req.params.siteId), writeRateLimit, requireJsonContent, asyncRoute(async (req, res) => {
+  validateSiteId(req.params.siteId);
+  const body = assertPlainObject(req.body, "publish payload");
+  const unknown = Object.keys(body).filter((key) => !["includeDrafts", "allowCustomJs"].includes(key));
+  if (unknown.length) throw badRequest("publish payload contains unsupported fields.", unknown);
+  const includeDrafts = body.includeDrafts === undefined ? false : Boolean(body.includeDrafts);
+  const allowCustomJs = body.allowCustomJs === undefined ? false : Boolean(body.allowCustomJs);
+  const publish = await publishSite(req.params.siteId, { includeDrafts, allowCustomJs });
+  await auditEventFromRequest(req, { action: "site.published", result: "success", siteId: req.params.siteId, metadata: { pages: publish.pages.length, mode: publish.mode } });
+  res.json({ publish });
 }));

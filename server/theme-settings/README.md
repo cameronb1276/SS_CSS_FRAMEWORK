@@ -56,6 +56,7 @@ Environment variables:
 - `MAX_CUSTOM_CSS_BYTES`: custom CSS byte limit, defaults to `100000`.
 - `MAX_CUSTOM_JS_BYTES`: custom JS byte limit, defaults to `50000`.
 - `CUSTOM_JS_EDITING_ENABLED`: set `true` to allow admin custom JS edits. Defaults to `false`.
+- `CUSTOM_JS_PUBLISHING_ENABLED`: set `true` to allow explicitly requested custom JS in static publish output. Defaults to `false`.
 - `CUSTOM_HTML_BLOCKS_ENABLED`: set `true` to allow advanced custom HTML page blocks. Defaults to `false`.
 - `PUBLIC_THEME_READ_ENABLED`: set `false` to require auth for generated theme metadata reads.
 - `WRITE_RATE_LIMIT_MAX`: write requests per window, defaults to `60`.
@@ -84,6 +85,8 @@ All admin routes live under `/api`.
 - `POST /api/sites/:siteId/pages/validate`
 - `GET /api/sites/:siteId/pages/:pageId`
 - `PUT /api/sites/:siteId/pages/:pageId`
+- `GET /api/sites/:siteId/publish`
+- `POST /api/sites/:siteId/publish`
 
 Example create request:
 
@@ -143,6 +146,10 @@ data/sites/<site-id>/
   custom.js
   pages/
   backups/
+data/published/<site-id>/
+  index.html
+  publish.json
+  css/
 ```
 
 `settings.json` is the editable theme source of truth. `site-content.json` stores page order and default page metadata. `pages/*.json` stores editable page content. `theme.css` is generated output. `custom.css` and `custom.js` are separate files and are never merged into `dist/ss.css`.
@@ -179,6 +186,22 @@ Before replacing a page JSON file, the backend writes a timestamped backup to `d
 
 See `../../docs/site-content-json-model.md`.
 
+## Static Publish Output
+
+Publish a site's JSON pages into local static output:
+
+```bash
+curl -X POST http://localhost:3004/api/sites/demo-site/publish \
+  -H "Content-Type: application/json" \
+  -d "{\"includeDrafts\":false,\"allowCustomJs\":false}"
+```
+
+Output is written to `data/published/<site-id>/` and can be previewed at `/preview/<site-id>/index.html`.
+
+Generated HTML loads `css/ss.css`, then `css/theme.css`, then optional `css/custom.css`. Custom JS is excluded unless the site enables it, the request sets `allowCustomJs`, and `CUSTOM_JS_PUBLISHING_ENABLED=true`.
+
+See `../../docs/static-publish-output.md`.
+
 ## Theme CSS Generation
 
 Generated CSS is scoped to:
@@ -213,7 +236,7 @@ Run:
 npm run verify
 ```
 
-The verification script builds the backend, starts temporary servers, checks health, creates a site, reads settings, verifies default page creation, lists/reads/updates page JSON, rejects invalid page slugs and duplicate IDs, checks page backups, accepts a valid theme update, rejects invalid colors and unsafe IDs, rejects unknown presets, rejects oversized custom CSS, verifies custom JS is disabled by default, rebuilds `theme.css`, checks audit logs, checks production fail-closed behavior, and checks write rate limiting.
+The verification script builds the backend, starts temporary servers, checks health, creates a site, reads settings, verifies default page creation, lists/reads/updates page JSON, rejects invalid page slugs and duplicate IDs, checks page backups, accepts a valid theme update, rejects invalid colors and unsafe IDs, rejects unknown presets, rejects oversized custom CSS, verifies custom JS is disabled by default, rebuilds `theme.css`, generates static publish output, checks CSS order, checks preview serving, checks builder artifact cleanup, checks custom JS publish gates, checks audit logs, checks production fail-closed behavior, and checks write rate limiting.
 
 Manual health check:
 

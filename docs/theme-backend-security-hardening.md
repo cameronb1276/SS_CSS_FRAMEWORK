@@ -51,6 +51,7 @@ The access-check function is intentionally small and centralized so future user/
 - `MAX_CUSTOM_CSS_BYTES`: custom CSS limit, default `100000`
 - `MAX_CUSTOM_JS_BYTES`: custom JS limit, default `50000`
 - `CUSTOM_JS_EDITING_ENABLED`: custom JS edit gate, default `false`
+- `CUSTOM_JS_PUBLISHING_ENABLED`: custom JS static output gate, default `false`
 - `CUSTOM_HTML_BLOCKS_ENABLED`: custom HTML page block gate, default `false`
 - `PUBLIC_THEME_READ_ENABLED`: generated theme metadata read gate, default `true`
 - `WRITE_RATE_LIMIT_MAX`: write requests per window, default `60`

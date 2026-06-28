@@ -2,6 +2,8 @@
 
 Published client sites should use the normal website classes plus the published safety wrapper.
 
+The optional Phase 15 backend publish pipeline can generate this structure from site JSON. See [static-publish-output.md](static-publish-output.md).
+
 ## Recommended Wrapper
 
 ```html

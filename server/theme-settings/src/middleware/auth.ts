@@ -19,7 +19,9 @@ export type AccessAction =
   | "create-page"
   | "read-page"
   | "update-page"
-  | "validate-page";
+  | "validate-page"
+  | "publish-site"
+  | "read-publish";
 
 type Actor = {
   id: string;

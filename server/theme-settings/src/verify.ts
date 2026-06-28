@@ -16,6 +16,12 @@ async function request(baseUrl: string, method: string, route: string, body?: un
   return { response, json };
 }
 
+async function textRequest(baseUrl: string, route: string) {
+  const response = await fetch(`${baseUrl}${route}`);
+  const text = await response.text();
+  return { response, text };
+}
+
 function getRecord(value: unknown, label: string): Record<string, unknown> {
   if (!value || typeof value !== "object" || Array.isArray(value)) throw new Error(`${label} was not an object.`);
   return value as Record<string, unknown>;
@@ -142,6 +148,12 @@ async function main() {
     if (result.response.status !== 400) throw new Error("Oversized custom CSS was not rejected.");
     process.env.MAX_CUSTOM_CSS_BYTES = "100000";
 
+    result = await request(baseUrl, "PUT", "/api/sites/demo-site/custom-css", {
+      enabled: true,
+      content: ".published-custom-check { color: inherit; }"
+    });
+    if (!result.response.ok) throw new Error("Valid custom CSS save failed.");
+
     result = await request(baseUrl, "POST", "/api/sites/demo-site/rebuild-theme", {});
     if (!result.response.ok) throw new Error("Theme rebuild failed.");
 
@@ -156,6 +168,66 @@ async function main() {
       content: ""
     });
     if (!result.response.ok) throw new Error("Disabled custom JS clear/save failed.");
+
+    result = await request(baseUrl, "POST", "/api/sites", {
+      siteId: "publish-missing",
+      siteName: "Publish Missing"
+    });
+    if (result.response.status !== 201) throw new Error("Publish missing setup failed.");
+    await fs.rm(path.join(tempRoot, "sites", "publish-missing", "pages", "home.json"), { force: true });
+    result = await request(baseUrl, "POST", "/api/sites/publish-missing/publish", {});
+    if (result.response.status !== 400) throw new Error("Publish validation did not catch a missing page.");
+
+    result = await request(baseUrl, "POST", "/api/sites", {
+      siteId: "publish-invalid",
+      siteName: "Publish Invalid"
+    });
+    if (result.response.status !== 201) throw new Error("Publish invalid setup failed.");
+    const invalidPublishPagePath = path.join(tempRoot, "sites", "publish-invalid", "pages", "home.json");
+    const invalidPublishPage = JSON.parse(await fs.readFile(invalidPublishPagePath, "utf8")) as Record<string, unknown>;
+    invalidPublishPage.slug = "Bad Slug";
+    await fs.writeFile(invalidPublishPagePath, `${JSON.stringify(invalidPublishPage, null, 2)}\n`, "utf8");
+    result = await request(baseUrl, "POST", "/api/sites/publish-invalid/publish", {});
+    if (result.response.status !== 400) throw new Error("Publish validation did not catch an invalid slug.");
+
+    result = await request(baseUrl, "POST", "/api/sites/demo-site/publish", {});
+    if (!result.response.ok) throw new Error("Static publish failed.");
+    const publishResult = getRecord(getRecord(result.json, "publish response").publish, "publish payload");
+    if (publishResult.previewPath !== "/preview/demo-site/index.html") throw new Error("Publish preview path was not returned.");
+    let publishedHtml = await fs.readFile(path.join(tempRoot, "published", "demo-site", "index.html"), "utf8");
+    const baseCssIndex = publishedHtml.indexOf("css/ss.css");
+    const themeCssIndex = publishedHtml.indexOf("css/theme.css");
+    const customCssIndex = publishedHtml.indexOf("css/custom.css");
+    if (!(baseCssIndex !== -1 && themeCssIndex > baseCssIndex && customCssIndex > themeCssIndex)) {
+      throw new Error("Published CSS load order is incorrect.");
+    }
+    if (publishedHtml.includes("ss-builder-") || publishedHtml.includes("data-ss-builder-mode")) {
+      throw new Error("Published HTML contains builder-only artifacts.");
+    }
+    if (publishedHtml.includes("js/custom.js")) throw new Error("Custom JS should be excluded by default.");
+    let preview = await textRequest(baseUrl, "/preview/demo-site/index.html");
+    if (!preview.response.ok || !preview.text.includes("ss-site-page")) throw new Error("Preview endpoint did not serve generated HTML.");
+
+    process.env.CUSTOM_JS_EDITING_ENABLED = "true";
+    result = await request(baseUrl, "PUT", "/api/sites/demo-site/custom-js", {
+      enabled: true,
+      content: "window.phase15CustomJsLoaded = true;"
+    });
+    if (!result.response.ok) throw new Error("Custom JS setup failed when editing was enabled.");
+    process.env.CUSTOM_JS_PUBLISHING_ENABLED = "false";
+    result = await request(baseUrl, "POST", "/api/sites/demo-site/publish", { allowCustomJs: true });
+    if (!result.response.ok) throw new Error("Publish with custom JS disabled by config failed.");
+    publishedHtml = await fs.readFile(path.join(tempRoot, "published", "demo-site", "index.html"), "utf8");
+    if (publishedHtml.includes("js/custom.js")) throw new Error("Custom JS was included while publishing was disabled.");
+    process.env.CUSTOM_JS_PUBLISHING_ENABLED = "true";
+    result = await request(baseUrl, "POST", "/api/sites/demo-site/publish", { allowCustomJs: true });
+    if (!result.response.ok) throw new Error("Publish with custom JS allowed failed.");
+    publishedHtml = await fs.readFile(path.join(tempRoot, "published", "demo-site", "index.html"), "utf8");
+    if (!publishedHtml.includes("js/custom.js")) throw new Error("Custom JS was not included when explicitly enabled and allowed.");
+    const customJsOutput = await fs.readFile(path.join(tempRoot, "published", "demo-site", "js", "custom.js"), "utf8");
+    if (!customJsOutput.includes("phase15CustomJsLoaded")) throw new Error("Custom JS output file was not written.");
+    process.env.CUSTOM_JS_EDITING_ENABLED = "false";
+    process.env.CUSTOM_JS_PUBLISHING_ENABLED = "false";
 
     const themeCss = await fs.readFile(path.join(tempRoot, "sites", "demo-site", "theme.css"), "utf8");
     if (!themeCss.includes('[data-ss-site-theme="demo-site"]')) {
@@ -198,7 +270,7 @@ async function main() {
     if (result.response.status !== 429) throw new Error("Write rate limit did not reject the second write.");
   });
 
-    console.log("Phase 14 verification passed.");
+    console.log("Phase 15 verification passed.");
 }
 
 main().catch((error) => {

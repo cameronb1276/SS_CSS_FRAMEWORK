@@ -209,6 +209,12 @@ Phase 14 adds optional local JSON storage for builder page content, sections, an
 
 See [docs/site-content-json-model.md](docs/site-content-json-model.md).
 
+## Optional Static Publish Pipeline
+
+Phase 15 adds a local static output pipeline that renders JSON pages into published HTML, copies base SS CSS, generated theme CSS, and optional custom CSS in order, and serves the result through a local preview route. Real deployment is outside this phase.
+
+See [docs/static-publish-output.md](docs/static-publish-output.md).
+
 ## Accessibility
 
 SS CSS Framework keeps native semantics intact. Focus states are visible, links remain underlined, disabled states remain readable, validation states use a thicker left border in addition to color, `.ss-sr-only` is available for accessible hidden text, and motion-heavy helpers respect `prefers-reduced-motion`.
@@ -266,6 +272,7 @@ server/    Optional backend services for builder workflows
 - [docs/theme-editor-integration.md](docs/theme-editor-integration.md): optional backend-powered theme editor workflow.
 - [docs/theme-backend-security-hardening.md](docs/theme-backend-security-hardening.md): optional backend security and production-readiness notes.
 - [docs/site-content-json-model.md](docs/site-content-json-model.md): optional builder page, section, and block JSON model.
+- [docs/static-publish-output.md](docs/static-publish-output.md): optional JSON-to-static published output workflow.
 - [docs/published-sites.md](docs/published-sites.md): published client site guide.
 - [examples/readme.html](examples/readme.html): styled HTML version of this README.
 
