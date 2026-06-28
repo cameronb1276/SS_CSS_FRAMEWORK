@@ -16,6 +16,15 @@ async function request(baseUrl: string, method: string, route: string, body?: un
   return { response, json };
 }
 
+function getRecord(value: unknown, label: string): Record<string, unknown> {
+  if (!value || typeof value !== "object" || Array.isArray(value)) throw new Error(`${label} was not an object.`);
+  return value as Record<string, unknown>;
+}
+
+function clone<T>(value: T): T {
+  return JSON.parse(JSON.stringify(value)) as T;
+}
+
 async function withServer<T>(run: (baseUrl: string, tempRoot: string) => Promise<T>): Promise<T> {
   const tempRoot = await fs.mkdtemp(path.join(os.tmpdir(), "ss-theme-settings-"));
   process.env.THEME_SETTINGS_DATA_DIR = tempRoot;
@@ -55,6 +64,52 @@ async function main() {
 
     result = await request(baseUrl, "GET", "/api/sites/demo-site/settings");
     if (!result.response.ok) throw new Error("Settings read failed.");
+
+    result = await request(baseUrl, "GET", "/api/sites/demo-site/pages");
+    if (!result.response.ok) throw new Error("Page list failed.");
+    const pagesPayload = getRecord(result.json, "pages response");
+    const pages = pagesPayload.pages as Array<Record<string, unknown>>;
+    if (!Array.isArray(pages) || !pages.some((page) => page.pageId === "home")) {
+      throw new Error("Default home page was not created.");
+    }
+
+    result = await request(baseUrl, "GET", "/api/sites/demo-site/pages/home");
+    if (!result.response.ok) throw new Error("Home page read failed.");
+    const homePage = getRecord(result.json, "home page response").page;
+    const updatedHome = clone(homePage);
+    const updatedHomeRecord = getRecord(updatedHome, "home page");
+    updatedHomeRecord.title = "Updated Home";
+    result = await request(baseUrl, "PUT", "/api/sites/demo-site/pages/home", updatedHome);
+    if (!result.response.ok) throw new Error("Home page update failed.");
+
+    const invalidSlug = clone(updatedHome);
+    getRecord(invalidSlug, "invalid slug page").slug = "Bad Slug";
+    result = await request(baseUrl, "PUT", "/api/sites/demo-site/pages/home", invalidSlug);
+    if (result.response.status !== 400) throw new Error("Invalid page slug was not rejected.");
+
+    const duplicateSection = clone(updatedHome);
+    const duplicateSectionRecord = getRecord(duplicateSection, "duplicate section page");
+    const duplicateSections = duplicateSectionRecord.sections as Array<Record<string, unknown>>;
+    duplicateSections.push(clone(duplicateSections[0]));
+    result = await request(baseUrl, "POST", "/api/sites/demo-site/pages/validate", duplicateSection);
+    const duplicateSectionValidation = getRecord(result.json, "duplicate section validation");
+    if (duplicateSectionValidation.valid !== false) throw new Error("Duplicate section ID was not rejected.");
+
+    const duplicateBlock = clone(updatedHome);
+    const duplicateBlockSections = getRecord(duplicateBlock, "duplicate block page").sections as Array<Record<string, unknown>>;
+    const firstBlocks = duplicateBlockSections[0].blocks as Array<Record<string, unknown>>;
+    firstBlocks[1].blockId = firstBlocks[0].blockId;
+    result = await request(baseUrl, "POST", "/api/sites/demo-site/pages/validate", duplicateBlock);
+    const duplicateBlockValidation = getRecord(result.json, "duplicate block validation");
+    if (duplicateBlockValidation.valid !== false) throw new Error("Duplicate block ID was not rejected.");
+
+    result = await request(baseUrl, "GET", "/api/sites/demo-site/pages/..%2Fbad");
+    if (result.response.status !== 400) throw new Error("Unsafe page ID was not rejected.");
+
+    const pageBackups = await fs.readdir(path.join(tempRoot, "sites", "demo-site", "backups", "pages"));
+    if (!pageBackups.some((name) => name.startsWith("home.") && name.endsWith(".json"))) {
+      throw new Error("Page backup was not created before replacement.");
+    }
 
     result = await request(baseUrl, "PUT", "/api/sites/demo-site/settings", {
       theme: { light: { primary: "#0ea5e9", focus: "#0ea5e9" } }
@@ -143,7 +198,7 @@ async function main() {
     if (result.response.status !== 429) throw new Error("Write rate limit did not reject the second write.");
   });
 
-  console.log("Phase 13 verification passed.");
+    console.log("Phase 14 verification passed.");
 }
 
 main().catch((error) => {

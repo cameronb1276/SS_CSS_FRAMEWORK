@@ -74,6 +74,10 @@ export function publicThemeReadEnabled(): boolean {
   return boolEnv("PUBLIC_THEME_READ_ENABLED", true);
 }
 
+export function customHtmlBlocksEnabled(): boolean {
+  return boolEnv("CUSTOM_HTML_BLOCKS_ENABLED", false);
+}
+
 export function writeRateLimitMax(): number {
   return intEnv("WRITE_RATE_LIMIT_MAX", 60, 1, 10_000);
 }

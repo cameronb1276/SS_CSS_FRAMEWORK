@@ -56,6 +56,7 @@ Environment variables:
 - `MAX_CUSTOM_CSS_BYTES`: custom CSS byte limit, defaults to `100000`.
 - `MAX_CUSTOM_JS_BYTES`: custom JS byte limit, defaults to `50000`.
 - `CUSTOM_JS_EDITING_ENABLED`: set `true` to allow admin custom JS edits. Defaults to `false`.
+- `CUSTOM_HTML_BLOCKS_ENABLED`: set `true` to allow advanced custom HTML page blocks. Defaults to `false`.
 - `PUBLIC_THEME_READ_ENABLED`: set `false` to require auth for generated theme metadata reads.
 - `WRITE_RATE_LIMIT_MAX`: write requests per window, defaults to `60`.
 - `WRITE_RATE_LIMIT_WINDOW_MS`: write-rate window, defaults to `60000`.
@@ -78,6 +79,11 @@ All admin routes live under `/api`.
 - `PUT /api/sites/:siteId/custom-css`
 - `GET /api/sites/:siteId/custom-js`
 - `PUT /api/sites/:siteId/custom-js`
+- `GET /api/sites/:siteId/pages`
+- `POST /api/sites/:siteId/pages`
+- `POST /api/sites/:siteId/pages/validate`
+- `GET /api/sites/:siteId/pages/:pageId`
+- `PUT /api/sites/:siteId/pages/:pageId`
 
 Example create request:
 
@@ -131,13 +137,15 @@ Each site is stored under:
 ```text
 data/sites/<site-id>/
   settings.json
+  site-content.json
   theme.css
   custom.css
   custom.js
+  pages/
   backups/
 ```
 
-`settings.json` is the editable source of truth. `theme.css` is generated output. `custom.css` and `custom.js` are separate files and are never merged into `dist/ss.css`.
+`settings.json` is the editable theme source of truth. `site-content.json` stores page order and default page metadata. `pages/*.json` stores editable page content. `theme.css` is generated output. `custom.css` and `custom.js` are separate files and are never merged into `dist/ss.css`.
 
 Runtime site files are ignored by Git. The `.gitkeep` files only preserve empty storage folders.
 
@@ -157,7 +165,19 @@ Default settings include:
 - `customCode`
 - `timestamps`
 
-Do not store page content in theme settings. Page content should remain in a separate future content system.
+Do not store page content in theme settings. Page content belongs in `pages/*.json`.
+
+## Page Content Model
+
+New sites receive a default published `home` page. Page JSON supports page title, slug, SEO fields, draft/published status, navigation metadata, sections, blocks, and custom metadata.
+
+Supported section types are `hero`, `services`, `about`, `pricing`, `testimonials`, `faq`, `gallery`, `contact`, `cta`, `footer`, and `custom`.
+
+Supported block types are `heading`, `text`, `button`, `image`, `card`, `list`, `form-placeholder`, `map-placeholder`, `business-hours`, `testimonial`, and advanced `custom-html`. Custom HTML blocks are disabled by default.
+
+Before replacing a page JSON file, the backend writes a timestamped backup to `data/sites/<site-id>/backups/pages/` and keeps the newest 10 backups per page.
+
+See `../../docs/site-content-json-model.md`.
 
 ## Theme CSS Generation
 
@@ -193,7 +213,7 @@ Run:
 npm run verify
 ```
 
-The verification script builds the backend, starts temporary servers, checks health, creates a site, reads settings, accepts a valid theme update, rejects invalid colors and unsafe IDs, rejects unknown presets, rejects oversized custom CSS, verifies custom JS is disabled by default, rebuilds `theme.css`, checks audit logs, checks production fail-closed behavior, and checks write rate limiting.
+The verification script builds the backend, starts temporary servers, checks health, creates a site, reads settings, verifies default page creation, lists/reads/updates page JSON, rejects invalid page slugs and duplicate IDs, checks page backups, accepts a valid theme update, rejects invalid colors and unsafe IDs, rejects unknown presets, rejects oversized custom CSS, verifies custom JS is disabled by default, rebuilds `theme.css`, checks audit logs, checks production fail-closed behavior, and checks write rate limiting.
 
 Manual health check:
 

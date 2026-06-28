@@ -14,7 +14,12 @@ export type AccessAction =
   | "read-custom-css"
   | "update-custom-css"
   | "read-custom-js"
-  | "update-custom-js";
+  | "update-custom-js"
+  | "read-pages"
+  | "create-page"
+  | "read-page"
+  | "update-page"
+  | "validate-page";
 
 type Actor = {
   id: string;

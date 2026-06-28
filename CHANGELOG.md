@@ -8,6 +8,7 @@
 - Added Phase 12 builder theme editor reference UI with site selection, live theme preview, save status, rebuild status, custom CSS controls, and custom JS disabled by default.
 - Added a Phase 11 backend save/rebuild workflow from the editor and documentation for future SloanSites builder integration.
 - Added Phase 13 backend auth/access-check structure, production fail-closed behavior, environment-driven origin/body/custom-code limits, write rate limiting, audit logging, safer custom JS handling, and backup restore guidance.
+- Added Phase 14 site content JSON model with page, section, and block storage, default home page creation, page validation endpoints, and page backup-before-replace behavior.
 
 ## 0.2.0 - Builder and Published Site Toolkit
 

@@ -7,6 +7,7 @@ import { defaultSettings } from "./defaults";
 import { generateThemeCss } from "./themeCss";
 import { dataRoot, settingsPath, siteDir, sitesRoot } from "./paths";
 import { writeAuditEvent } from "./auditLog";
+import { createDefaultPagesForSite } from "./contentService";
 
 async function exists(file: string): Promise<boolean> {
   try {
@@ -92,6 +93,7 @@ export async function createSite(input: { siteId: string; siteName?: string; the
   await writeFileAtomic(path.join(dir, "theme.css"), generateThemeCss(settings));
   await writeFileAtomic(path.join(dir, "custom.css"), "");
   await writeFileAtomic(path.join(dir, "custom.js"), "");
+  await createDefaultPagesForSite(siteId, settings.site.name);
   return settings;
 }
 

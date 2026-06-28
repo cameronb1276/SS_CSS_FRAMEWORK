@@ -203,6 +203,12 @@ Phase 13 adds auth-aware structure, production fail-closed behavior, write rate 
 
 See [docs/theme-backend-security-hardening.md](docs/theme-backend-security-hardening.md).
 
+## Optional Page JSON Model
+
+Phase 14 adds optional local JSON storage for builder page content, sections, and blocks. New backend sites get a starter `home` page, page files are validated before saving, and page JSON is backed up before replacement.
+
+See [docs/site-content-json-model.md](docs/site-content-json-model.md).
+
 ## Accessibility
 
 SS CSS Framework keeps native semantics intact. Focus states are visible, links remain underlined, disabled states remain readable, validation states use a thicker left border in addition to color, `.ss-sr-only` is available for accessible hidden text, and motion-heavy helpers respect `prefers-reduced-motion`.
@@ -259,6 +265,7 @@ server/    Optional backend services for builder workflows
 - [docs/builder-usage.md](docs/builder-usage.md): SloanSites builder implementation guide.
 - [docs/theme-editor-integration.md](docs/theme-editor-integration.md): optional backend-powered theme editor workflow.
 - [docs/theme-backend-security-hardening.md](docs/theme-backend-security-hardening.md): optional backend security and production-readiness notes.
+- [docs/site-content-json-model.md](docs/site-content-json-model.md): optional builder page, section, and block JSON model.
 - [docs/published-sites.md](docs/published-sites.md): published client site guide.
 - [examples/readme.html](examples/readme.html): styled HTML version of this README.
 

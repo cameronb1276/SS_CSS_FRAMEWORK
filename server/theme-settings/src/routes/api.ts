@@ -17,6 +17,8 @@ import { writeRateLimit } from "../middleware/rateLimit";
 import { requireJsonContent } from "../middleware/requestGuards";
 import { auditEventFromRequest } from "../services/auditLog";
 import { customJsEditingEnabled, serverPort } from "../config";
+import { createPage, listPages, readPage, updatePage, validatePagePayload } from "../services/contentService";
+import { validateContentId } from "../validation/contentValidation";
 
 export const apiRouter = Router();
 
@@ -108,4 +110,35 @@ apiRouter.put("/sites/:siteId/custom-js", requireAccess("update-custom-js", (req
   const customJs = await updateCustomCode(req.params.siteId, "js", payload.enabled, payload.content);
   await auditEventFromRequest(req, { action: "custom-js.updated", result: "success", siteId: req.params.siteId, metadata: { enabled: payload.enabled, bytes: customJs.bytes } });
   res.json({ customJs });
+}));
+
+apiRouter.get("/sites/:siteId/pages", requireAccess("read-pages", (req) => req.params.siteId), asyncRoute(async (req, res) => {
+  validateSiteId(req.params.siteId);
+  res.json(await listPages(req.params.siteId));
+}));
+
+apiRouter.post("/sites/:siteId/pages", requireAccess("create-page", (req) => req.params.siteId), writeRateLimit, requireJsonContent, asyncRoute(async (req, res) => {
+  validateSiteId(req.params.siteId);
+  const page = await createPage(req.params.siteId, req.body);
+  await auditEventFromRequest(req, { action: "page.created", result: "success", siteId: req.params.siteId, metadata: { pageId: page.pageId } });
+  res.status(201).json({ page });
+}));
+
+apiRouter.post("/sites/:siteId/pages/validate", requireAccess("validate-page", (req) => req.params.siteId), writeRateLimit, requireJsonContent, asyncRoute(async (req, res) => {
+  validateSiteId(req.params.siteId);
+  res.json(validatePagePayload(req.body));
+}));
+
+apiRouter.get("/sites/:siteId/pages/:pageId", requireAccess("read-page", (req) => req.params.siteId), asyncRoute(async (req, res) => {
+  validateSiteId(req.params.siteId);
+  validateContentId(req.params.pageId, "pageId");
+  res.json({ page: await readPage(req.params.siteId, req.params.pageId) });
+}));
+
+apiRouter.put("/sites/:siteId/pages/:pageId", requireAccess("update-page", (req) => req.params.siteId), writeRateLimit, requireJsonContent, asyncRoute(async (req, res) => {
+  validateSiteId(req.params.siteId);
+  validateContentId(req.params.pageId, "pageId");
+  const page = await updatePage(req.params.siteId, req.params.pageId, req.body);
+  await auditEventFromRequest(req, { action: "page.updated", result: "success", siteId: req.params.siteId, metadata: { pageId: page.pageId } });
+  res.json({ page });
 }));
