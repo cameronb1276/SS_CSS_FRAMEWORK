@@ -15,9 +15,10 @@ import {
   TypographySettings
 } from "../types/settings";
 import { validateSiteId } from "./siteId";
+import { customCssLimit, customJsLimit } from "../config";
 
-export const CUSTOM_CSS_LIMIT = 100_000;
-export const CUSTOM_JS_LIMIT = 50_000;
+export const DEFAULT_CUSTOM_CSS_LIMIT = 100_000;
+export const DEFAULT_CUSTOM_JS_LIMIT = 50_000;
 
 const HEX_COLOR = /^#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$/;
 const RGBA_COLOR = /^rgba\(\s*(?:[0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\s*,\s*(?:[0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\s*,\s*(?:[0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\s*,\s*(?:0|1|0?\.\d+)\s*\)$/;
@@ -218,13 +219,15 @@ function validatePublished(value: unknown): PublishedSettings {
 }
 
 function validateCustomCode(value: unknown): CustomCodeSettings {
+  const cssLimit = customCssLimit();
+  const jsLimit = customJsLimit();
   const obj = assertPlainObject(value, "customCode");
   rejectUnknown(obj, ["customCssUpdatedAt", "customJsUpdatedAt", "customCssSize", "customJsSize"], "customCode");
   return {
     customCssUpdatedAt: nullableIso(obj.customCssUpdatedAt, "customCode.customCssUpdatedAt"),
     customJsUpdatedAt: nullableIso(obj.customJsUpdatedAt, "customCode.customJsUpdatedAt"),
-    customCssSize: numberRange(obj.customCssSize, "customCode.customCssSize", 0, CUSTOM_CSS_LIMIT),
-    customJsSize: numberRange(obj.customJsSize, "customCode.customJsSize", 0, CUSTOM_JS_LIMIT)
+    customCssSize: numberRange(obj.customCssSize, "customCode.customCssSize", 0, cssLimit),
+    customJsSize: numberRange(obj.customJsSize, "customCode.customJsSize", 0, jsLimit)
   };
 }
 
@@ -265,19 +268,21 @@ export function validateSettingsUpdate(value: unknown): SettingsUpdate {
 }
 
 export function validateCustomCssPayload(value: unknown): { enabled: boolean; content: string } {
+  const limit = customCssLimit();
   const obj = assertPlainObject(value, "custom CSS payload");
   rejectUnknown(obj, ["enabled", "content"], "custom CSS payload");
-  if (typeof obj.content !== "string" || obj.content.length > CUSTOM_CSS_LIMIT) {
-    throw badRequest(`custom CSS content must be a string up to ${CUSTOM_CSS_LIMIT} bytes.`);
+  if (typeof obj.content !== "string" || Buffer.byteLength(obj.content) > limit) {
+    throw badRequest(`custom CSS content must be a string up to ${limit} bytes.`);
   }
   return { enabled: booleanValue(obj.enabled, "custom CSS enabled"), content: obj.content };
 }
 
 export function validateCustomJsPayload(value: unknown): { enabled: boolean; content: string } {
+  const limit = customJsLimit();
   const obj = assertPlainObject(value, "custom JS payload");
   rejectUnknown(obj, ["enabled", "content"], "custom JS payload");
-  if (typeof obj.content !== "string" || obj.content.length > CUSTOM_JS_LIMIT) {
-    throw badRequest(`custom JS content must be a string up to ${CUSTOM_JS_LIMIT} bytes.`);
+  if (typeof obj.content !== "string" || Buffer.byteLength(obj.content) > limit) {
+    throw badRequest(`custom JS content must be a string up to ${limit} bytes.`);
   }
   return { enabled: booleanValue(obj.enabled, "custom JS enabled"), content: obj.content };
 }

@@ -12,6 +12,11 @@ import {
 } from "../services/siteService";
 import { validateCustomCssPayload, validateCustomJsPayload, validateSettingsUpdate, assertPlainObject } from "../validation/settingsValidation";
 import { validateSiteId } from "../validation/siteId";
+import { requireAccess } from "../middleware/auth";
+import { writeRateLimit } from "../middleware/rateLimit";
+import { requireJsonContent } from "../middleware/requestGuards";
+import { auditEventFromRequest } from "../services/auditLog";
+import { customJsEditingEnabled, serverPort } from "../config";
 
 export const apiRouter = Router();
 
@@ -25,16 +30,16 @@ apiRouter.get("/health", (_req: Request, res: Response) => {
   res.json({
     ok: true,
     service: "ss-theme-settings",
-    port: Number(process.env.PORT ?? 3004),
+    port: serverPort(),
     timestamp: new Date().toISOString()
   });
 });
 
-apiRouter.get("/sites", asyncRoute(async (_req, res) => {
+apiRouter.get("/sites", requireAccess("list-sites"), asyncRoute(async (_req, res) => {
   res.json({ sites: await listSites() });
 }));
 
-apiRouter.post("/sites", asyncRoute(async (req, res) => {
+apiRouter.post("/sites", requireAccess("create-site"), writeRateLimit, requireJsonContent, asyncRoute(async (req, res) => {
   const body = assertPlainObject(req.body, "create site payload");
   const siteId = validateSiteId(body.siteId);
   const siteName = body.siteName === undefined ? undefined : String(body.siteName);
@@ -46,41 +51,61 @@ apiRouter.post("/sites", asyncRoute(async (req, res) => {
     throw badRequest("themeName must be between 1 and 80 characters.");
   }
   const settings = await createSite({ siteId, siteName, themeName });
+  await auditEventFromRequest(req, { action: "site.created", result: "success", siteId });
   res.status(201).json({ settings });
 }));
 
-apiRouter.get("/sites/:siteId/settings", asyncRoute(async (req, res) => {
+apiRouter.get("/sites/:siteId/settings", requireAccess("read-settings", (req) => req.params.siteId), asyncRoute(async (req, res) => {
+  validateSiteId(req.params.siteId);
+  await auditEventFromRequest(req, { action: "settings.read", result: "success", siteId: req.params.siteId });
   res.json({ settings: await readSettings(req.params.siteId) });
 }));
 
-apiRouter.put("/sites/:siteId/settings", asyncRoute(async (req, res) => {
+apiRouter.put("/sites/:siteId/settings", requireAccess("update-settings", (req) => req.params.siteId), writeRateLimit, requireJsonContent, asyncRoute(async (req, res) => {
   validateSiteId(req.params.siteId);
   const update = validateSettingsUpdate(req.body);
-  res.json({ settings: await updateSettings(req.params.siteId, update) });
+  const settings = await updateSettings(req.params.siteId, update);
+  await auditEventFromRequest(req, { action: "settings.updated", result: "success", siteId: req.params.siteId });
+  res.json({ settings });
 }));
 
-apiRouter.post("/sites/:siteId/rebuild-theme", asyncRoute(async (req, res) => {
-  res.json({ theme: await rebuildThemeCss(req.params.siteId) });
+apiRouter.post("/sites/:siteId/rebuild-theme", requireAccess("rebuild-theme", (req) => req.params.siteId), writeRateLimit, requireJsonContent, asyncRoute(async (req, res) => {
+  validateSiteId(req.params.siteId);
+  const theme = await rebuildThemeCss(req.params.siteId);
+  await auditEventFromRequest(req, { action: "theme.rebuilt", result: "success", siteId: req.params.siteId, metadata: { bytes: theme.bytes } });
+  res.json({ theme });
 }));
 
-apiRouter.get("/sites/:siteId/theme", asyncRoute(async (req, res) => {
+apiRouter.get("/sites/:siteId/theme", requireAccess("read-theme", (req) => req.params.siteId), asyncRoute(async (req, res) => {
+  validateSiteId(req.params.siteId);
   res.json({ theme: await themeMetadata(req.params.siteId) });
 }));
 
-apiRouter.get("/sites/:siteId/custom-css", asyncRoute(async (req, res) => {
+apiRouter.get("/sites/:siteId/custom-css", requireAccess("read-custom-css", (req) => req.params.siteId), asyncRoute(async (req, res) => {
+  validateSiteId(req.params.siteId);
   res.json({ customCss: await readCustomCode(req.params.siteId, "css") });
 }));
 
-apiRouter.put("/sites/:siteId/custom-css", asyncRoute(async (req, res) => {
+apiRouter.put("/sites/:siteId/custom-css", requireAccess("update-custom-css", (req) => req.params.siteId), writeRateLimit, requireJsonContent, asyncRoute(async (req, res) => {
+  validateSiteId(req.params.siteId);
   const payload = validateCustomCssPayload(req.body);
-  res.json({ customCss: await updateCustomCode(req.params.siteId, "css", payload.enabled, payload.content) });
+  const customCss = await updateCustomCode(req.params.siteId, "css", payload.enabled, payload.content);
+  await auditEventFromRequest(req, { action: "custom-css.updated", result: "success", siteId: req.params.siteId, metadata: { enabled: payload.enabled, bytes: customCss.bytes } });
+  res.json({ customCss });
 }));
 
-apiRouter.get("/sites/:siteId/custom-js", asyncRoute(async (req, res) => {
+apiRouter.get("/sites/:siteId/custom-js", requireAccess("read-custom-js", (req) => req.params.siteId), asyncRoute(async (req, res) => {
+  validateSiteId(req.params.siteId);
   res.json({ customJs: await readCustomCode(req.params.siteId, "js") });
 }));
 
-apiRouter.put("/sites/:siteId/custom-js", asyncRoute(async (req, res) => {
+apiRouter.put("/sites/:siteId/custom-js", requireAccess("update-custom-js", (req) => req.params.siteId), writeRateLimit, requireJsonContent, asyncRoute(async (req, res) => {
+  validateSiteId(req.params.siteId);
   const payload = validateCustomJsPayload(req.body);
-  res.json({ customJs: await updateCustomCode(req.params.siteId, "js", payload.enabled, payload.content) });
+  if (!customJsEditingEnabled() && (payload.enabled || payload.content.trim().length > 0)) {
+    throw badRequest("Custom JS editing is disabled. Set CUSTOM_JS_EDITING_ENABLED=true to allow admin JS edits.");
+  }
+  const customJs = await updateCustomCode(req.params.siteId, "js", payload.enabled, payload.content);
+  await auditEventFromRequest(req, { action: "custom-js.updated", result: "success", siteId: req.params.siteId, metadata: { enabled: payload.enabled, bytes: customJs.bytes } });
+  res.json({ customJs });
 }));

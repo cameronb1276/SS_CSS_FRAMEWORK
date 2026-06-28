@@ -2,17 +2,16 @@ import cors from "cors";
 import express, { ErrorRequestHandler } from "express";
 import { apiRouter } from "./routes/api";
 import { ApiError } from "./utils/errors";
+import { allowedOrigins, jsonBodyLimit } from "./config";
+import { auditEventFromRequest } from "./services/auditLog";
 
 export function createApp() {
   const app = express();
-  const allowedOrigins = (process.env.ALLOWED_ORIGINS ?? "http://localhost:3000,http://localhost:3004,http://localhost:8080,http://localhost:8095,http://127.0.0.1:3000,http://127.0.0.1:3004,http://127.0.0.1:8080,http://127.0.0.1:8095,null")
-    .split(",")
-    .map((origin) => origin.trim())
-    .filter(Boolean);
+  const origins = allowedOrigins();
 
   app.use(cors({
     origin(origin, callback) {
-      if (!origin || allowedOrigins.includes(origin)) {
+      if (!origin || origins.includes(origin)) {
         callback(null, true);
         return;
       }
@@ -20,7 +19,7 @@ export function createApp() {
     }
   }));
 
-  app.use(express.json({ limit: "256kb" }));
+  app.use(express.json({ limit: jsonBodyLimit() }));
   app.use((req, _res, next) => {
     if (process.env.REQUEST_LOGGING !== "false") {
       console.log(`${new Date().toISOString()} ${req.method} ${req.originalUrl}`);
@@ -34,13 +33,16 @@ export function createApp() {
     res.status(404).json({ error: { message: "Route not found." } });
   });
 
-  const errorHandler: ErrorRequestHandler = (err, _req, res, _next) => {
+  const errorHandler: ErrorRequestHandler = (err, req, res, _next) => {
     if (err instanceof SyntaxError && "body" in err) {
+      void auditEventFromRequest(req, { action: "validation.failure", result: "failure", status: 400, reason: "Malformed JSON request body." });
       res.status(400).json({ error: { message: "Malformed JSON request body." } });
       return;
     }
 
     if (err instanceof ApiError) {
+      const action = err.status === 429 ? "rate-limit.failure" : err.status >= 400 && err.status < 500 ? "validation.failure" : "request.failure";
+      void auditEventFromRequest(req, { action, result: "failure", status: err.status, reason: err.message });
       res.status(err.status).json({ error: { message: err.message, details: err.details } });
       return;
     }

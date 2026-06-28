@@ -1,6 +1,7 @@
 import { createApp } from "./app";
+import { serverPort } from "./config";
 
-const port = Number(process.env.PORT ?? 3004);
+const port = serverPort();
 const app = createApp();
 
 app.listen(port, () => {

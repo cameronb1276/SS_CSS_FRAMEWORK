@@ -48,8 +48,20 @@ Environment variables:
 
 - `PORT`: server port, defaults to `3004`.
 - `THEME_SETTINGS_DATA_DIR`: storage root, defaults to `server/theme-settings/data`.
-- `ALLOWED_ORIGINS`: comma-separated CORS allowlist. Defaults to local development origins for the builder app, backend, static example servers on ports `8080` and `8095`, and direct local file examples.
+- `ALLOWED_ORIGINS`: comma-separated CORS allowlist. Defaults to local development origins for the builder app, backend, static example servers on ports `8080` and `8095`, and direct local file examples. Production mode defaults to no browser origins.
+- `LOCAL_DEVELOPMENT_MODE`: set `false` to require production-style auth checks.
+- `THEME_BACKEND_PRODUCTION_MODE`: set `true` to fail closed for admin routes without `ADMIN_API_TOKEN`.
+- `ADMIN_API_TOKEN`: bearer token for production admin API requests. Never commit a real value.
+- `MAX_JSON_BODY_SIZE`: JSON body limit, defaults to `256kb`.
+- `MAX_CUSTOM_CSS_BYTES`: custom CSS byte limit, defaults to `100000`.
+- `MAX_CUSTOM_JS_BYTES`: custom JS byte limit, defaults to `50000`.
+- `CUSTOM_JS_EDITING_ENABLED`: set `true` to allow admin custom JS edits. Defaults to `false`.
+- `PUBLIC_THEME_READ_ENABLED`: set `false` to require auth for generated theme metadata reads.
+- `WRITE_RATE_LIMIT_MAX`: write requests per window, defaults to `60`.
+- `WRITE_RATE_LIMIT_WINDOW_MS`: write-rate window, defaults to `60000`.
 - `REQUEST_LOGGING`: set to `false` to silence request logs.
+
+See `.env.example` for placeholder-only configuration.
 
 ## API Routes
 
@@ -86,7 +98,18 @@ curl -X PUT http://localhost:3004/api/sites/demo-site/settings \
 Rebuild generated CSS:
 
 ```bash
-curl -X POST http://localhost:3004/api/sites/demo-site/rebuild-theme
+curl -X POST http://localhost:3004/api/sites/demo-site/rebuild-theme \
+  -H "Content-Type: application/json" \
+  -d "{}"
+```
+
+Production write requests must include:
+
+```bash
+curl -X PUT http://localhost:3004/api/sites/demo-site/settings \
+  -H "Authorization: Bearer $ADMIN_API_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d "{\"theme\":{\"light\":{\"primary\":\"#0ea5e9\"}}}"
 ```
 
 ## Theme Editor Example
@@ -152,9 +175,15 @@ Site IDs are treated as untrusted input. They must be lowercase slug values cont
 
 Color values accept hex colors and safe `rgba()` values only. CSS expressions, URLs, JavaScript-like content, overly long values, and unsafe characters are rejected.
 
-Custom CSS is limited to 100 KB. Custom JS is limited to 50 KB, disabled by default, stored as text, and never executed by the server.
+Write routes require `Content-Type: application/json`, reject unsupported fields, and are rate limited. In local development mode, admin routes are open to support the builder workflow. In production mode, admin routes require a bearer token and fail closed if `ADMIN_API_TOKEN` is not configured.
+
+Custom CSS is limited to 100 KB by default. Custom JS is limited to 50 KB by default, editing is disabled unless `CUSTOM_JS_EDITING_ENABLED=true`, stored as text, and never executed by the server.
 
 Before `settings.json` is replaced, the current version is backed up and the new JSON is written through a temporary file.
+
+Audit logs are written as JSON lines to `data/audit/audit.log`. They include operation metadata but do not log secrets or full custom code content.
+
+Manual restore is the supported backup path in this phase: stop the backend, copy a timestamped backup over `data/sites/<site-id>/settings.json`, restart, and rebuild `theme.css`.
 
 ## Verification
 
@@ -164,7 +193,7 @@ Run:
 npm run verify
 ```
 
-The verification script builds the backend, starts a temporary server, checks health, creates a site, reads settings, accepts a valid theme update, rejects an invalid color, rejects a traversal site ID, rebuilds `theme.css`, and stores custom JS without executing it.
+The verification script builds the backend, starts temporary servers, checks health, creates a site, reads settings, accepts a valid theme update, rejects invalid colors and unsafe IDs, rejects unknown presets, rejects oversized custom CSS, verifies custom JS is disabled by default, rebuilds `theme.css`, checks audit logs, checks production fail-closed behavior, and checks write rate limiting.
 
 Manual health check:
 
@@ -174,8 +203,8 @@ curl http://localhost:3004/api/health
 
 ## Production Note
 
-This phase does not implement authentication. Do not expose this backend publicly without authentication, authorization, HTTPS, logging, rate limiting, and reverse-proxy controls.
+Phase 13 adds a bearer-token admin boundary and access-check structure, but a real SloanSites production deployment should still connect this layer to the main admin auth system, run behind HTTPS, configure exact origins, store secrets outside the repo, monitor audit logs, and use reverse-proxy protections.
 
 ## Future Work
 
-Future phases may add a builder theme panel UI, live preview JavaScript, authentication, role-based access, publish pipeline, reusable theme marketplace, database-backed site registry, audit logs, and settings restore UI.
+Future phases may connect the auth boundary to real SloanSites users and site ownership, add role-based access, publish pipeline, reusable theme marketplace, database-backed site registry, custom-code sandboxing, and settings restore UI.

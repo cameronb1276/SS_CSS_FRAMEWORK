@@ -6,6 +6,7 @@ import { validateSettingsDocument } from "../validation/settingsValidation";
 import { defaultSettings } from "./defaults";
 import { generateThemeCss } from "./themeCss";
 import { dataRoot, settingsPath, siteDir, sitesRoot } from "./paths";
+import { writeAuditEvent } from "./auditLog";
 
 async function exists(file: string): Promise<boolean> {
   try {
@@ -43,6 +44,7 @@ async function backupSettings(siteId: string, sourceFile: string, sitePath: stri
   const backups = (await fs.readdir(backupDir)).filter((name) => name.startsWith("settings.") && name.endsWith(".json")).sort();
   const excess = backups.slice(0, Math.max(0, backups.length - 10));
   await Promise.all(excess.map((name) => fs.rm(path.join(backupDir, name), { force: true })));
+  await writeAuditEvent({ action: "backup.created", result: "success", siteId, metadata: { kind: "settings" } });
 }
 
 function deepMerge(base: unknown, patch: unknown): unknown {

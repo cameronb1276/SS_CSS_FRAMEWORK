@@ -7,6 +7,7 @@
 - Backend defaults to port `3004` and is documented as local/builder infrastructure, not production-ready without authentication and deployment hardening.
 - Added Phase 12 builder theme editor reference UI with site selection, live theme preview, save status, rebuild status, custom CSS controls, and custom JS disabled by default.
 - Added a Phase 11 backend save/rebuild workflow from the editor and documentation for future SloanSites builder integration.
+- Added Phase 13 backend auth/access-check structure, production fail-closed behavior, environment-driven origin/body/custom-code limits, write rate limiting, audit logging, safer custom JS handling, and backup restore guidance.
 
 ## 0.2.0 - Builder and Published Site Toolkit
 
