@@ -237,6 +237,34 @@ async function main() {
     });
     if (!result.response.ok) throw new Error("Delete element operation failed.");
 
+    result = await request(baseUrl, "GET", "/api/sites/demo-site/pages/home/revisions");
+    if (!result.response.ok) throw new Error("Revision list failed.");
+    const revisions = getRecord(result.json, "revisions response").revisions as Array<Record<string, unknown>>;
+    if (!Array.isArray(revisions) || revisions.length === 0) throw new Error("Revision list did not include mutation snapshots.");
+
+    result = await request(baseUrl, "POST", "/api/sites/demo-site/pages/home/undo", {});
+    if (!result.response.ok) throw new Error("Undo failed.");
+    let historyPage = getRecord(result.json, "undo response").page as PageDocument;
+    if (!historyPage.sections.some((section) => section.blocks.some((block) => block.blockId === duplicatedId))) {
+      throw new Error("Undo did not restore deleted element.");
+    }
+
+    result = await request(baseUrl, "POST", "/api/sites/demo-site/pages/home/redo", {});
+    if (!result.response.ok) throw new Error("Redo failed.");
+    historyPage = getRecord(result.json, "redo response").page as PageDocument;
+    if (historyPage.sections.some((section) => section.blocks.some((block) => block.blockId === duplicatedId))) {
+      throw new Error("Redo did not reapply delete.");
+    }
+
+    result = await request(baseUrl, "POST", "/api/sites/demo-site/pages/home/revisions/not-a-revision/restore", {});
+    if (result.response.status !== 400) throw new Error("Invalid revision ID was not rejected.");
+
+    result = await request(baseUrl, "GET", "/api/sites/demo-site/pages/home/revisions");
+    const revisionForRestore = (getRecord(result.json, "revisions after redo").revisions as Array<Record<string, unknown>>)[0]?.revisionId;
+    if (typeof revisionForRestore !== "string") throw new Error("No revision was available for restore.");
+    result = await request(baseUrl, "POST", `/api/sites/demo-site/pages/home/revisions/${revisionForRestore}/restore`, {});
+    if (!result.response.ok) throw new Error("Revision restore failed.");
+
     result = await request(baseUrl, "POST", "/api/sites/demo-site/publish", {});
     if (!result.response.ok) throw new Error("Publish after element mutations failed.");
     const phase17Html = await fs.readFile(path.join(tempRoot, "published", "demo-site", "index.html"), "utf8");
@@ -441,11 +469,14 @@ async function main() {
   if (!elementTreeBuilder.includes("data-library-type") || !elementTreeBuilder.includes("dragover") || !elementTreeBuilder.includes("dropPlan")) {
     throw new Error("Element tree builder example is missing drag/drop controls.");
   }
+  if (!elementTreeBuilder.includes("undoPage") || !elementTreeBuilder.includes("redoPage") || !elementTreeBuilder.includes("data-restore-revision")) {
+    throw new Error("Element tree builder example is missing history controls.");
+  }
   if (/bootstrap|tailwind|material-ui/i.test(elementTreeBuilder)) {
     throw new Error("Element tree builder example must not depend on another CSS framework.");
   }
 
-    console.log("Phase 20 verification passed.");
+    console.log("Phase 21 verification passed.");
 }
 
 main().catch((error) => {

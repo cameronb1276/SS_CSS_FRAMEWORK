@@ -34,6 +34,8 @@
         </div>
         <div class="ss-builder-toolbar-group ss-ml-auto">
           <span class="ss-builder-status ss-builder-status-saved" id="saveStatus">Idle</span>
+          <button class="ss-btn ss-btn-sm ss-btn-outline" id="undoPage" type="button">Undo</button>
+          <button class="ss-btn ss-btn-sm ss-btn-outline" id="redoPage" type="button">Redo</button>
           <button class="ss-btn ss-btn-sm ss-btn-outline" id="refreshPage" type="button">Refresh</button>
         </div>
       </header>
@@ -173,6 +175,13 @@
             <section class="ss-builder-property-group">
               <div class="ss-builder-property-title">Backend response</div>
               <pre class="ss-code ss-block ss-p-4" id="responseLog">No mutations yet.</pre>
+            </section>
+
+            <section class="ss-builder-property-group">
+              <div class="ss-builder-property-title">Revision history</div>
+              <button class="ss-btn ss-btn-sm ss-btn-outline" id="loadRevisions" type="button">Load revisions</button>
+              <div class="ss-stack ss-mt-4" id="revisionList"></div>
+              <p class="ss-help-text">Trash restore is covered by undo and revision restore in this reference build.</p>
             </section>
           </div>
         </aside>
@@ -335,6 +344,28 @@
           await loadTree();
           status("Saved", "saved");
           message("Saved", `${payload.operation} completed.`, "success");
+        };
+
+        const historyAction = async (path, label) => {
+          status(label, "saving");
+          const data = await request(`/sites/${currentSite()}/pages/${currentPage()}${path}`, { method: "POST", body: JSON.stringify({}) });
+          await loadTree();
+          el("responseLog").textContent = JSON.stringify({ history: label, revisionId: data.revisionId || null }, null, 2);
+          status("Saved", "saved");
+          message(label, "History action completed.", "success");
+        };
+
+        const loadRevisions = async () => {
+          const data = await request(`/sites/${currentSite()}/pages/${currentPage()}/revisions`);
+          el("revisionList").innerHTML = data.revisions.length ? data.revisions.map((revision) => `
+            <article class="ss-card">
+              <div class="ss-card-body">
+                <strong class="ss-card-title">${safeText(revision.operation)}</strong>
+                <p class="ss-card-subtitle">${safeText(revision.summary)}<br>${safeText(revision.createdAt)} / ${safeText(revision.actor)}</p>
+                <button class="ss-btn ss-btn-sm ss-btn-outline" type="button" data-restore-revision="${safeText(revision.revisionId)}">Restore</button>
+              </div>
+            </article>
+          `).join("") : `<p class="ss-text ss-text-muted">No revisions yet.</p>`;
         };
 
         const select = (id) => {
@@ -506,6 +537,18 @@
           mutate({ operation: "move", elementId: data.node.elementId, targetParentId: data.parent.elementId, siblingId: data.parent.children[data.index + 1].elementId, position: "after" }).catch((error) => message("Move failed", error.message, "danger"));
         });
         el("refreshPage").addEventListener("click", () => loadTree().catch((error) => message("Refresh failed", error.message, "danger")));
+        el("undoPage").addEventListener("click", () => historyAction("/undo", "Undo").catch((error) => message("Undo failed", error.message, "danger")));
+        el("redoPage").addEventListener("click", () => historyAction("/redo", "Redo").catch((error) => message("Redo failed", error.message, "danger")));
+        el("loadRevisions").addEventListener("click", () => loadRevisions().catch((error) => message("Revision load failed", error.message, "danger")));
+        el("revisionList").addEventListener("click", (event) => {
+          const button = event.target.closest("[data-restore-revision]");
+          if (!button) return;
+          const revisionId = button.getAttribute("data-restore-revision");
+          if (!confirm("Restore this revision and replace the current page?")) return;
+          request(`/sites/${currentSite()}/pages/${currentPage()}/revisions/${revisionId}/restore`, { method: "POST", body: JSON.stringify({}) })
+            .then(async () => { await loadTree(); await loadRevisions(); message("Revision restored", "The selected revision was restored.", "success"); })
+            .catch((error) => message("Restore failed", error.message, "danger"));
+        });
         el("siteSelect").addEventListener("change", async () => { state.selectedId = null; await loadPages(); await loadTree(); });
         el("pageSelect").addEventListener("change", async () => { state.selectedId = null; await loadTree(); });
         el("createDemo").addEventListener("click", async () => { await ensureDemoSite(); await loadSites(); await loadPages(); await loadTree(); });

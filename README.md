@@ -245,6 +245,12 @@ Phase 20 adds reference drag-and-drop for tree rows and element-library items, w
 
 See [docs/drag-drop-builder-operations.md](docs/drag-drop-builder-operations.md).
 
+## Optional History And Restore
+
+Phase 21 adds snapshot-based revisions, undo, redo, and revision restore for backend element edits. Deleted elements are recoverable through undo or revision restore.
+
+See [docs/undo-redo-revisions-and-restore.md](docs/undo-redo-revisions-and-restore.md).
+
 ## Accessibility
 
 SS CSS Framework keeps native semantics intact. Focus states are visible, links remain underlined, disabled states remain readable, validation states use a thicker left border in addition to color, `.ss-sr-only` is available for accessible hidden text, and motion-heavy helpers respect `prefers-reduced-motion`.
@@ -308,6 +314,7 @@ server/    Optional backend services for builder workflows
 - [docs/element-tree-ui.md](docs/element-tree-ui.md): optional reference element tree builder UI.
 - [docs/inspector-panel-and-utility-picker.md](docs/inspector-panel-and-utility-picker.md): optional selected-element inspector and utility picker.
 - [docs/drag-drop-builder-operations.md](docs/drag-drop-builder-operations.md): optional drag/drop builder operation flow.
+- [docs/undo-redo-revisions-and-restore.md](docs/undo-redo-revisions-and-restore.md): optional builder history and restore workflow.
 - [docs/published-sites.md](docs/published-sites.md): published client site guide.
 - [examples/readme.html](examples/readme.html): styled HTML version of this README.
 

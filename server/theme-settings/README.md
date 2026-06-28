@@ -88,6 +88,10 @@ All admin routes live under `/api`.
 - `GET /api/sites/:siteId/pages/:pageId/tree`
 - `PUT /api/sites/:siteId/pages/:pageId`
 - `POST /api/sites/:siteId/pages/:pageId/element-operations`
+- `GET /api/sites/:siteId/pages/:pageId/revisions`
+- `POST /api/sites/:siteId/pages/:pageId/revisions/:revisionId/restore`
+- `POST /api/sites/:siteId/pages/:pageId/undo`
+- `POST /api/sites/:siteId/pages/:pageId/redo`
 - `GET /api/sites/:siteId/publish`
 - `POST /api/sites/:siteId/publish`
 
@@ -214,6 +218,14 @@ See `../../docs/element-tree-ui.md`.
 The same example also includes Phase 19 inspector controls for selected-element content fields, safe attributes, locked-state handling, and a curated SS utility picker. See `../../docs/inspector-panel-and-utility-picker.md`.
 
 Phase 20 adds tree and library drag/drop to the same reference page. Drop operations call the backend add/move endpoint and reload backend state after success. See `../../docs/drag-drop-builder-operations.md`.
+
+Phase 21 adds undo, redo, revision listing, and revision restore controls to the reference page. See `../../docs/undo-redo-revisions-and-restore.md`.
+
+## Revisions And Restore
+
+Element mutations create revision snapshots under `data/sites/<site-id>/revisions/<page-id>/`. Undo restores the newest revision and writes the current page to a redo stack. Redo restores the newest redo snapshot. Revision restore validates the snapshot before replacing the current page.
+
+Deletes are recoverable through undo and revision restore in this reference implementation.
 
 ## Static Publish Output
 

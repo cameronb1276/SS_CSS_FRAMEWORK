@@ -23,6 +23,10 @@ export type AccessAction =
   | "read-element-registry"
   | "read-page-tree"
   | "mutate-elements"
+  | "read-revisions"
+  | "restore-revision"
+  | "undo-page"
+  | "redo-page"
   | "publish-site"
   | "read-publish";
 

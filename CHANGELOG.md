@@ -15,6 +15,7 @@
 - Added Phase 18 reference element tree builder UI with backend-loaded registry/tree data, tree/canvas selection sync, quick CRUD controls, visible error states, and documentation.
 - Added Phase 19 inspector panel controls for selected elements, safe content and attribute saves, curated SS utility picker with simple class conflict handling, locked-state behavior, and documentation.
 - Added Phase 20 reference drag-and-drop behavior for element tree rows and library items with registry-based drop feedback, backend add/move operations, keyboard fallbacks, and documentation.
+- Added Phase 21 snapshot-based revisions, undo, redo, revision restore APIs, history controls in the builder example, audit logging, and recovery documentation.
 
 ## 0.2.0 - Builder and Published Site Toolkit
 

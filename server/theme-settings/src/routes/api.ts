@@ -23,6 +23,7 @@ import { publishSite, readPublishMetadata } from "../services/publishService";
 import { elementRegistryForApi, pageToElementTree } from "../services/elementTreeService";
 import { validateElementTree } from "../validation/elementTreeValidation";
 import { applyElementOperation } from "../services/elementMutationService";
+import { listRevisions, redoPage, restoreRevision, undoPage } from "../services/revisionService";
 
 export const apiRouter = Router();
 
@@ -166,6 +167,32 @@ apiRouter.post("/sites/:siteId/pages/:pageId/element-operations", requireAccess(
     }
   });
   res.json(result);
+}));
+
+apiRouter.get("/sites/:siteId/pages/:pageId/revisions", requireAccess("read-revisions", (req) => req.params.siteId), asyncRoute(async (req, res) => {
+  validateSiteId(req.params.siteId);
+  validateContentId(req.params.pageId, "pageId");
+  res.json({ revisions: await listRevisions(req.params.siteId, req.params.pageId) });
+}));
+
+apiRouter.post("/sites/:siteId/pages/:pageId/revisions/:revisionId/restore", requireAccess("restore-revision", (req) => req.params.siteId), writeRateLimit, requireJsonContent, asyncRoute(async (req, res) => {
+  validateSiteId(req.params.siteId);
+  validateContentId(req.params.pageId, "pageId");
+  const page = await restoreRevision(req.params.siteId, req.params.pageId, req.params.revisionId, String(res.locals.actor ?? "backend"));
+  await auditEventFromRequest(req, { action: "revision.restore.request", result: "success", siteId: req.params.siteId, metadata: { pageId: req.params.pageId, revisionId: req.params.revisionId } });
+  res.json({ page });
+}));
+
+apiRouter.post("/sites/:siteId/pages/:pageId/undo", requireAccess("undo-page", (req) => req.params.siteId), writeRateLimit, requireJsonContent, asyncRoute(async (req, res) => {
+  validateSiteId(req.params.siteId);
+  validateContentId(req.params.pageId, "pageId");
+  res.json(await undoPage(req.params.siteId, req.params.pageId, String(res.locals.actor ?? "backend")));
+}));
+
+apiRouter.post("/sites/:siteId/pages/:pageId/redo", requireAccess("redo-page", (req) => req.params.siteId), writeRateLimit, requireJsonContent, asyncRoute(async (req, res) => {
+  validateSiteId(req.params.siteId);
+  validateContentId(req.params.pageId, "pageId");
+  res.json(await redoPage(req.params.siteId, req.params.pageId, String(res.locals.actor ?? "backend")));
 }));
 
 apiRouter.put("/sites/:siteId/pages/:pageId", requireAccess("update-page", (req) => req.params.siteId), writeRateLimit, requireJsonContent, asyncRoute(async (req, res) => {

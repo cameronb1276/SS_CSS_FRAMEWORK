@@ -6,6 +6,7 @@ import { validateContentId } from "../validation/contentValidation";
 import { validateAttributes, validateClassList, validateElementTree } from "../validation/elementTreeValidation";
 import { pageToElementTree } from "./elementTreeService";
 import { readPage, updatePage } from "./contentService";
+import { createRevisionSnapshot } from "./revisionService";
 
 type Position = "inside" | "before" | "after";
 type OperationName = "add" | "patch" | "delete" | "duplicate" | "move" | "rename" | "set-visibility" | "set-locked";
@@ -390,6 +391,7 @@ function validateResult(page: PageDocument): void {
 export async function applyElementOperation(siteId: string, pageId: string, input: unknown): Promise<ElementOperationResult> {
   const operation = parseOperation(input);
   const page = await readPage(siteId, pageId);
+  const originalPage = JSON.parse(JSON.stringify(page)) as PageDocument;
   let selectedElementId: string | null = operation.elementId ?? null;
 
   switch (operation.operation) {
@@ -459,6 +461,11 @@ export async function applyElementOperation(siteId: string, pageId: string, inpu
 
   page.updatedAt = new Date().toISOString();
   validateResult(page);
+  await createRevisionSnapshot(siteId, pageId, originalPage, {
+    operation: `element.${operation.operation}`,
+    targetElementId: operation.elementId ?? selectedElementId,
+    summary: `Element operation: ${operation.operation}`
+  });
   const saved = await updatePage(siteId, pageId, page);
   const issues = validateElementTree(pageToElementTree(saved), { published: true });
   return { operation: operation.operation, selectedElementId, page: saved, issues };
