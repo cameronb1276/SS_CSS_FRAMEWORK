@@ -147,7 +147,9 @@ function orderedChildBlocks(block: BlockDocument): BlockDocument[] {
 }
 
 function customClassName(block: BlockDocument): string {
-  return typeof block.style.className === "string" ? block.style.className.trim() : "";
+  if (typeof block.style.className !== "string") return "";
+  const systemClasses = new Set(["ss-section-wide", "ss-grid", "ss-cols-2", "ss-cols-3", "ss-stack", "ss-split", "ss-row", "ss-wrap", "ss-gap-4", "ss-gap-6"]);
+  return block.style.className.split(/\s+/).filter(Boolean).filter((item) => !systemClasses.has(item)).join(" ");
 }
 
 function legacyStructuralType(block: BlockDocument): BlockDocument["type"] | undefined {

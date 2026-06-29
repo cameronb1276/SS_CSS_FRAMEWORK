@@ -96,6 +96,9 @@ function sectionElementType(section: SectionDocument): ElementType {
 
 const structuralBlockTypes: BlockType[] = ["container", "grid", "stack", "cluster", "split", "group"];
 const structuralElementTypes = new Set<ElementType>(["container", "grid", "stack", "cluster", "split", "group"]);
+const structuralSystemClasses = new Set([
+  "ss-section-wide", "ss-grid", "ss-cols-2", "ss-cols-3", "ss-stack", "ss-split", "ss-row", "ss-wrap", "ss-gap-4", "ss-gap-6"
+]);
 
 function legacyStructuralType(block: BlockDocument): ElementType | undefined {
   if (block.type !== "card" || Object.keys(block.content).length > 0) return undefined;
@@ -154,6 +157,37 @@ function blockTypeFromElement(type: ElementType): BlockType {
     "custom-html": "custom-html"
   };
   return map[type] ?? "card";
+}
+
+function layoutValue(block: BlockDocument): string {
+  return typeof block.style.layout === "string" ? block.style.layout : typeof block.content.layout === "string" ? block.content.layout : "halves-vertical";
+}
+
+function structuralClassesFor(type: ElementType, layout = "halves-vertical"): string[] {
+  if (type === "container") return ["ss-section-wide"];
+  if (type === "stack") return ["ss-stack", "ss-gap-6"];
+  if (type === "cluster" || type === "group") return ["ss-row", "ss-wrap", "ss-gap-4"];
+  if (type === "split") return ["ss-split", "ss-gap-6"];
+  if (layout === "thirds-vertical") return ["ss-grid", "ss-cols-3", "ss-gap-6"];
+  if (layout === "halves-horizontal") return ["ss-stack", "ss-gap-6"];
+  if (layout === "one-side-split") return ["ss-split", "ss-gap-6"];
+  return ["ss-grid", "ss-cols-2", "ss-gap-6"];
+}
+
+function mergeClassNames(system: string[], custom: string[]): string {
+  return Array.from(new Set([...system, ...custom].filter(Boolean))).join(" ");
+}
+
+function existingCustomStructuralClasses(block: BlockDocument): string[] {
+  return typeof block.style.className === "string"
+    ? block.style.className.split(/\s+/).filter(Boolean).filter((item) => !structuralSystemClasses.has(item))
+    : [];
+}
+
+function applyStructuralClassName(block: BlockDocument, customClasses = existingCustomStructuralClasses(block)): void {
+  const type = blockElementType(block);
+  if (!structuralElementTypes.has(type)) return;
+  block.style.className = mergeClassNames(structuralClassesFor(type, layoutValue(block)), customClasses);
 }
 
 function sectionTypeFromElement(type: ElementType, content: Record<string, unknown>): SectionType {
@@ -260,7 +294,12 @@ function applyPatchToBlock(block: BlockDocument, patch: Record<string, unknown>)
     }
   }
   if (patch.classes !== undefined) {
-    block.style.className = classNameFromPatch(patch.classes) ?? "";
+    const parsed = classNameFromPatch(patch.classes)?.split(/\s+/).filter(Boolean) ?? [];
+    if (structuralElementTypes.has(blockElementType(block))) applyStructuralClassName(block, parsed.filter((item) => !structuralSystemClasses.has(item)));
+    else block.style.className = parsed.join(" ");
+  }
+  if (patch.classes === undefined && structuralElementTypes.has(blockElementType(block)) && (patch.content !== undefined || patch.design !== undefined)) {
+    applyStructuralClassName(block);
   }
   if (patch.attributes !== undefined) {
     const attributes = Object.fromEntries(Object.entries(assertObject(patch.attributes, "patch.attributes")).map(([key, value]) => [key, String(value)]));
@@ -284,6 +323,8 @@ function createBlock(page: PageDocument, type: ElementType, elementId?: string):
   ensureUniqueId(page, blockId);
   const blockType = blockTypeFromElement(type);
   const isLayout = structuralBlockTypes.includes(blockType);
+  const style: Record<string, string | number | boolean | null> = type === "service-card" ? { variant: "service" } : type === "grid" ? { layout: "halves-vertical" } : {};
+  if (isLayout) style.className = mergeClassNames(structuralClassesFor(type, String(style.layout ?? "halves-vertical")), []);
   return {
     blockId,
     type: blockType,
@@ -292,7 +333,7 @@ function createBlock(page: PageDocument, type: ElementType, elementId?: string):
     hidden: false,
     locked: false,
     validation: { status: "valid", messages: [] },
-    style: type === "service-card" ? { variant: "service" } : type === "grid" ? { layout: "halves-vertical" } : {},
+    style,
     blockOrder: isLayout ? [] : undefined,
     blocks: isLayout ? [] : undefined
   };

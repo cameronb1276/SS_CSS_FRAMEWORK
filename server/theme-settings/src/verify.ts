@@ -41,6 +41,22 @@ function firstChild(root: ElementNode): ElementNode {
   return child;
 }
 
+function findBlock(page: PageDocument, blockId: string): Record<string, unknown> | undefined {
+  const scan = (blocks: Array<Record<string, unknown>>): Record<string, unknown> | undefined => {
+    for (const block of blocks) {
+      if (block.blockId === blockId) return block;
+      const children = Array.isArray(block.blocks) ? scan(block.blocks as Array<Record<string, unknown>>) : undefined;
+      if (children) return children;
+    }
+    return undefined;
+  };
+  for (const section of page.sections) {
+    const found = scan(section.blocks as unknown as Array<Record<string, unknown>>);
+    if (found) return found;
+  }
+  return undefined;
+}
+
 async function withServer<T>(run: (baseUrl: string, tempRoot: string) => Promise<T>): Promise<T> {
   const tempRoot = await fs.mkdtemp(path.join(os.tmpdir(), "ss-theme-settings-"));
   process.env.THEME_SETTINGS_DATA_DIR = tempRoot;
@@ -174,8 +190,26 @@ async function main() {
 
     result = await request(baseUrl, "POST", "/api/sites/demo-site/pages/home/element-operations", {
       operation: "add",
-      elementType: "grid",
+      elementType: "container",
       parentId: "hero-section",
+      position: "inside",
+      newElementId: "phase-layout-container"
+    });
+    if (!result.response.ok) throw new Error("Add structural container operation failed.");
+
+    result = await request(baseUrl, "POST", "/api/sites/demo-site/pages/home/element-operations", {
+      operation: "add",
+      elementType: "stack",
+      parentId: "phase-layout-container",
+      position: "inside",
+      newElementId: "phase-layout-stack"
+    });
+    if (!result.response.ok) throw new Error("Add structural stack operation failed.");
+
+    result = await request(baseUrl, "POST", "/api/sites/demo-site/pages/home/element-operations", {
+      operation: "add",
+      elementType: "grid",
+      parentId: "phase-layout-container",
       position: "inside",
       newElementId: "phase-layout-grid"
     });
@@ -199,9 +233,32 @@ async function main() {
 
     result = await request(baseUrl, "GET", "/api/sites/demo-site/pages/home/tree");
     const layoutTree = getRecord(result.json, "layout tree response").tree as ElementNode;
-    const layoutGrid = layoutTree.children.flatMap((section) => section.children).find((node) => node.elementId === "phase-layout-grid");
+    const layoutContainer = layoutTree.children.flatMap((section) => section.children).find((node) => node.elementId === "phase-layout-container");
+    const layoutGrid = layoutContainer?.children.find((node) => node.elementId === "phase-layout-grid");
     if (!layoutGrid || layoutGrid.type !== "grid" || layoutGrid.children[0]?.elementId !== "phase-layout-grid-copy") {
       throw new Error("Structural grid did not remain a nested layout element in the page tree.");
+    }
+    if (!layoutContainer || layoutContainer.classes.system.join(" ") !== "ss-section-wide") {
+      throw new Error("Structural container did not expose attached system classes.");
+    }
+    if (layoutGrid.classes.system.join(" ") !== "ss-grid ss-cols-3 ss-gap-6") {
+      throw new Error("Structural grid did not expose layout-specific system classes.");
+    }
+
+    result = await request(baseUrl, "GET", "/api/sites/demo-site/pages/home");
+    const layoutPage = getRecord(result.json, "layout page response").page as PageDocument;
+    const layoutContainerBlock = findBlock(layoutPage, "phase-layout-container");
+    const layoutStackBlock = findBlock(layoutPage, "phase-layout-stack");
+    const layoutGridBlock = findBlock(layoutPage, "phase-layout-grid");
+    if (!String(layoutContainerBlock?.style && (layoutContainerBlock.style as Record<string, unknown>).className).includes("ss-section-wide")) {
+      throw new Error("Structural container did not persist attached classes.");
+    }
+    if (!String(layoutStackBlock?.style && (layoutStackBlock.style as Record<string, unknown>).className).includes("ss-stack")) {
+      throw new Error("Structural stack did not persist attached classes.");
+    }
+    const gridClassName = String(layoutGridBlock?.style && (layoutGridBlock.style as Record<string, unknown>).className);
+    if (!gridClassName.includes("ss-grid") || !gridClassName.includes("ss-cols-3") || gridClassName.includes("ss-cols-2")) {
+      throw new Error("Structural grid did not persist current layout classes.");
     }
 
     result = await request(baseUrl, "POST", "/api/sites/demo-site/pages/home/element-operations", {

@@ -4,6 +4,9 @@ import { elementRegistry, elementTypeExists } from "../registry/elementRegistry"
 
 const structuralBlockTypes = ["container", "grid", "stack", "cluster", "split", "group"] as const;
 const structuralLabelTypes = new Set<ElementType>(structuralBlockTypes);
+const structuralSystemClasses = new Set([
+  "ss-section-wide", "ss-grid", "ss-cols-2", "ss-cols-3", "ss-stack", "ss-split", "ss-row", "ss-wrap", "ss-gap-4", "ss-gap-6"
+]);
 
 function legacyStructuralType(block: BlockDocument): ElementType | undefined {
   if (block.type !== "card" || Object.keys(block.content).length > 0) return undefined;
@@ -55,9 +58,29 @@ function designFromBlock(block: BlockDocument): ElementDesign {
   return design;
 }
 
-function customClassesFromStyle(style: Record<string, string | number | boolean | null>): string[] {
+function layoutValue(block: BlockDocument): string {
+  return typeof block.style.layout === "string" ? block.style.layout : typeof block.content.layout === "string" ? block.content.layout : "halves-vertical";
+}
+
+function structuralClassesFor(type: ElementType, layout = "halves-vertical"): string[] {
+  if (type === "container") return ["ss-section-wide"];
+  if (type === "stack") return ["ss-stack", "ss-gap-6"];
+  if (type === "cluster" || type === "group") return ["ss-row", "ss-wrap", "ss-gap-4"];
+  if (type === "split") return ["ss-split", "ss-gap-6"];
+  if (layout === "thirds-vertical") return ["ss-grid", "ss-cols-3", "ss-gap-6"];
+  if (layout === "halves-horizontal") return ["ss-stack", "ss-gap-6"];
+  if (layout === "one-side-split") return ["ss-split", "ss-gap-6"];
+  return ["ss-grid", "ss-cols-2", "ss-gap-6"];
+}
+
+function systemClassesForBlock(type: ElementType, block: BlockDocument): string[] {
+  return structuralLabelTypes.has(type) ? structuralClassesFor(type, layoutValue(block)) : elementRegistry[type].defaultClasses;
+}
+
+function customClassesFromStyle(style: Record<string, string | number | boolean | null>, systemClasses: string[] = []): string[] {
   if (typeof style.className !== "string") return [];
-  return style.className.split(/\s+/).map((item) => item.trim()).filter(Boolean);
+  const system = new Set([...systemClasses, ...structuralSystemClasses]);
+  return style.className.split(/\s+/).map((item) => item.trim()).filter(Boolean).filter((item) => !system.has(item));
 }
 
 function attributesFromStyle(style: Record<string, string | number | boolean | null>): Record<string, string> {
@@ -105,6 +128,7 @@ function sectionNode(section: SectionDocument, parentId: string, timestamps: { c
 
 function blockNode(block: BlockDocument, parentId: string, timestamps: { createdAt: string; updatedAt: string }): ElementNode {
   const type = blockElementType(block);
+  const systemClasses = systemClassesForBlock(type, block);
   const childOrder = block.blockOrder ?? block.blocks?.map((child) => child.blockId) ?? [];
   const children = childOrder
     .map((blockId) => block.blocks?.find((child) => child.blockId === blockId))
@@ -118,7 +142,7 @@ function blockNode(block: BlockDocument, parentId: string, timestamps: { created
     children,
     content: blockContent(block),
     design: designFromBlock(block),
-    classes: { system: elementRegistry[type].defaultClasses, custom: customClassesFromStyle(block.style) },
+    classes: { system: systemClasses, custom: customClassesFromStyle(block.style, systemClasses) },
     attributes: attributesFromStyle(block.style),
     visibility: { hidden: block.hidden },
     locked: block.locked,
