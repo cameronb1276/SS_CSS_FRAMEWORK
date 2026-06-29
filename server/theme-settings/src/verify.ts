@@ -174,6 +174,38 @@ async function main() {
 
     result = await request(baseUrl, "POST", "/api/sites/demo-site/pages/home/element-operations", {
       operation: "add",
+      elementType: "grid",
+      parentId: "hero-section",
+      position: "inside",
+      newElementId: "phase-layout-grid"
+    });
+    if (!result.response.ok) throw new Error("Add structural grid operation failed.");
+
+    result = await request(baseUrl, "POST", "/api/sites/demo-site/pages/home/element-operations", {
+      operation: "add",
+      elementType: "paragraph",
+      parentId: "phase-layout-grid",
+      position: "inside",
+      newElementId: "phase-layout-grid-copy"
+    });
+    if (!result.response.ok) throw new Error("Add paragraph inside structural grid operation failed.");
+
+    result = await request(baseUrl, "POST", "/api/sites/demo-site/pages/home/element-operations", {
+      operation: "patch",
+      elementId: "phase-layout-grid",
+      patch: { content: { layout: "thirds-vertical" }, design: { layout: "thirds-vertical" } }
+    });
+    if (!result.response.ok) throw new Error("Patch structural grid layout operation failed.");
+
+    result = await request(baseUrl, "GET", "/api/sites/demo-site/pages/home/tree");
+    const layoutTree = getRecord(result.json, "layout tree response").tree as ElementNode;
+    const layoutGrid = layoutTree.children.flatMap((section) => section.children).find((node) => node.elementId === "phase-layout-grid");
+    if (!layoutGrid || layoutGrid.type !== "grid" || layoutGrid.children[0]?.elementId !== "phase-layout-grid-copy") {
+      throw new Error("Structural grid did not remain a nested layout element in the page tree.");
+    }
+
+    result = await request(baseUrl, "POST", "/api/sites/demo-site/pages/home/element-operations", {
+      operation: "add",
       elementType: "section",
       parentId: "phase17-heading",
       position: "inside",
@@ -290,6 +322,9 @@ async function main() {
     const phase17Html = await fs.readFile(path.join(tempRoot, "published", "demo-site", "index.html"), "utf8");
     if (!phase17Html.includes("Phase 17 edited heading")) throw new Error("Published output did not include edited heading.");
     if (phase17Html.includes(`${duplicatedId} copy`)) throw new Error("Deleted duplicated element leaked into published output.");
+    if (!phase17Html.includes("ss-cols-3") || phase17Html.includes("ss-card-title\">Grid")) {
+      throw new Error("Published output did not render structural grid as a layout wrapper.");
+    }
 
     const updatedHome = clone(homePage);
     const updatedHomeRecord = getRecord(updatedHome, "home page");
@@ -494,6 +529,9 @@ async function main() {
   }
   if (!elementTreeBuilder.includes("resolveAddInsideTarget") || !elementTreeBuilder.includes("Use Add inside")) {
     throw new Error("Element tree builder example is missing compatible add-target handling.");
+  }
+  if (!elementTreeBuilder.includes("layoutInput") || !elementTreeBuilder.includes("halves-horizontal") || !elementTreeBuilder.includes("thirds-vertical")) {
+    throw new Error("Element tree builder example is missing structural grid layout controls.");
   }
   if (/bootstrap|tailwind|material-ui/i.test(elementTreeBuilder)) {
     throw new Error("Element tree builder example must not depend on another CSS framework.");

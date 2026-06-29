@@ -139,8 +139,48 @@ function renderBusinessHours(block: BlockDocument): string {
   return `<article class="ss-business-hours-card"><h3 class="ss-h4">${escapeHtml(textField(block, "title", block.label))}</h3>${rendered}</article>`;
 }
 
+function orderedChildBlocks(block: BlockDocument): BlockDocument[] {
+  const order = block.blockOrder ?? block.blocks?.map((child) => child.blockId) ?? [];
+  return order
+    .map((blockId) => block.blocks?.find((child) => child.blockId === blockId))
+    .filter((child): child is BlockDocument => Boolean(child));
+}
+
+function customClassName(block: BlockDocument): string {
+  return typeof block.style.className === "string" ? block.style.className.trim() : "";
+}
+
+function legacyStructuralType(block: BlockDocument): BlockDocument["type"] | undefined {
+  if (block.type !== "card" || Object.keys(block.content).length > 0) return undefined;
+  const labelType = block.label.trim().toLowerCase();
+  return ["container", "grid", "stack", "cluster", "split", "group"].includes(labelType) ? labelType as BlockDocument["type"] : undefined;
+}
+
+function layoutClasses(block: BlockDocument): string {
+  const blockType = legacyStructuralType(block) ?? block.type;
+  if (blockType === "container") return ["ss-section-wide", customClassName(block)].filter(Boolean).join(" ");
+  if (blockType === "stack") return ["ss-stack", "ss-gap-6", customClassName(block)].filter(Boolean).join(" ");
+  if (blockType === "cluster" || blockType === "group") return ["ss-row", "ss-wrap", "ss-gap-4", customClassName(block)].filter(Boolean).join(" ");
+  if (blockType === "split") return ["ss-split", "ss-gap-6", customClassName(block)].filter(Boolean).join(" ");
+  const layout = typeof block.style.layout === "string" ? block.style.layout : String(block.content.layout ?? "halves-vertical");
+  const layoutClass = layout === "thirds-vertical"
+    ? "ss-grid ss-cols-3 ss-gap-6"
+    : layout === "halves-horizontal"
+      ? "ss-stack ss-gap-6"
+      : layout === "one-side-split"
+        ? "ss-split ss-gap-6"
+        : "ss-grid ss-cols-2 ss-gap-6";
+  return [layoutClass, customClassName(block)].filter(Boolean).join(" ");
+}
+
+function renderLayoutBlock(block: BlockDocument): string {
+  const children = orderedChildBlocks(block).map(renderBlock).join("\n");
+  return `<div class="${attr(layoutClasses(block))}">${children}</div>`;
+}
+
 function renderBlock(block: BlockDocument): string {
   if (block.hidden) return "";
+  if (legacyStructuralType(block)) return renderLayoutBlock(block);
   switch (block.type) {
     case "heading": {
       const requestedLevel = Number(block.style.level ?? 2);
@@ -154,6 +194,13 @@ function renderBlock(block: BlockDocument): string {
       return renderLink(block);
     case "image":
       return renderImage(block);
+    case "container":
+    case "grid":
+    case "stack":
+    case "cluster":
+    case "split":
+    case "group":
+      return renderLayoutBlock(block);
     case "card":
       return `<article class="ss-card"><div class="ss-card-body"><h3 class="ss-card-title">${escapeHtml(textField(block, "title", block.label))}</h3><p class="ss-card-subtitle">${escapeHtml(textField(block, "text", ""))}</p></div></article>`;
     case "list":
@@ -231,19 +278,25 @@ ${sections}
 }
 
 async function copyAssetReferences(sitePath: string, outputPath: string, pages: PageDocument[]): Promise<void> {
+  async function copyBlockAsset(block: BlockDocument): Promise<void> {
+    const src = block.media?.src;
+    if (src) {
+      if (src.startsWith("https://")) return;
+      if (!src.startsWith("assets/") || src.includes("..") || src.includes("\\")) {
+        throw badRequest(`Unsafe or unsupported asset path: ${src}`);
+      }
+      const source = path.join(sitePath, src);
+      if (!(await exists(source))) throw badRequest(`Referenced asset was not found: ${src}`);
+      const destination = path.join(outputPath, src);
+      await fs.mkdir(path.dirname(destination), { recursive: true });
+      await fs.copyFile(source, destination);
+    }
+    for (const child of block.blocks ?? []) await copyBlockAsset(child);
+  }
   for (const page of pages) {
     for (const section of page.sections) {
       for (const block of section.blocks) {
-        const src = block.media?.src;
-        if (!src || src.startsWith("https://")) continue;
-        if (!src.startsWith("assets/") || src.includes("..") || src.includes("\\")) {
-          throw badRequest(`Unsafe or unsupported asset path: ${src}`);
-        }
-        const source = path.join(sitePath, src);
-        if (!(await exists(source))) throw badRequest(`Referenced asset was not found: ${src}`);
-        const destination = path.join(outputPath, src);
-        await fs.mkdir(path.dirname(destination), { recursive: true });
-        await fs.copyFile(source, destination);
+        await copyBlockAsset(block);
       }
     }
   }

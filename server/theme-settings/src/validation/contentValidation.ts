@@ -14,7 +14,7 @@ import { validateSiteId } from "./siteId";
 const SAFE_ID = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 const SAFE_SLUG = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 const sectionTypes: SectionType[] = ["hero", "services", "about", "pricing", "testimonials", "faq", "gallery", "contact", "cta", "footer", "custom"];
-const blockTypes: BlockType[] = ["heading", "text", "button", "image", "card", "list", "form-placeholder", "map-placeholder", "business-hours", "testimonial", "custom-html"];
+const blockTypes: BlockType[] = ["heading", "text", "button", "image", "container", "grid", "stack", "cluster", "split", "group", "card", "list", "form-placeholder", "map-placeholder", "business-hours", "testimonial", "custom-html"];
 const pageStatuses: PageStatus[] = ["draft", "published"];
 
 type MutableObject = Record<string, unknown>;
@@ -156,12 +156,22 @@ function validateLink(value: unknown): BlockDocument["link"] | undefined {
 
 function validateBlock(value: unknown): BlockDocument {
   const obj = assertObject(value, "block");
-  rejectUnknown(obj, ["blockId", "type", "label", "content", "hidden", "locked", "validation", "style", "link", "media"], "block");
+  rejectUnknown(obj, ["blockId", "type", "label", "content", "hidden", "locked", "validation", "style", "blockOrder", "blocks", "link", "media"], "block");
   const type = enumValue(obj.type, "block.type", blockTypes);
   const validation = assertObject(obj.validation, "block.validation");
   rejectUnknown(validation, ["status", "messages"], "block.validation");
   const messages = Array.isArray(validation.messages) ? validation.messages.map((message) => stringValue(message, "block.validation.messages", 220)) : [];
   if (messages.length > 10) throw badRequest("block.validation.messages can include up to 10 messages.");
+  const childBlocks = Array.isArray(obj.blocks) ? obj.blocks.map(validateBlock) : undefined;
+  const childBlockIds = new Set<string>();
+  for (const child of childBlocks ?? []) {
+    if (childBlockIds.has(child.blockId)) throw badRequest(`Duplicate block ID: ${child.blockId}`);
+    childBlockIds.add(child.blockId);
+  }
+  const childBlockOrder = Array.isArray(obj.blockOrder) ? obj.blockOrder.map((id) => validateContentId(id, "block.blockOrder")) : childBlocks?.map((block) => block.blockId);
+  for (const id of childBlockOrder ?? []) {
+    if (!childBlockIds.has(id)) throw badRequest(`block.blockOrder references unknown block ID: ${id}`);
+  }
   return {
     blockId: validateContentId(obj.blockId, "block.blockId"),
     type,
@@ -174,9 +184,19 @@ function validateBlock(value: unknown): BlockDocument {
       messages
     },
     style: validateMetadata(obj.style, "block.style"),
+    blockOrder: childBlockOrder,
+    blocks: childBlocks,
     link: validateLink(obj.link),
     media: validateMedia(obj.media)
   };
+}
+
+function collectBlockIds(blocks: BlockDocument[], ids: Set<string>): void {
+  for (const block of blocks) {
+    if (ids.has(block.blockId)) throw badRequest(`Duplicate block ID: ${block.blockId}`);
+    ids.add(block.blockId);
+    collectBlockIds(block.blocks ?? [], ids);
+  }
 }
 
 function validateSection(value: unknown): SectionDocument {
@@ -221,10 +241,7 @@ export function validatePageDocument(value: unknown): PageDocument {
   for (const section of sections) {
     if (sectionIds.has(section.sectionId)) throw badRequest(`Duplicate section ID: ${section.sectionId}`);
     sectionIds.add(section.sectionId);
-    for (const block of section.blocks) {
-      if (blockIds.has(block.blockId)) throw badRequest(`Duplicate block ID: ${block.blockId}`);
-      blockIds.add(block.blockId);
-    }
+    collectBlockIds(section.blocks, blockIds);
   }
   const sectionOrder = Array.isArray(obj.sectionOrder) ? obj.sectionOrder.map((id) => validateContentId(id, "page.sectionOrder")) : sections.map((section) => section.sectionId);
   for (const id of sectionOrder) {

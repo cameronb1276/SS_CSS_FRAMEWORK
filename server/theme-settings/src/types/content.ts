@@ -19,6 +19,12 @@ export type BlockType =
   | "text"
   | "button"
   | "image"
+  | "container"
+  | "grid"
+  | "stack"
+  | "cluster"
+  | "split"
+  | "group"
   | "card"
   | "list"
   | "form-placeholder"
@@ -95,6 +101,8 @@ export type BlockDocument = {
     messages: string[];
   };
   style: Record<string, string | number | boolean | null>;
+  blockOrder?: string[];
+  blocks?: BlockDocument[];
   link?: {
     href: string;
     label: string;

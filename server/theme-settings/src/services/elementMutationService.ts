@@ -27,6 +27,9 @@ type ElementOperation = {
   locked?: boolean;
 };
 
+type BlockContainer = SectionDocument | BlockDocument;
+type BlockLocation = { section: SectionDocument; parent: BlockContainer; block: BlockDocument; siblings: BlockDocument[]; order: string[]; index: number };
+
 export type ElementOperationResult = {
   operation: OperationName;
   selectedElementId: string | null;
@@ -91,12 +94,29 @@ function sectionElementType(section: SectionDocument): ElementType {
   return "section";
 }
 
+const structuralBlockTypes: BlockType[] = ["container", "grid", "stack", "cluster", "split", "group"];
+const structuralElementTypes = new Set<ElementType>(["container", "grid", "stack", "cluster", "split", "group"]);
+
+function legacyStructuralType(block: BlockDocument): ElementType | undefined {
+  if (block.type !== "card" || Object.keys(block.content).length > 0) return undefined;
+  const labelType = block.label.trim().toLowerCase() as ElementType;
+  return structuralElementTypes.has(labelType) ? labelType : undefined;
+}
+
 function blockElementType(block: BlockDocument): ElementType {
+  const legacyType = legacyStructuralType(block);
+  if (legacyType) return legacyType;
   const map: Record<BlockType, ElementType> = {
     heading: "heading",
     text: "paragraph",
     button: "button",
     image: "image",
+    container: "container",
+    grid: "grid",
+    stack: "stack",
+    cluster: "cluster",
+    split: "split",
+    group: "group",
     card: block.style.variant === "service" ? "service-card" : "card",
     list: "list",
     "form-placeholder": "form",
@@ -119,6 +139,12 @@ function blockTypeFromElement(type: ElementType): BlockType {
     button: "button",
     link: "button",
     image: "image",
+    container: "container",
+    grid: "grid",
+    stack: "stack",
+    cluster: "cluster",
+    split: "split",
+    group: "group",
     "map-embed": "map-placeholder",
     form: "form-placeholder",
     "business-hours": "business-hours",
@@ -143,12 +169,43 @@ function findSection(page: PageDocument, elementId: string): SectionDocument | u
   return page.sections.find((section) => section.sectionId === elementId);
 }
 
-function findBlock(page: PageDocument, elementId: string): { section: SectionDocument; block: BlockDocument; index: number } | undefined {
-  for (const section of page.sections) {
-    const index = section.blocks.findIndex((block) => block.blockId === elementId);
-    if (index !== -1) return { section, block: section.blocks[index], index };
+function childBlocks(container: BlockContainer, create = false): { blocks: BlockDocument[]; order: string[] } {
+  if ("sectionId" in container) return { blocks: container.blocks, order: container.blockOrder };
+  if (create && !container.blocks) container.blocks = [];
+  if (create && !container.blockOrder) container.blockOrder = (container.blocks ?? []).map((block) => block.blockId);
+  if (container.blocks && !container.blockOrder) container.blockOrder = container.blocks.map((block) => block.blockId);
+  if (!container.blocks || !container.blockOrder) return { blocks: [], order: [] };
+  return { blocks: container.blocks, order: container.blockOrder };
+}
+
+function findBlockInContainer(section: SectionDocument, parent: BlockContainer, elementId: string): BlockLocation | undefined {
+  const { blocks, order } = childBlocks(parent);
+  const index = blocks.findIndex((block) => block.blockId === elementId);
+  if (index !== -1) return { section, parent, block: blocks[index], siblings: blocks, order, index };
+  for (const block of blocks) {
+    const found = findBlockInContainer(section, block, elementId);
+    if (found) return found;
   }
   return undefined;
+}
+
+function findBlock(page: PageDocument, elementId: string): BlockLocation | undefined {
+  for (const section of page.sections) {
+    const found = findBlockInContainer(section, section, elementId);
+    if (found) return found;
+  }
+  return undefined;
+}
+
+function containerElementType(parent: BlockContainer): ElementType {
+  return "sectionId" in parent ? "section" : blockElementType(parent);
+}
+
+function isDescendantBlock(source: BlockDocument, targetId: string): boolean {
+  for (const child of source.blocks ?? []) {
+    if (child.blockId === targetId || isDescendantBlock(child, targetId)) return true;
+  }
+  return false;
 }
 
 function elementTypeOf(page: PageDocument, elementId: string): ElementType {
@@ -226,6 +283,7 @@ function createBlock(page: PageDocument, type: ElementType, elementId?: string):
   const blockId = elementId ?? defaultElementId(page, type);
   ensureUniqueId(page, blockId);
   const blockType = blockTypeFromElement(type);
+  const isLayout = structuralBlockTypes.includes(blockType);
   return {
     blockId,
     type: blockType,
@@ -234,7 +292,9 @@ function createBlock(page: PageDocument, type: ElementType, elementId?: string):
     hidden: false,
     locked: false,
     validation: { status: "valid", messages: [] },
-    style: type === "service-card" ? { variant: "service" } : {}
+    style: type === "service-card" ? { variant: "service" } : type === "grid" ? { layout: "halves-vertical" } : {},
+    blockOrder: isLayout ? [] : undefined,
+    blocks: isLayout ? [] : undefined
   };
 }
 
@@ -283,11 +343,12 @@ function addElement(page: PageDocument, operation: ElementOperation): string {
     }
     const sibling = findBlock(page, operation.siblingId);
     if (!sibling) throw badRequest("siblingId was not found.");
-    if (!canContain("section", operation.elementType)) throw badRequest(`section cannot contain ${operation.elementType}.`);
+    const parentType = containerElementType(sibling.parent);
+    if (!canContain(parentType, operation.elementType)) throw badRequest(`${parentType} cannot contain ${operation.elementType}.`);
     const block = createBlock(page, operation.elementType, newId);
     const at = operation.position === "before" ? sibling.index : sibling.index + 1;
-    sibling.section.blocks.splice(at, 0, block);
-    sibling.section.blockOrder.splice(at, 0, block.blockId);
+    sibling.siblings.splice(at, 0, block);
+    sibling.order.splice(at, 0, block.blockId);
     return block.blockId;
   }
 
@@ -305,11 +366,15 @@ function addElement(page: PageDocument, operation: ElementOperation): string {
     return section.sectionId;
   }
   const parentSection = findSection(page, parentId);
-  if (!parentSection) throw badRequest("Only sections can currently accept inserted child blocks.");
+  const parentBlock = parentSection ? undefined : findBlock(page, parentId)?.block;
+  const parent = parentSection ?? parentBlock;
+  if (!parent) throw badRequest("Parent element was not found.");
+  if ("blockId" in parent && parent.locked) throw badRequest("Locked elements cannot accept inserted child blocks.");
   const block = createBlock(page, operation.elementType, newId);
-  const at = insertIndex(parentSection.blocks.length, operation.position, operation.index);
-  parentSection.blocks.splice(at, 0, block);
-  parentSection.blockOrder.splice(at, 0, block.blockId);
+  const { blocks, order } = childBlocks(parent, true);
+  const at = insertIndex(blocks.length, operation.position, operation.index);
+  blocks.splice(at, 0, block);
+  order.splice(at, 0, block.blockId);
   return block.blockId;
 }
 
@@ -325,8 +390,9 @@ function deleteElement(page: PageDocument, elementId: string): void {
   const found = findBlock(page, elementId);
   if (!found) throw badRequest("Element not found.");
   if (found.block.locked) throw badRequest("Locked elements cannot be deleted.");
-  found.section.blocks.splice(found.index, 1);
-  found.section.blockOrder = found.section.blockOrder.filter((id) => id !== elementId);
+  found.siblings.splice(found.index, 1);
+  const orderedIndex = found.order.indexOf(elementId);
+  if (orderedIndex !== -1) found.order.splice(orderedIndex, 1);
 }
 
 function duplicateId(page: PageDocument, baseId: string): string {
@@ -338,6 +404,15 @@ function duplicateId(page: PageDocument, baseId: string): string {
   }
 }
 
+function duplicateBlockTree(page: PageDocument, block: BlockDocument): BlockDocument {
+  const clone = JSON.parse(JSON.stringify(block)) as BlockDocument;
+  clone.blockId = duplicateId(page, block.blockId);
+  clone.label = `${block.label} copy`;
+  clone.blocks = clone.blocks?.map((child) => duplicateBlockTree(page, child));
+  clone.blockOrder = clone.blocks?.map((child) => child.blockId);
+  return clone;
+}
+
 function duplicateElement(page: PageDocument, elementId: string): string {
   const section = findSection(page, elementId);
   if (section) {
@@ -345,7 +420,7 @@ function duplicateElement(page: PageDocument, elementId: string): string {
     const clone = JSON.parse(JSON.stringify(section)) as SectionDocument;
     clone.sectionId = duplicateId(page, section.sectionId);
     clone.displayName = `${section.displayName} copy`;
-    clone.blocks = clone.blocks.map((block) => ({ ...block, blockId: duplicateId(page, block.blockId), label: `${block.label} copy` }));
+    clone.blocks = clone.blocks.map((block) => duplicateBlockTree(page, block));
     clone.blockOrder = clone.blocks.map((block) => block.blockId);
     const at = page.sectionOrder.indexOf(section.sectionId) + 1;
     page.sections.splice(at, 0, clone);
@@ -355,11 +430,9 @@ function duplicateElement(page: PageDocument, elementId: string): string {
   const found = findBlock(page, elementId);
   if (!found) throw badRequest("Element not found.");
   if (found.block.locked) throw badRequest("Locked elements cannot be duplicated.");
-  const clone = JSON.parse(JSON.stringify(found.block)) as BlockDocument;
-  clone.blockId = duplicateId(page, found.block.blockId);
-  clone.label = `${found.block.label} copy`;
-  found.section.blocks.splice(found.index + 1, 0, clone);
-  found.section.blockOrder.splice(found.index + 1, 0, clone.blockId);
+  const clone = duplicateBlockTree(page, found.block);
+  found.siblings.splice(found.index + 1, 0, clone);
+  found.order.splice(found.index + 1, 0, clone.blockId);
   return clone.blockId;
 }
 
@@ -370,22 +443,29 @@ function moveElement(page: PageDocument, operation: ElementOperation): string {
   if (!found) throw badRequest("Only block moves are supported in this phase.");
   if (found.block.locked) throw badRequest("Locked elements cannot be moved.");
   const targetParentId = operation.targetParentId ?? operation.parentId ?? found.section.sectionId;
+  if (targetParentId === found.block.blockId || isDescendantBlock(found.block, targetParentId)) throw badRequest("An element cannot be moved inside itself.");
   const targetSection = findSection(page, targetParentId);
-  if (!targetSection) throw badRequest("targetParentId must be a section.");
-  if (!canContain("section", blockElementType(found.block))) throw badRequest("Target section cannot contain this element.");
-  found.section.blocks.splice(found.index, 1);
-  found.section.blockOrder = found.section.blockOrder.filter((id) => id !== found.block.blockId);
-  let at = targetSection.blocks.length;
+  const targetBlock = targetSection ? undefined : findBlock(page, targetParentId)?.block;
+  const targetParent = targetSection ?? targetBlock;
+  if (!targetParent) throw badRequest("targetParentId was not found.");
+  const targetType = containerElementType(targetParent);
+  if (!canContain(targetType, blockElementType(found.block))) throw badRequest(`${targetType} cannot contain this element.`);
+  const removed = found.block;
+  found.siblings.splice(found.index, 1);
+  const oldOrderIndex = found.order.indexOf(removed.blockId);
+  if (oldOrderIndex !== -1) found.order.splice(oldOrderIndex, 1);
+  const { blocks: targetBlocks, order: targetOrder } = childBlocks(targetParent, true);
+  let at = targetBlocks.length;
   if (operation.siblingId) {
-    const siblingIndex = targetSection.blocks.findIndex((block) => block.blockId === operation.siblingId);
+    const siblingIndex = targetBlocks.findIndex((block) => block.blockId === operation.siblingId);
     if (siblingIndex === -1) throw badRequest("siblingId was not found in target parent.");
     at = operation.position === "before" ? siblingIndex : siblingIndex + 1;
   } else if (operation.index !== undefined) {
-    at = Math.min(targetSection.blocks.length, Math.max(0, operation.index));
+    at = Math.min(targetBlocks.length, Math.max(0, operation.index));
   }
-  targetSection.blocks.splice(at, 0, found.block);
-  targetSection.blockOrder.splice(at, 0, found.block.blockId);
-  return found.block.blockId;
+  targetBlocks.splice(at, 0, removed);
+  targetOrder.splice(at, 0, removed.blockId);
+  return removed.blockId;
 }
 
 function validateResult(page: PageDocument): void {

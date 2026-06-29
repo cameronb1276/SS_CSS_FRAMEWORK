@@ -2,12 +2,29 @@ import { BlockDocument, PageDocument, SectionDocument } from "../types/content";
 import { ElementDesign, ElementNode, ElementType } from "../types/elements";
 import { elementRegistry, elementTypeExists } from "../registry/elementRegistry";
 
+const structuralBlockTypes = ["container", "grid", "stack", "cluster", "split", "group"] as const;
+const structuralLabelTypes = new Set<ElementType>(structuralBlockTypes);
+
+function legacyStructuralType(block: BlockDocument): ElementType | undefined {
+  if (block.type !== "card" || Object.keys(block.content).length > 0) return undefined;
+  const labelType = block.label.trim().toLowerCase() as ElementType;
+  return structuralLabelTypes.has(labelType) ? labelType : undefined;
+}
+
 function blockElementType(block: BlockDocument): ElementType {
+  const legacyType = legacyStructuralType(block);
+  if (legacyType) return legacyType;
   const map: Record<string, ElementType> = {
     heading: "heading",
     text: "paragraph",
     button: "button",
     image: "image",
+    container: "container",
+    grid: "grid",
+    stack: "stack",
+    cluster: "cluster",
+    split: "split",
+    group: "group",
     card: block.style.variant === "service" ? "service-card" : "card",
     list: "list",
     "form-placeholder": "form",
@@ -31,6 +48,7 @@ function designFromSection(section: SectionDocument): ElementDesign {
 function designFromBlock(block: BlockDocument): ElementDesign {
   const design: ElementDesign = {};
   if (typeof block.style.variant === "string") design.variant = block.style.variant;
+  if (typeof block.style.layout === "string") design.variant = block.style.layout;
   if (typeof block.style.align === "string" && ["start", "center", "end"].includes(block.style.align)) {
     design.align = block.style.align as ElementDesign["align"];
   }
@@ -87,12 +105,17 @@ function sectionNode(section: SectionDocument, parentId: string, timestamps: { c
 
 function blockNode(block: BlockDocument, parentId: string, timestamps: { createdAt: string; updatedAt: string }): ElementNode {
   const type = blockElementType(block);
+  const childOrder = block.blockOrder ?? block.blocks?.map((child) => child.blockId) ?? [];
+  const children = childOrder
+    .map((blockId) => block.blocks?.find((child) => child.blockId === blockId))
+    .filter((child): child is BlockDocument => Boolean(child))
+    .map((child) => blockNode(child, block.blockId, timestamps));
   return {
     elementId: block.blockId,
     label: block.label,
     type,
     parentId,
-    children: [],
+    children,
     content: blockContent(block),
     design: designFromBlock(block),
     classes: { system: elementRegistry[type].defaultClasses, custom: customClassesFromStyle(block.style) },

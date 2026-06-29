@@ -15,6 +15,8 @@
       .ss-demo-drop-valid { box-shadow: inset 0 0 0 2px var(--ss-color-success); }
       .ss-demo-drop-invalid { box-shadow: inset 0 0 0 2px var(--ss-color-danger); }
       .ss-demo-library { display: grid; gap: var(--ss-space-2); grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .ss-demo-layout-wrapper { min-height: 4rem; border: 1px dashed var(--ss-border-color); padding: var(--ss-space-4); }
+      .ss-demo-layout-empty { color: var(--ss-text-muted); font-size: var(--ss-font-size-sm); }
     </style>
   </head>
   <body class="ss-page">
@@ -115,6 +117,15 @@
               <label class="ss-field-stack">
                 <span class="ss-builder-control-label">Alt text</span>
                 <input class="ss-input" id="altInput" placeholder="Image description">
+              </label>
+              <label class="ss-field-stack">
+                <span class="ss-builder-control-label">Grid split</span>
+                <select class="ss-select" id="layoutInput">
+                  <option value="halves-vertical">Halves vertical</option>
+                  <option value="halves-horizontal">Halves horizontal</option>
+                  <option value="thirds-vertical">Thirds vertical</option>
+                  <option value="one-side-split">One side split</option>
+                </select>
               </label>
               <button class="ss-btn ss-btn-sm ss-btn-outline" id="saveContentFields" type="button">Save content fields</button>
             </section>
@@ -277,6 +288,18 @@
           return text ? `${node.label}: ${String(text).slice(0, 34)}` : node.label;
         };
 
+        const layoutClassFor = (node) => {
+          const layout = node.design?.variant || node.content?.layout || "halves-vertical";
+          if (node.type === "container") return "ss-section-wide";
+          if (node.type === "stack") return "ss-stack ss-gap-6";
+          if (node.type === "cluster" || node.type === "group") return "ss-row ss-wrap ss-gap-4";
+          if (node.type === "split") return "ss-split ss-gap-6";
+          if (layout === "thirds-vertical") return "ss-grid ss-cols-3 ss-gap-6";
+          if (layout === "halves-horizontal") return "ss-stack ss-gap-6";
+          if (layout === "one-side-split") return "ss-split ss-gap-6";
+          return "ss-grid ss-cols-2 ss-gap-6";
+        };
+
         const renderTreeNode = (node, depth = 0) => {
           const hasChildren = node.children.length > 0;
           const open = state.expanded.has(node.elementId) || depth < 2;
@@ -298,6 +321,10 @@
           if (node.type === "heading") return `<h2 ${attrs}>${safeText(node.content.text || node.label)}</h2>`;
           if (node.type === "paragraph") return `<p ${dataAttr} class="${nodeClass} ss-text">${safeText(node.content.text || "")}</p>`;
           if (node.type === "button") return `<p ${attrs}><a class="ss-btn" href="#">${safeText(node.content.text || node.label)}</a></p>`;
+          if (["container", "grid", "stack", "cluster", "split", "group"].includes(node.type)) {
+            const empty = children ? "" : `<span class="ss-demo-layout-empty">${safeText(node.label)}</span>`;
+            return `<div ${dataAttr} class="${nodeClass} ss-demo-layout-wrapper ${layoutClassFor(node)}">${children || empty}</div>`;
+          }
           if (node.type === "card" || node.type === "service-card") return `<article ${dataAttr} class="${nodeClass} ss-card"><div class="ss-card-body"><h3 class="ss-card-title">${safeText(node.content.title || node.label)}</h3><p class="ss-card-subtitle">${safeText(node.content.text || "")}</p></div></article>`;
           return `<div ${attrs}>${safeText(node.label)}${children}</div>`;
         };
@@ -314,11 +341,12 @@
           el("hrefInput").value = node?.content?.href || "";
           el("srcInput").value = node?.content?.src || "";
           el("altInput").value = node?.content?.alt || "";
+          el("layoutInput").value = node?.design?.variant || node?.content?.layout || "halves-vertical";
           el("attrIdInput").value = node?.attributes?.id || "";
           el("attrTitleInput").value = node?.attributes?.title || "";
           el("attrAriaInput").value = node?.attributes?.["aria-label"] || "";
           const locked = Boolean(node?.locked);
-          ["labelInput", "textInput", "classInput", "hrefInput", "srcInput", "altInput", "attrIdInput", "attrTitleInput", "attrAriaInput", "renameElement", "saveText", "saveClasses", "saveContentFields", "addUtility", "removeUtility", "saveAttributes", "deleteElement", "duplicateElement", "moveUp", "moveDown"].forEach((id) => {
+          ["labelInput", "textInput", "classInput", "hrefInput", "srcInput", "altInput", "layoutInput", "attrIdInput", "attrTitleInput", "attrAriaInput", "renameElement", "saveText", "saveClasses", "saveContentFields", "addUtility", "removeUtility", "saveAttributes", "deleteElement", "duplicateElement", "moveUp", "moveDown"].forEach((id) => {
             el(id).disabled = !node || locked;
           });
           el("toggleLocked").disabled = !node;
@@ -524,7 +552,7 @@
         el("renameElement").addEventListener("click", () => mutate({ operation: "rename", elementId: state.selectedId, label: el("labelInput").value }).catch((error) => message("Rename failed", error.message, "danger")));
         el("saveText").addEventListener("click", () => mutate({ operation: "patch", elementId: state.selectedId, patch: { content: { text: el("textInput").value, title: el("textInput").value } } }).catch((error) => message("Text edit failed", error.message, "danger")));
         el("saveClasses").addEventListener("click", () => mutate({ operation: "patch", elementId: state.selectedId, patch: { classes: el("classInput").value } }).catch((error) => message("Class edit failed", error.message, "danger")));
-        el("saveContentFields").addEventListener("click", () => mutate({ operation: "patch", elementId: state.selectedId, patch: { content: { href: el("hrefInput").value, src: el("srcInput").value, alt: el("altInput").value } } }).catch((error) => message("Content edit failed", error.message, "danger")));
+        el("saveContentFields").addEventListener("click", () => mutate({ operation: "patch", elementId: state.selectedId, patch: { content: { href: el("hrefInput").value, src: el("srcInput").value, alt: el("altInput").value, layout: el("layoutInput").value }, design: { layout: el("layoutInput").value } } }).catch((error) => message("Content edit failed", error.message, "danger")));
         const utilityGroups = {
           "text-align": ["ss-text-center"],
           "text-color": ["ss-text-muted"],
